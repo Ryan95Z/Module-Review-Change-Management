@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+	<head>
+		<title>{% block title %}BASE_TITLE{% endblock %}</title>
+		<link rel="stylesheet" type="text/css" href="{% static 'core/bootstrap/css/bootstrap.min.css' %}">
+		{% block styles %}{% endblock %}
+	</head>
+	<body>
+		{% block body %}
+		{% endblock %}
+		<script type="text/javascript" src="{% static 'core/jquery-3.2.1.min.js' %}"></script>
+		{% block scripts %}{% endblock %}
+	</body>
+</html>
