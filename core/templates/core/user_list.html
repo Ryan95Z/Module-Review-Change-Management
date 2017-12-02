@@ -1,0 +1,29 @@
+{% extends 'core/main.html' %}
+
+{% block main %}
+	<div class="row">
+		<div class="col-md-12">
+			<br><h1>Users</h1><hr>
+			<table class="table table-bordered table-dark">
+				<thead>
+					<tr>
+						<th scope="col">Username</th>
+						<th scope="col">Name</th>
+						<th scope="col">Email</th>
+						<th scope="col">Edit</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for user in object_list %}
+					<tr>
+						<th scope="row">{{ user.username }}</th>
+						<td>{{ user.get_full_name }}</td>
+						<td>{{ user.email }}</td>
+						<td><a href="#" class="btn btn-primary btn-sm">Edit</a></td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{% endblock %}

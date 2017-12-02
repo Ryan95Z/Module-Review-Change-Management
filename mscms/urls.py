@@ -22,7 +22,7 @@ from core.views import DashboardView
 urlpatterns = [
 	# core view that is the route of the application
 	url(r'^$', login_required(DashboardView.as_view()), name='dashboard'),
-	url(r'^user/', include('core.urls')),
+	url(r'^users/', include('core.urls')),
 	# admin panel route
     url(r'^admin/', admin.site.urls),
 ]
