@@ -1,12 +1,10 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect
 from django.views import View
-from django.views.generic import TemplateView
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.contrib.auth import (authenticate, login, logout)
 
 from core.forms import LoginForm
 
-# Create your views here.
 class LoginView(View):
 	def get(self, request):
 		context = {'form' :  LoginForm() }
@@ -25,10 +23,6 @@ class LoginView(View):
 			else:
 				return redirect('login')
 		return redirect('login')
-
-
-class DashboardView(TemplateView):
-	template_name = 'core/dashboard.html'
 
 
 class LogoutView(View):
