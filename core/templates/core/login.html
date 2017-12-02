@@ -1,0 +1,23 @@
+{% extends "core/base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="centered">
+				<div id="login-form">
+					<form action="{% url 'login' %}" method="post" autocomplete="off">
+						{% csrf_token %}
+						{% for field in form %}
+							<div class="form-group">
+								{{ field.label_tag }} {{ field }}
+							</div>
+						{% endfor %}
+						<button type="submit" class="btn btn-success">Login</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

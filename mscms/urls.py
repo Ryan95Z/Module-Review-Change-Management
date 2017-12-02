@@ -13,12 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 
-from core.views import Test
+from core.views import DashboardView
 
 urlpatterns = [
-	url(r'^$', Test.as_view()),
+	# core view that is the route of the application
+	url(r'^$', login_required(DashboardView.as_view()), name='dashboard'),
+	url(r'^user/', include('core.urls')),
+	# admin panel route
     url(r'^admin/', admin.site.urls),
 ]
