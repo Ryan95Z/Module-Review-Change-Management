@@ -50,7 +50,11 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    username = models.CharField(unique=True, max_length=40)
+    username = models.CharField(
+        unique=True, 
+        max_length=40,
+        error_messages={'unique' : 'This username has already been added to the system'}
+    )
     email = models.EmailField(
         verbose_name='email address',
         max_length=255
