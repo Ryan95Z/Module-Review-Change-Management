@@ -6,8 +6,9 @@ from django.contrib.auth import (authenticate, login, logout)
 
 from core.forms import LoginForm
 from core.models import User
+from .mixins import (AdminTestMixin, LoggedInTestMixin)
 
-class LoginView(View):
+class LoginView(LoggedInTestMixin, View):
 	def get(self, request):
 		next_url = request.GET.get('next', None)
 		context = {'form' :  LoginForm(), 'next' : next_url}
@@ -22,7 +23,6 @@ class LoginView(View):
 			auth = authenticate(username=username, password=password)
 			if auth is not None:
 				login(request, auth)
-				request.session['username'] = username
 				if next_url:
 					return HttpResponseRedirect(next_url)
 				return redirect('dashboard')
@@ -33,15 +33,11 @@ class LoginView(View):
 
 class LogoutView(View):
 	def get(self, request):
-		try:
-			del request.session['username']
-		except KeyError:
-			pass
 		logout(request)
 		return redirect('login')
 
 
-class UserListView(ListView):
+class UserListView(AdminTestMixin, ListView):
 	model = User
 
 	def get_context_data(self, **kwargs):
