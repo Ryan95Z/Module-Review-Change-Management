@@ -39,6 +39,7 @@ class AdminTestMixinTest(LoggedInTestCase):
 		self.assertEqual(response.status_code, 302)
 		self.assertEqual(response.url, reverse_lazy('dashboard'))
 
+
 class LoggedInTestMixinTest(LoggedInTestCase):
 	def setUp(self):
 		super(LoggedInTestMixinTest, self).setUp()
