@@ -12,7 +12,7 @@ class AdminTestMixin(object):
 		return super(AdminTestMixin, self).dispatch(request, *args, **kwargs)
 
 class LoggedInTestMixin(object):
-	
+
 	def dispatch(self, request, *args, **kwargs):
 		try:
 			if request.user.is_authenticated():
@@ -20,3 +20,4 @@ class LoggedInTestMixin(object):
 		except AttributeError:
 			return redirect('login')
 		return super(LoggedInTestMixin, self).dispatch(request, *args, **kwargs)
+	

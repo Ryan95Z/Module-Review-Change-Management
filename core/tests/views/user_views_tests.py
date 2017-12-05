@@ -1,39 +1,74 @@
-import unittest
-from django.test import Client, TestCase
+from django.test import Client
 from django.core.urlresolvers import reverse_lazy
 
-from core.models import User, UserManager
+from core.tests.logged_in_test_case import LoggedInTestCase
+from core.models import User
 
-class UserListView(TestCase):
+class LoginViewTest(LoggedInTestCase):
 	def setUp(self):
-		self.client = Client()
-		manager = UserManager()
-		manager.model = User
-		
-		manager.create_superuser(
-			username='admin',
-			first_name='admin',
-			last_name='admin',
-			email='admin@example.com',
-			password='password'
-		)
+		super(LoginViewTest, self).setUp()
+		self.user = User.objects.all()[0]
 
-		manager.create_user(
-			username='user1',
-			first_name='user',
-			last_name='user',
-			email='admin@example.com',
-			password='password'
-		)
+	def test_get_user_login_view(self):
+		response = self.client.get(reverse_lazy('login'))
+		self.assertEquals(response.status_code, 200)
 
+	def test_get_user_login_view_logged_in_already(self):
+		self.client.force_login(self.user)
+		response = self.client.get(reverse_lazy('login'))
+		self.assertEquals(response.status_code, 302)
+		self.assertEquals(response.url, reverse_lazy('dashboard'))
+
+	def test_post_user_login_view_valid_details(self):
+		data = {'username' : 'admin', 'password' : 'password'}
+		response = self.client.post(reverse_lazy('login'), data)
+		self.assertEquals(response.status_code, 302)
+		self.assertEquals(response.url, reverse_lazy('dashboard'))
+
+	def test_post_user_login_view_invalid_details(self):
+		data = {'username' : 'admin', 'password' : 'badpassword'}
+		response = self.client.post(reverse_lazy('login'), data)
+		self.assertEquals(response.status_code, 302)
+		self.assertEquals(response.url, reverse_lazy('login'))
+
+	def test_post_user_login_view_blank_details(self):
+		data = {'username' : '', 'password' : ''}
+		response = self.client.post(reverse_lazy('login'), data)
+		self.assertEquals(response.status_code, 302)
+		self.assertEquals(response.url, reverse_lazy('login'))
+
+	def test_post_user_login_view_logged_in_already(self):
+		self.client.force_login(self.user)
+		data = {'username' : 'admin', 'password' : 'password'}
+		response = self.client.post(reverse_lazy('login'), data)
+		self.assertEquals(response.status_code, 302)
+		self.assertEquals(response.url, reverse_lazy('dashboard'))
+
+
+class LogoutViewTest(LoggedInTestCase):
+	def test_get_user_logout_view(self):
+		self.client.force_login(self.user)
+		response = self.client.get(reverse_lazy('logout'))
+		self.assertEquals(response.status_code, 302)
+		self.assertEquals(response.url, reverse_lazy('login'))
+
+	def test_get_user_logout_view_not_logged_in(self):
+		response = self.client.get(reverse_lazy('logout'))
+		self.assertEquals(response.status_code, 302)
+		self.assertEquals(response.url, reverse_lazy('login'))
+
+
+class UserListViewTest(LoggedInTestCase):
+	def setUp(self):
+		super(UserListViewTest, self).setUp()
 
 	def test_get_user_list_view(self):
-		self.client.login(username='admin', password='password')
+		self.client.force_login(self.admin)
 		response = self.client.get(reverse_lazy('all_users'))
 		self.assertEquals(response.status_code, 200)
 
 	def test_get_user_list_view_with_incorrect_access(self):
-		self.client.login(username='user1', password='password')
+		self.client.force_login(self.user)
 		response = self.client.get(reverse_lazy('all_users'))
 		self.assertEquals(response.status_code, 302)
 		self.assertEquals(response.url, reverse_lazy('dashboard'))
