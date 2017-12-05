@@ -1,13 +1,9 @@
-from django.test import Client
 from django.core.urlresolvers import reverse_lazy
-
 from core.tests.logged_in_test_case import LoggedInTestCase
-from core.models import User
 
 class LoginViewTest(LoggedInTestCase):
 	def setUp(self):
 		super(LoginViewTest, self).setUp()
-		self.user = User.objects.all()[0]
 
 	def test_get_user_login_view(self):
 		response = self.client.get(reverse_lazy('login'))

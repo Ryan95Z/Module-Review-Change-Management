@@ -20,4 +20,3 @@ class LoggedInTestMixin(object):
 		except AttributeError:
 			return redirect('login')
 		return super(LoggedInTestMixin, self).dispatch(request, *args, **kwargs)
-	
