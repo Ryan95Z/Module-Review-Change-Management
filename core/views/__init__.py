@@ -1,2 +1,2 @@
-from .user_views import (LoginView, LogoutView, UserListView)
-from .dashboard_views import DashboardView
+from .user_views import *
+from .dashboard_views import *
