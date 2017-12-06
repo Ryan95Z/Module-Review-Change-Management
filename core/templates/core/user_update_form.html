@@ -6,23 +6,12 @@
 			<form action="{% url 'edit_user' user.pk %}" method="POST">
 				{% csrf_token %}
 				<h3>User information</h3><hr>
-				<div class="form-group">
-					<label class="{{ form.username.name }}">{{ form.username.label }}</label>
-					{{ form.username }}
-				</div>
-				<div class="form-group">
-					<label class="{{ form.email.name }}">{{ form.email.label }}</label>
-					{{ form.email }}
-				</div>
-				<div class="form-group">
-					<label class="{{ form.first_name.name }}">{{ form.first_name.label }}</label>
-					{{ form.first_name }}
-				</div>
-				<div class="form-group">
-					<label class="{{ form.last_name.name }}">{{ form.last_name.label }}</label>
-					{{ form.last_name }}
-				</div>
-				
+				<ul class="list-group">
+				  <li class="list-group-item">Username: <b>{{ user.username }}</b></li>
+				  <li class="list-group-item">Name: <b>{{ user.get_full_name }}</b></li>
+				  <li class="list-group-item">Email: <b>{{ user.email }}</b></li>
+				</ul>
+								
 				<br><h3>Permissions</h3><hr>
 				<div class="form-check">
 		  			<label class="form-check-label">

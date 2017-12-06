@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse_lazy
 
 from .mixins import (AdminTestMixin, LoggedInTestMixin)
-from core.forms import LoginForm, AdminUserForm
+from core.forms import LoginForm, UserPermissionsForm, UserForm
 from core.models import User
 
 
@@ -78,13 +78,24 @@ class UserListView(AdminTestMixin, ListView):
         return context
 
 
+class UserProfileView(UpdateView):
+    model = User
+    slug_field = 'username'
+    form_class = UserForm
+    template_name_suffix = '_update_profile_form'
+
+    def get_context_data(self, **kwargs):
+        context = super(UserProfileView, self).get_context_data(**kwargs)
+        return context
+
+
 class AdminUpdateUserPermissions(UpdateView):
     """
     Update view for allowing users to be updated
     """
     model = User
     template_name_suffix = '_update_form'
-    form_class = AdminUserForm
+    form_class = UserPermissionsForm
 
     def get_context_data(self, **kwargs):
         context = super(
