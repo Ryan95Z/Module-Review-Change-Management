@@ -8,38 +8,69 @@ from core.forms import LoginForm
 from core.models import User
 from .mixins import (AdminTestMixin, LoggedInTestMixin)
 
-class LoginView(LoggedInTestMixin, View):
-	def get(self, request):
-		next_url = request.GET.get('next', None)
-		context = {'form' :  LoginForm(), 'next' : next_url}
-		return render(request, 'core/login.html', context)
 
-	def post(self, request, *args, **kwargs):
-		form = LoginForm(request.POST)
-		next_url = request.GET.get('next', None)
-		if form.is_valid():
-			username = form.cleaned_data['username']
-			password = form.cleaned_data['password']
-			auth = authenticate(username=username, password=password)
-			if auth is not None:
-				login(request, auth)
-				if next_url:
-					return HttpResponseRedirect(next_url)
-				return redirect('dashboard')
-			else:
-				return redirect('login')
-		return redirect('login')
+class LoginView(LoggedInTestMixin, View):
+    """
+    Class that allows users to access the login page.
+    Inherits LoggedInTestMixin to determine where to
+    route the user if they are already logged in.
+    """
+
+    def get(self, request):
+        """
+        Get method for view that will provide login form.
+        """
+        next_url = request.GET.get('next', None)
+        context = {'form':  LoginForm(), 'next': next_url}
+        return render(request, 'core/login.html', context)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Post method that will enable users to login
+        if the details provided are correct. Will then
+        redirect to correct view.
+        """
+        form = LoginForm(request.POST)
+        next_url = request.GET.get('next', None)
+        # check that the form is valid
+        if form.is_valid():
+            # clean the user's information
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            auth = authenticate(username=username, password=password)
+            if auth is not None:
+                # login user and route
+                login(request, auth)
+                if next_url:
+                    return HttpResponseRedirect(next_url)
+                return redirect('dashboard')
+            else:
+                # details incorrect
+                return redirect('login')
+        # invalid form
+        return redirect('login')
 
 
 class LogoutView(View):
-	def get(self, request):
-		logout(request)
-		return redirect('login')
+    """
+    View to allow users to log out of system
+    """
+    def get(self, request):
+        """
+        Get method that will logout a user
+        and redirect to login page.
+        """
+        logout(request)
+        return redirect('login')
 
 
 class UserListView(AdminTestMixin, ListView):
-	model = User
+    """
+    Generic view that will list all users. Inherits
+    AdminTestMixin to check that only admins can access this view.
+    """
+    model = User
 
-	def get_context_data(self, **kwargs):
-		context = super(UserListView, self).get_context_data(**kwargs)
-		return context
+    def get_context_data(self, **kwargs):
+        context = super(UserListView, self).get_context_data(**kwargs)
+        return context

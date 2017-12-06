@@ -1,4 +1,8 @@
 from django.views.generic import TemplateView
 
+
 class DashboardView(TemplateView):
-	template_name = 'core/dashboard.html'
+    """
+    Generic view to display dashboard
+    """
+    template_name = 'core/dashboard.html'
