@@ -28,3 +28,8 @@ html, body{
 	padding: 10px 10px;
 	font-size: 20px;
 }
+
+.btn-half{
+	margin-top: 2em;
+	width: 100%;
+}

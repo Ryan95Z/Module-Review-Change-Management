@@ -1,8 +1,8 @@
 {% extends 'core/main.html' %}
 	
 {% block main %}
-	<div class="row">
-		<div class="col-md-12">
+	<div class="row justify-content-center">
+		<div class="col-md-6 align-self-center">
 			<form action="{% url 'edit_user' user.pk %}" method="POST">
 				{% csrf_token %}
 				<h3>User information</h3><hr>
@@ -48,7 +48,14 @@
 		    			{{ form.is_admin.label }}
 		  			</label>
 				</div>
-				<button type="submit" class="btn btn-primary">Update</button>
+				<div class="row">
+					<div class="col-md-6">
+						<a href="{% url 'all_users' %}" class="btn btn-danger btn-half">Cancel</a>
+					</div>
+					<div class="col-md-6">
+						<button type="submit" class="btn btn-primary btn-half">Update</button>
+					</div>
+				</div>
 			</form>
 		</div>
 	</div>

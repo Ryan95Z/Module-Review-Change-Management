@@ -1,15 +1,14 @@
 from django.views import View
+from django.views.generic.list import ListView
+from django.views.generic.edit import UpdateView
+from django.contrib.auth import (authenticate, login, logout)
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic.list import ListView
-from django.contrib.auth import (authenticate, login, logout)
-
-from django.views.generic.edit import UpdateView
 from django.core.urlresolvers import reverse_lazy
 
-from core.forms import LoginForm, UserForm
-from core.models import User
 from .mixins import (AdminTestMixin, LoggedInTestMixin)
+from core.forms import LoginForm, AdminUserForm
+from core.models import User
 
 
 class LoginView(LoggedInTestMixin, View):
@@ -79,21 +78,18 @@ class UserListView(AdminTestMixin, ListView):
         return context
 
 
-class UserUpdateView(UpdateView):
+class AdminUpdateUserPermissions(UpdateView):
+    """
+    Update view for allowing users to be updated
+    """
     model = User
     template_name_suffix = '_update_form'
-    form_class = UserForm
+    form_class = AdminUserForm
 
     def get_context_data(self, **kwargs):
-        context = super(UserUpdateView, self).get_context_data(**kwargs)
+        context = super(
+            AdminUpdateUserPermissions, self).get_context_data(**kwargs)
         return context
 
     def get_success_url(self):
         return reverse_lazy('all_users')
-
-
-# class UserDetailView(View):
-#     def get(self, request, user_id):
-#         user = get_object_or_404(User, pk=user_id)
-#         context = {'user': user}
-#         return render(request, 'core/user_details.html', context)
