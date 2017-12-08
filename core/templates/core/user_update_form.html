@@ -2,17 +2,12 @@
 	
 {% block main %}
 	<div class="row justify-content-center">
+		<div class="col-md-12">
+			<h1>Permissions for {{ user.username }}</h1><hr>
+		</div>
 		<div class="col-md-6 align-self-center">
 			<form action="{% url 'edit_user' user.pk %}" method="POST">
 				{% csrf_token %}
-				<h3>User information</h3><hr>
-				<ul class="list-group">
-				  <li class="list-group-item">Username: <b>{{ user.username }}</b></li>
-				  <li class="list-group-item">Name: <b>{{ user.get_full_name }}</b></li>
-				  <li class="list-group-item">Email: <b>{{ user.email }}</b></li>
-				</ul>
-								
-				<br><h3>Permissions</h3><hr>
 				<div class="form-check">
 		  			<label class="form-check-label">
 		    			{{ form.is_module_leader}}
@@ -33,7 +28,7 @@
 				</div>
 				<div class="form-check">
 		  			<label class="form-check-label">
-		    			{{ form.is_admin}}
+		    			{{ form.is_admin }}
 		    			{{ form.is_admin.label }}
 		  			</label>
 				</div>

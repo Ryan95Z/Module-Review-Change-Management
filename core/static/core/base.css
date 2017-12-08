@@ -11,6 +11,10 @@ nav{
 	border-bottom: 3px solid #4d4d4d;
 }
 
+.container-fluid{
+  padding-left: 0px;
+}
+
 .text-center{
 	text-align: center;
 }
@@ -22,6 +26,12 @@ nav{
 	transform: translate(-50%, -50%);
 	width: 45%;
 }
+
+#main{
+	padding-top: 20px;
+}
+
+/* login styles */
 
 #login-form{
 	box-shadow: 0px 0px 23px 4px #666666;
@@ -38,16 +48,15 @@ nav{
 	font-size: 20px;
 }
 
+/* end of login styles */
+
+
 .btn-half{
 	margin-top: 2em;
 	width: 100%;
 }
 
-/* Temp styles for sidebar */
-.container-fluid{
-  padding-left: 0px;
-}
-
+/* Sidebar styles */
 #sidebar-col{
   height: 100%;
   background-color: #4d4d4d;
@@ -60,11 +69,8 @@ nav{
   padding: 0;
 }
 
-.sidebar-inner ul li{
-
-}
-
-.sidebar-inner ul li a, .dropdown{
+.sidebar-inner ul li a,
+.dropdown{
 	cursor: pointer;
   text-decoration: none;
   display: block;
@@ -75,15 +81,12 @@ nav{
   border-bottom: 1px solid #333333;
 }
 
-.sidebar-inner ul li a:hover{
+.sidebar-inner ul li a:hover, 
+.dropdown:hover{
   background-color: #333333;
 }
 
 .sidebar-drop-down ul{
 	background-color: #000;
 	display: none;
-}
-
-.sidebar-drop-down li a{
-
 }

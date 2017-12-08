@@ -1,16 +1,20 @@
 {% extends 'core/main.html' %}
 
+{% block title %}
+	All Users
+{% endblock %}
+
 {% block main %}
 	<div class="row">
 		<div class="col-md-12">
-			<br><h1>Users</h1><hr>
+			<h1>All Users</h1><hr>
 			<table class="table table-bordered table-dark">
 				<thead>
 					<tr>
 						<th scope="col">Username</th>
 						<th scope="col">Name</th>
 						<th scope="col">Email</th>
-						<th scope="col">Edit</th>
+						<th scope="col">Permissions</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -19,7 +23,7 @@
 						<th scope="row">{{ user.username }}</th>
 						<td>{{ user.get_full_name }}</td>
 						<td>{{ user.email }}</td>
-						<td><a href="{% url 'edit_user' user.pk %}" class="btn btn-primary btn-sm">Edit</a></td>
+						<td><a href="{% url 'edit_user' user.pk %}" class="btn btn-primary btn-sm">Permissions</a></td>
 					</tr>
 				{% endfor %}
 				</tbody>

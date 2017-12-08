@@ -100,6 +100,7 @@ class AdminUpdateUserPermissions(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(
             AdminUpdateUserPermissions, self).get_context_data(**kwargs)
+        print(context)
         return context
 
     def get_success_url(self):
