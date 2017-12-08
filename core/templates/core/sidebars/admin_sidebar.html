@@ -1,3 +1,9 @@
 <ul>
-	<li><a href="{% url 'all_users' %}">All Users</a></li>
+	<li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+	<li class="dropdown" id="users">Users</li>
+	<li class="sidebar-drop-down">
+		<ul aria-labelledby="users">
+			<li><a href="{% url 'all_users' %}">Users</a></li>
+		</ul>
+	</li>
 </ul>

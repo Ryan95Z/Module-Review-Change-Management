@@ -1,11 +1,14 @@
 html, body{
-	background-color: #04395e;
+	background-color: #d9e0e7;
 	height: 100%;
-	color: #fff;
 }
 
 body{
 	padding-top: 3.5em;
+}
+
+nav{
+	border-bottom: 3px solid #4d4d4d;
 }
 
 .text-center{
@@ -61,7 +64,8 @@ body{
 
 }
 
-.sidebar-inner ul li a{
+.sidebar-inner ul li a, .dropdown{
+	cursor: pointer;
   text-decoration: none;
   display: block;
   color: #fff;
@@ -73,4 +77,13 @@ body{
 
 .sidebar-inner ul li a:hover{
   background-color: #333333;
+}
+
+.sidebar-drop-down ul{
+	background-color: #000;
+	display: none;
+}
+
+.sidebar-drop-down li a{
+
 }
