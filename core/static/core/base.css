@@ -1,5 +1,11 @@
 html, body{
-	background-color: #76b852;
+	background-color: #04395e;
+	height: 100%;
+	color: #fff;
+}
+
+body{
+	padding-top: 3.5em;
 }
 
 .text-center{
@@ -32,4 +38,39 @@ html, body{
 .btn-half{
 	margin-top: 2em;
 	width: 100%;
+}
+
+/* Temp styles for sidebar */
+.container-fluid{
+  padding-left: 0px;
+}
+
+#sidebar-col{
+  height: 100%;
+  background-color: #4d4d4d;
+  position: fixed;
+  padding-right: 0px;
+}
+
+.sidebar-inner ul{
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-inner ul li{
+
+}
+
+.sidebar-inner ul li a{
+  text-decoration: none;
+  display: block;
+  color: #fff;
+  position: relative;
+  padding: 10px 20px;
+  height: 50px;
+  border-bottom: 1px solid #333333;
+}
+
+.sidebar-inner ul li a:hover{
+  background-color: #333333;
 }
