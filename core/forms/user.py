@@ -29,6 +29,10 @@ class UserPermissionsForm(forms.ModelForm):
 
 
 class UserDetailsForm(forms.ModelForm):
+    """
+    Form that is used to allow users to chanage thier personal inforamtion
+    based on the User model.
+    """
     attrs = {'class': 'form-control'}
     username = forms.CharField(required=True, widget=TextInput(attrs=attrs))
     first_name = forms.CharField(required=True, widget=TextInput(attrs=attrs))
