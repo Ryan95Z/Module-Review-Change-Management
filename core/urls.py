@@ -16,5 +16,7 @@ urlpatterns = [
     url(r'^profile/(?P<slug>[\w.@+-]+)/$',
         login_required(UserSettingsView.as_view()), name='user_settings'),
     url(r'^profile/(?P<slug>[\w.@+-]+)/details/$',
-        login_required(UserUpdateDetailsView.as_view()), name='user_details')
+        login_required(UserUpdateDetailsView.as_view()), name='user_details'),
+    url(r'^profile/(?P<slug>[\w.@+-]+)/password/$',
+        login_required(UserUpdatePasswordView.as_view()), name='user_password')
 ]

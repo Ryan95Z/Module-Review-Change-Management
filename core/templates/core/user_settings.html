@@ -4,6 +4,6 @@
 	<h3>Settings</h3><hr>
 	<ul>
 		<li><a href="{% url 'user_details' request.session.username %}">Update user details</a></li>
-		<li><a href="#">Change password</a></li>
+		<li><a href="{% url 'user_password' request.session.username %}">Change password</a></li>
 	</ul>
 {% endblock %}
