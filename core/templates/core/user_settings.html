@@ -1,0 +1,9 @@
+{% extends 'core/main.html' %}
+
+{% block main %}
+	<h3>Settings</h3><hr>
+	<ul>
+		<li><a href="{% url 'user_details' request.session.username %}">Update user details</a></li>
+		<li><a href="#">Change password</a></li>
+	</ul>
+{% endblock %}

@@ -12,7 +12,13 @@
   		<div class="collapse navbar-collapse">
   			<ul class="navbar-nav ml-auto">
   				<li class="nav-item">
-  					<a class="nav-link" href="{% url 'user_profile' request.session.username %}">Logged in: {{ request.session.username }}</a>
+  					<a class="nav-link disabled" href="#">Logged in: {{ request.session.username }}</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" data-toggle="tooltip" data-placement="bottom" title="User Settings" href="{% url 'user_settings' request.session.username %}">
+                <i class="fa fa-cog fa-2" aria-hidden="true"></i>
+              </a>
+          </li>
   				<li class="nav-item">
   					<a class="nav-link" href="{% url 'logout' %}">Sign Out</a>
   				</li>
@@ -45,4 +51,10 @@
 
 {% block scripts %}
   <script type="text/javascript" src="{% static 'core/js/sidebar.js' %}"></script>
+
+  <script type="text/javascript">
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    });
+  </script>
 {% endblock %}

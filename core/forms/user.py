@@ -28,23 +28,13 @@ class UserPermissionsForm(forms.ModelForm):
                   'is_admin')
 
 
-class UserForm(forms.ModelForm):
-    input_attrs = {'class': 'form-control'}
-    username = forms.CharField(required=True, max_length=40,
-                               widget=TextInput(attrs=input_attrs))
-
-    email = forms.CharField(required=True, max_length=255,
-                            widget=TextInput(attrs=input_attrs))
-
-    password = forms.CharField(required=True, max_length=255,
-                               widget=TextInput(attrs=input_attrs))
-
-    first_name = forms.CharField(required=True, max_length=255,
-                                 widget=TextInput(attrs=input_attrs))
-
-    last_name = forms.CharField(required=True, max_length=255,
-                                widget=TextInput(attrs=input_attrs))
+class UserDetailsForm(forms.ModelForm):
+    attrs = {'class': 'form-control'}
+    username = forms.CharField(required=True, widget=TextInput(attrs=attrs))
+    first_name = forms.CharField(required=True, widget=TextInput(attrs=attrs))
+    last_name = forms.CharField(required=True, widget=TextInput(attrs=attrs))
+    email = forms.EmailField(required=True, widget=TextInput(attrs=attrs))
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'first_name', 'last_name', 'email')
+        fields = ('username', 'first_name', 'last_name', 'email')
