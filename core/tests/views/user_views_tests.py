@@ -34,8 +34,10 @@ class LoginViewTest(LoggedInTestCase):
         """
         data = {'username': 'admin', 'password': 'password'}
         response = self.client.post(reverse_lazy('login'), data)
+        session = self.client.session
         self.assertEquals(response.status_code, 302)
         self.assertEquals(response.url, reverse_lazy('dashboard'))
+        self.assertEqual(session["username"], "admin")
 
     def test_post_user_login_view_invalid_details(self):
         """
@@ -79,6 +81,11 @@ class LogoutViewTest(LoggedInTestCase):
         Test to see that we are redirect correctly,
         when we log out as a user.
         """
+        # configure the session
+        session = self.client.session
+        session['user_pk'] = self.user.id
+        session['username'] = self.user.username
+        session.save()
         self.client.force_login(self.user)
         response = self.client.get(reverse_lazy('logout'))
         self.assertEquals(response.status_code, 302)
@@ -107,7 +114,10 @@ class UserListViewTest(LoggedInTestCase):
         Test to check that if we are logged in as
         a admin, then we can access the view.
         """
-        self.client.force_login(self.admin)
+        session = self.client.session
+        session['username'] = "admin"
+        session.save()
+        login = self.client.login(username="admin", password="password")
         response = self.client.get(reverse_lazy('all_users'))
         self.assertEquals(response.status_code, 200)
 

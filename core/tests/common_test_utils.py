@@ -1,5 +1,8 @@
+from importlib import import_module
 from django.test import Client, TestCase
+from django.conf import settings
 from core.models import User, UserManager
+
 
 """
 Util module that will contain common
@@ -15,7 +18,13 @@ class LoggedInTestCase(TestCase):
     """
     def setUp(self):
         super(LoggedInTestCase, self).setUp()
+        # set up sessions in unit tests
+        session_engine = import_module(settings.SESSION_ENGINE)
+        store = session_engine.SessionStore()
+        store.save()
+        # set the client
         self.client = Client()
+        self.client.cookies[settings.SESSION_COOKIE_NAME] = store.session_key
         manager = UserManager()
         manager.model = User
 

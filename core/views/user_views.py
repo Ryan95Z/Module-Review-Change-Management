@@ -43,6 +43,8 @@ class LoginView(LoggedInTestMixin, View):
             if auth is not None:
                 # login user and route
                 login(request, auth)
+                request.session['username'] = username
+                request.session['user_pk'] = auth.id
                 if next_url:
                     return HttpResponseRedirect(next_url)
                 return redirect('dashboard')
@@ -63,6 +65,11 @@ class LogoutView(View):
         and redirect to login page.
         """
         logout(request)
+        try:
+            del request.session['username']
+            del request.session['user_pk']
+        except KeyError:
+            pass
         return redirect('login')
 
 
@@ -100,7 +107,6 @@ class AdminUpdateUserPermissions(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(
             AdminUpdateUserPermissions, self).get_context_data(**kwargs)
-        print(context)
         return context
 
     def get_success_url(self):
