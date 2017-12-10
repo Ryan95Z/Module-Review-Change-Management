@@ -64,10 +64,8 @@ class UserOnlyMixin(object):
                         return redirect('dashboard')
                 except KeyError:
                     return redirect('dashboard')
-            else:
-                # not logged in so back to login
-                return redirect('login')
         except AttributeError:
+            # not logged in so redirect
             return redirect('login')
 
         # continue with the request
