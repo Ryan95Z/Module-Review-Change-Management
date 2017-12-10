@@ -45,6 +45,10 @@ class UserDetailsForm(forms.ModelForm):
 
 
 class UserPasswordForm(forms.Form):
+    """
+    Form that is used to change the user's password. Creates two password
+    input fields to compare if the passwords are the same.
+    """
     attrs = {'class': 'form-control'}
     password1 = forms.CharField(label="Password", required=True,
                                 widget=forms.PasswordInput(attrs=attrs))
@@ -53,6 +57,10 @@ class UserPasswordForm(forms.Form):
                                 widget=forms.PasswordInput(attrs=attrs))
 
     def clean_password(self):
+        """
+        Method that will check and clean the user's password.
+        If they do not match then raises forms.ValidationError.
+        """
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
@@ -60,6 +68,11 @@ class UserPasswordForm(forms.Form):
         return password2
 
     def update_password(self, user_id):
+        """
+        Method that will update the user's password.
+
+        @param user_id - int
+        """
         user = User.objects.get(id=user_id)
         if user is None:
             return False

@@ -39,4 +39,5 @@ class UserListViewTest(LoggedInTestCase):
         """
         response = self.client.get(reverse_lazy('all_users'))
         self.assertEquals(response.status_code, 302)
-        self.assertEquals(response.url, reverse_lazy('login'))
+        self.assertEquals(response.url,
+                          reverse_lazy('login') + "?next=/users/all/")
