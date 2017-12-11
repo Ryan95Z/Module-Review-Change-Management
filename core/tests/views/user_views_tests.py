@@ -399,6 +399,10 @@ class UserUpdatePasswordViewTest(LoggedInTestCase):
         self.assertEquals(response.url, next_url)
 
     def test_invalid_post_user_update_password_for_other_user(self):
+        """
+        Test to ensure that user's cannot post new passwords
+        for other users.
+        """
         kwargs = {'slug': "tester"}
         data = {
             'password1': 'new_password',
