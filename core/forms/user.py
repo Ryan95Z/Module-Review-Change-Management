@@ -71,7 +71,8 @@ class UserPasswordForm(forms.Form):
         """
         Method that will update the user's password.
 
-        @param user_id - int
+        @param user_id  int
+        @return         boolean
         """
         user = User.objects.get(id=user_id)
         if user is None:
