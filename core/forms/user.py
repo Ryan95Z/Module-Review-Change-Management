@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ObjectDoesNotExist
 from django.forms.widgets import TextInput, CheckboxInput
 from core.models import User
 
@@ -63,6 +64,10 @@ class UserPasswordForm(forms.Form):
         """
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
+
+        if password1 is None or password2 is None:
+            raise forms.ValidationError("Password missing")
+
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Passwords don't match")
         return password2
@@ -74,13 +79,22 @@ class UserPasswordForm(forms.Form):
         @param user_id  int
         @return         boolean
         """
-        user = User.objects.get(id=user_id)
-        if user is None:
+        if user_id < 1:
             return False
+
+        # try and find the user
+        try:
+            user = User.objects.get(id=user_id)
+        except ObjectDoesNotExist:
+            return False
+
+        # try and update the password
         try:
             password = self.clean_password()
         except forms.ValidationError:
             return False
+
+        # successful so far so update the password
         user.set_password(password)
         user.save()
         return True

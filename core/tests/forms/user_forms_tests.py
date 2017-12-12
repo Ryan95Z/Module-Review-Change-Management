@@ -226,4 +226,36 @@ class UserPasswordFormTest(TestCase):
         self.assertEquals(form.errors['password1'], self.std_error)
         self.assertEquals(form.errors['password2'], self.std_error)
 
-        # TODO: Finish Test
+        # check that empty data raises an exception
+        with self.assertRaises(ValidationError):
+            form.clean_password()
+
+        # cannot update the password so returns false
+        self.assertFalse(form.update_password(self.user.id))
+
+    def test_update_password_method_with_invlaid_params(self):
+        """
+        Test case for possible cases that could occur for with
+        an invalid user_id parameter.
+        """
+        # provide valid input to test the method
+        password1 = "new_password1"
+        password2 = "new_password2"
+
+        data = {
+            'password1': password1,
+            'password2': password2
+        }
+
+        form = self.form(data)
+
+        # test the method with negative numbers
+        self.assertFalse(form.update_password(-13))
+        self.assertFalse(form.update_password(-1358584))
+
+        # test with zero
+        self.assertFalse(form.update_password(0))
+
+        # test with an invalid user id
+        self.assertFalse(form.update_password(1000))
+        self.assertFalse(form.update_password(100045456))
