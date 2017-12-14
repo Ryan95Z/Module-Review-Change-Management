@@ -80,21 +80,21 @@ class UserPasswordForm(forms.Form):
         @return         boolean
         """
         if user_id < 1:
-            return False
+            return None
 
         # try and find the user
         try:
             user = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
-            return False
+            return None
 
         # try and update the password
         try:
             password = self.clean_password()
         except forms.ValidationError:
-            return False
+            return None
 
         # successful so far so update the password
         user.set_password(password)
         user.save()
-        return True
+        return user

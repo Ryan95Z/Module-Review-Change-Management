@@ -2,7 +2,7 @@ from django.views import View
 from django.views.generic import TemplateView
 from django.views.generic.edit import UpdateView
 from django.contrib import messages
-from django.contrib.auth import (authenticate, login, logout)
+from django.contrib.auth import (authenticate, login, logout, update_session_auth_hash)
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -124,8 +124,8 @@ class UserUpdatePasswordView(UserOnlyMixin, View):
         slug = kwargs['slug']
         if form.is_valid():
             # update the password
-            changed = form.update_password(request.user.id)
-            if not changed:
+            user = form.update_password(request.user.id)
+            if user is None:
                 # if password was not updated
                 # create a message to the UI.
                 messages.add_message(request, messages.ERROR,
@@ -135,6 +135,8 @@ class UserUpdatePasswordView(UserOnlyMixin, View):
                 # password was succesfully updated
                 messages.add_message(request, messages.SUCCESS,
                                      'Password changed successfully')
+                # update the auth hash to validate the current session
+                update_session_auth_hash(request, user)
                 return redirect('user_settings', slug)
         else:
             # form was not valid
