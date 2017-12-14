@@ -1,4 +1,5 @@
 from django.db import models
+from django.db import IntegrityError
 from .user import User, UserManager
 
 YEAR_CHOICES = (
@@ -25,7 +26,7 @@ class YearTutorManager(object):
 
         # create the user to become a year tutor
         user = self.user_manager.create_user(
-            username=username, 
+            username=username,
             first_name=first_name,
             last_name=last_name,
             email=email,
@@ -37,12 +38,7 @@ class YearTutorManager(object):
         user.save()
 
         # create the year tutor model
-        tutor = self.model.create(
-            tutor_year=tutor_year,
-            year_tutor_user=user
-        )
-
-        return tutor
+        return self.__create_model(tutor_year, user)
 
     def create_tutor(self, tutor_year, user=None):
         """
@@ -57,12 +53,22 @@ class YearTutorManager(object):
         user.save()
 
         # create the year tutor
-        tutor = self.model.create(
-            tutor_year=tutor_year,
-            year_tutor_user=user
-        )
+        return self.__create_model(tutor_year, user)
 
-        return tutor
+    def __create_model(self, tutor_year, user):
+        """
+        Private method to actually create the model.
+        Could raise the Django IntegrityError if one
+        to one relationship is violated.
+        """
+        try:
+            tutor = self.model.objects.create(
+                tutor_year=tutor_year,
+                year_tutor_user=user
+            )
+            return tutor
+        except IntegrityError:
+            return None
 
 
 class YearTutor(models.Model):
@@ -91,3 +97,10 @@ class YearTutor(models.Model):
         Method to get the username of the tutor
         """
         return self.year_tutor_user.username
+
+    def get_tutor_id(self):
+        """
+        Method to return the id of the user assigned
+        to the year.
+        """
+        return self.year_tutor_user.id
