@@ -2,6 +2,7 @@ from django.db import models
 from django.db import IntegrityError
 from .user import User, UserManager
 
+# choices for tutor_year field in YearTutor model
 YEAR_CHOICES = (
     ('year 1', 'Year 1'),
     ('year 2', 'Year 2'),
@@ -11,12 +12,16 @@ YEAR_CHOICES = (
 
 
 class YearTutorManager(object):
+    """
+    Manager to assit in the creation of Year Tutors models
+    """
     def __init__(self):
         self.model = YearTutor
-        self.user_manager = UserManager
+        self.user_manager = UserManager()
+        self.user_manager.model = User
 
-    def create_new_tutor(self, tutor_year, username, first_name,
-                         last_name, email, password=None):
+    def create_new_tutor(self, tutor_year, username, first_name, last_name,
+                         email, password=None):
 
         """
         Create a new user with all of the expected parameters
@@ -33,12 +38,13 @@ class YearTutorManager(object):
             password=password
         )
 
-        # set the permissions
+        # create the year tutor model
+        model = self.__create_model(tutor_year, user)
+
+        # set the permissions now model is created
         user.is_year_tutor = True
         user.save()
-
-        # create the year tutor model
-        return self.__create_model(tutor_year, user)
+        return model
 
     def create_tutor(self, tutor_year, user=None):
         """
@@ -48,12 +54,15 @@ class YearTutorManager(object):
         if user is None:
             raise ValueError("User must not be none")
 
-        # update user permissions
+        # create the year tutor
+        model = self.__create_model(tutor_year, user)
+        if model is None:
+            return None
+
+        # update user permissions now the model has been created.
         user.is_year_tutor = True
         user.save()
-
-        # create the year tutor
-        return self.__create_model(tutor_year, user)
+        return model
 
     def __create_model(self, tutor_year, user):
         """
@@ -61,6 +70,8 @@ class YearTutorManager(object):
         Could raise the Django IntegrityError if one
         to one relationship is violated.
         """
+        if len(tutor_year) <= 0:
+            raise ValueError("Tutor year must be a string greater than 0")
         try:
             tutor = self.model.objects.create(
                 tutor_year=tutor_year,
