@@ -22,4 +22,5 @@ class YearTutorAdmin(admin.ModelAdmin):
         """
         Provide the username of the user.
         """
+
         return obj.year_tutor_user.username

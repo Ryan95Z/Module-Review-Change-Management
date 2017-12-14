@@ -14,12 +14,12 @@ class YearTutorManager(object):
         self.model = YearTutor
         self.user_manager = UserManager
 
-    def create_new_tutor(self, tutor_year, username, first_name, 
-                     last_name, email, password=None):
+    def create_new_tutor(self, tutor_year, username, first_name,
+                         last_name, email, password=None):
 
         """
         Create a new user with all of the expected parameters
-        as the user manager. This will then be used to create 
+        as the user manager. This will then be used to create
         link the tutor to the model.
         """
 
@@ -70,26 +70,24 @@ class YearTutor(models.Model):
     Model to represent the year tutors
     """
     tutor_year = models.CharField(
-        max_length=7, 
-        choices=YEAR_CHOICES, 
-        default='year 1',
-        required=True
+        max_length=7,
+        choices=YEAR_CHOICES,
+        default='year 1'
     )
 
     year_tutor_user = models.OneToOneField(User)
 
     def __str__(self):
-        return "{} {}".format(self.get_tutor_name(), tutor_year)
-
+        return "{} {}".format(self.get_tutor_name(), self.tutor_year)
 
     def get_tutor_name(self):
         """
         Method to get the tutor's fullname
         """
-        return year_tutor_user.get_full_name()
+        return self.year_tutor_user.get_full_name()
 
     def get_tutor_username(self):
         """
-        
+        Method to get the username of the tutor
         """
-        return year_tutor_user.username
+        return self.year_tutor_user.username
