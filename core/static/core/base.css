@@ -31,6 +31,16 @@ nav{
 	padding-top: 20px;
 }
 
+h1 {
+	border-bottom: 1px solid #bfbfbf;
+	padding-bottom: 20px;
+}
+
+h1 > .h-sub-action{
+	font-size: 15px;
+	margin-left: 20px;
+}
+
 /* login styles */
 
 #login-form{
@@ -88,4 +98,8 @@ nav{
 .sidebar-drop-down ul{
 	background-color: #000;
 	display: none;
+}
+
+.p-msg{
+	font-size: 20px;
 }

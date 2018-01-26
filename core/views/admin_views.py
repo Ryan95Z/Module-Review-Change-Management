@@ -4,7 +4,7 @@ from django.views.generic.edit import UpdateView
 
 from .mixins import AdminTestMixin
 from core.forms import UserPermissionsForm
-from core.models import User
+from core.models import User, YearTutor
 
 
 class UserListView(AdminTestMixin, ListView):
@@ -16,6 +16,19 @@ class UserListView(AdminTestMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(UserListView, self).get_context_data(**kwargs)
+        return context
+
+
+class AdminYearTutorListView(AdminTestMixin, ListView):
+    """
+    Generic view that lists all of the current year tutors
+    in the system.
+    """
+    model = YearTutor
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            AdminYearTutorListView, self).get_context_data(**kwargs)
         return context
 
 

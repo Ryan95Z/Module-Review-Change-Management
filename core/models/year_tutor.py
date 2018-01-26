@@ -4,11 +4,17 @@ from .user import User, UserManager
 
 # choices for tutor_year field in YearTutor model
 YEAR_CHOICES = (
-    ('year 1', 'Year 1'),
-    ('year 2', 'Year 2'),
-    ('year 3', 'Year 3'),
-    ('msc', 'MSC')
+    ('Year 1', 'Year 1'),
+    ('Year 2', 'Year 2'),
+    ('Year 3', 'Year 3'),
+    ('MSC', 'MSC')
 )
+
+
+class TutorAssignedError(Exception):
+    def __init__(self, message, year):
+        super(TutorAssignedError, self).__init__(message)
+        self.year = year
 
 
 class YearTutorManager(object):
@@ -88,6 +94,7 @@ class YearTutor(models.Model):
     """
     tutor_year = models.CharField(
         max_length=7,
+        unique=True,
         choices=YEAR_CHOICES,
         default='year 1'
     )
@@ -115,3 +122,6 @@ class YearTutor(models.Model):
         to the year.
         """
         return self.year_tutor_user.id
+
+    class Meta:
+        ordering = ['tutor_year']

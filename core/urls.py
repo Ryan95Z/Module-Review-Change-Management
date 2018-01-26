@@ -12,6 +12,10 @@ urlpatterns = [
     url(r'^all/edit/(?P<pk>[0-9]+)/$', login_required(
         AdminUpdateUserPermissions.as_view()), name='edit_user'),
 
+    # year tutor urls
+    url(r'^tutors/$', login_required(
+        AdminYearTutorListView.as_view()), name='all_year_tutors'),
+
     # generic user profile urls
     url(r'^profile/(?P<slug>[\w.@+-]+)/$',
         login_required(UserSettingsView.as_view()), name='user_settings'),
