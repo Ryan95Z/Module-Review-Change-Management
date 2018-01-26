@@ -1,2 +1,2 @@
-from .user_model_tests import *
-from .year_tutor_model_tests import *
+from .test_user_model import *
+from .test_year_tutor_model import *

@@ -1,2 +1,2 @@
-from .login_form_tests import *
-from .user_forms_tests import *
+from .test_login_form import *
+from .test_user_forms import *
