@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView
 
@@ -32,4 +33,4 @@ class AdminUpdateUserPermissions(UpdateView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('all_users')
+        return reverse('all_users')

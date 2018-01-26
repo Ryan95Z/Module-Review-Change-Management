@@ -2,7 +2,8 @@ from django.views import View
 from django.views.generic import TemplateView
 from django.views.generic.edit import UpdateView
 from django.contrib import messages
-from django.contrib.auth import (authenticate, login, logout, update_session_auth_hash)
+from django.contrib.auth import (authenticate, login,
+                                 logout, update_session_auth_hash)
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse, reverse_lazy
