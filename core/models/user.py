@@ -47,12 +47,16 @@ class UserManager(BaseUserManager):
         )
 
         # set the user's password
-        user.set_password(password)
+        if password is None:
+            psw = self.model.objects.make_random_password()
+            user.set_password(psw)
+        else:
+            user.set_password(password)
         user.save(using=self._db)
         return user
 
     def create_superuser(self, username, first_name, last_name,
-                         email, password):
+                         email, password=None):
         """
         Method that allows for superusers to be created.
         from User model.

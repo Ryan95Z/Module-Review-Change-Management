@@ -1,0 +1,16 @@
+{% extends 'core/main.html' %}
+	
+{% block main %}
+	<h1>New User</h1>
+	<form action="{% url 'new_user' %}" method="POST">
+		{% csrf_token %}
+		{% for field in form %}
+			<div class="form-group">
+				{{ field.label_tag }} 
+				{{ field }}
+				<p>{{ field.errors.as_text }}</p>
+			</div>
+		{% endfor %}
+		<button type="submit" class="btn btn-primary">Create</button>
+	</form>
+{% endblock %}

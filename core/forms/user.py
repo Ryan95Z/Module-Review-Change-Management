@@ -45,6 +45,21 @@ class UserDetailsForm(forms.ModelForm):
         fields = ('username', 'first_name', 'last_name', 'email')
 
 
+class UserCreationForm(UserDetailsForm):
+    """
+    Inherited form from UserDetailsForm. Used to create new users
+    from the UI that will generate a password.
+    """
+    def save(self, commit=True):
+        user = super(UserCreationForm, self).save(commit=False)
+        password = User.objects.make_random_password()
+        user.set_password(password)
+
+        # if commit:
+        #     user.save()
+        return user
+
+
 class UserPasswordForm(forms.Form):
     """
     Form that is used to change the user's password. Creates two password
