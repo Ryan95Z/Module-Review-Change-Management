@@ -51,14 +51,14 @@ class TestAdminNewUserView(LoggedInTestCase):
     def setUp(self):
         super(TestAdminNewUserView, self).setUp()
         self.url = reverse("new_user")
+        session = self.client.session
+        session['username'] = "admin"
+        session.save()
 
     def test_get_new_user_view(self):
         """
         Test to get the form if logged in as an admin
         """
-        session = self.client.session
-        session['username'] = "admin"
-        session.save()
         self.client.login(username="admin", password="password")
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, 200)
@@ -97,13 +97,42 @@ class TestAdminNewUserView(LoggedInTestCase):
             'last_name': 'Tester',
             'email': '123'
         }
-        # session required to allow template to render correctly
-        session = self.client.session
-        session['username'] = "admin"
-        session.save()
         self.client.login(username="admin", password="password")
         response = self.client.post(self.url, data)
         self.assertEquals(response.status_code, 200)
+
+
+class TestAdminUpdateUserPermissions(LoggedInTestCase):
+    def setUp(self):
+        super(TestAdminUpdateUserPermissions, self).setUp()
+        self.kwargs = {'pk': self.admin.id}
+        self.url = reverse('edit_user', kwargs=self.kwargs)
+        session = self.client.session
+        session['username'] = "admin"
+        session.save()
+
+    def test_get_update_permission_view(self):
+        """
+        """
+        login = self.client.login(username="admin", password="password")
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+
+    def test_get_update_permission_view_with_incorrect_access(self):
+        """
+        """
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.url, reverse('dashboard'))
+
+    def test_get_update_permission_view_not_logged_in(self):
+        """
+        """
+        next_url = reverse('login') + ("?next=" + self.url)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.url, next_url)
 
 
 class TestAdminYearTutorListView(LoggedInTestCase):
@@ -111,13 +140,13 @@ class TestAdminYearTutorListView(LoggedInTestCase):
     def setUp(self):
         super(TestAdminYearTutorListView, self).setUp()
         self.url = reverse('all_year_tutors')
+        session = self.client.session
+        session['username'] = "admin"
+        session.save()
 
     def test_get_tutor_list_view(self):
         """
         """
-        session = self.client.session
-        session['username'] = "admin"
-        session.save()
         login = self.client.login(username="admin", password="password")
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, 200)
