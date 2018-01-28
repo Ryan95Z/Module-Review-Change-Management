@@ -49,6 +49,8 @@ class UserCreationForm(UserDetailsForm):
     """
     Inherited form from UserDetailsForm. Used to create new users
     from the UI that will generate a password.
+
+    TODO : write unit test for this
     """
     def save(self, commit=True):
         user = super(UserCreationForm, self).save(commit=False)

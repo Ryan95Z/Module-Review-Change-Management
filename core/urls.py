@@ -16,7 +16,11 @@ urlpatterns = [
 
     # year tutor urls
     url(r'^tutors/$', login_required(
-        AdminYearTutorListView.as_view()), name='all_year_tutors'),
+        AdminYearTutorListView.as_view()), name='all_tutors'),
+    url(r'^tutors/new/', login_required(
+        AdminYearTutorCreateView.as_view()), name='new_tutor'),
+    url(r'^tutors/(?P<pk>[0-9]+)/$', login_required(
+            AdminYearTutorUpdateView.as_view()), name="update_tutor"),
 
     # generic user profile urls
     url(r'^profile/(?P<slug>[\w.@+-]+)/$',

@@ -7,7 +7,7 @@ class TestAdminYearTutorListView(LoggedInTestCase):
 
     def setUp(self):
         super(TestAdminYearTutorListView, self).setUp()
-        self.url = reverse('all_year_tutors')
+        self.url = reverse('all_tutors')
         session = self.client.session
         session['username'] = "admin"
         session.save()

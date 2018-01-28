@@ -7,7 +7,7 @@
 {% block main %}
 	<div class="row">
 		<div class="col-md-12">
-			<h1>Year Tutors <span class="h-sub-action"><a class="btn btn-primary" href="#">Add New</a></span></h1>
+			<h1>Year Tutors <span class="h-sub-action"><a class="btn btn-primary" href="{% url 'new_tutor' %}">Add New</a></span></h1>
 			{% if object_list|length < 1 %}
 				<p class="p-msg">There is currently no year tutors</p>
 			{% else %}
@@ -26,7 +26,7 @@
 							<td>{{ tutor.get_tutor_username }}</td>
 							<td>{{ tutor.get_tutor_name }}</td>
 							<td>{{ tutor.tutor_year }}</td>
-							<td><a href="#" class="btn btn-primary btn-sm">Edit</a></td>
+							<td><a href="{% url 'update_tutor' tutor.pk %}" class="btn btn-primary btn-sm">Edit</a></td>
 						</tr>
 					{% endfor %}
 				</tbody>

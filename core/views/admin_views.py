@@ -58,3 +58,34 @@ class AdminYearTutorListView(AdminTestMixin, ListView):
         context = super(
             AdminYearTutorListView, self).get_context_data(**kwargs)
         return context
+
+
+class AdminYearTutorCreateView(AdminTestMixin, CreateView):
+    model = YearTutor
+    fields = ['tutor_year', 'year_tutor_user']
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            AdminYearTutorCreateView, self).get_context_data(**kwargs)
+        context['form_url'] = reverse('new_tutor')
+        context['form_type'] = 'Create'
+        return context
+
+    def get_success_url(self):
+        return reverse('all_tutors')
+
+
+class AdminYearTutorUpdateView(AdminTestMixin, UpdateView):
+    model = YearTutor
+    fields = ['tutor_year', 'year_tutor_user']
+
+    def get_context_data(self, **kwargs):
+        kwargs = {'pk': self.object.id}
+        context = super(
+            AdminYearTutorUpdateView, self).get_context_data(**kwargs)
+        context['form_url'] = reverse('update_tutor', kwargs=kwargs)
+        context['form_type'] = 'Update'
+        return context
+
+    def get_success_url(self):
+        return reverse('all_tutors')
