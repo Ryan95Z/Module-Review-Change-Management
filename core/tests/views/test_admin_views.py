@@ -1,5 +1,6 @@
 from django.core.urlresolvers import reverse
 from core.tests.common_test_utils import LoggedInTestCase
+from core.models import User
 
 
 class UserListViewTest(LoggedInTestCase):
@@ -83,7 +84,7 @@ class TestAdminNewUserView(LoggedInTestCase):
             'email': 'test@test.com'
         }
         self.client.force_login(self.admin)
-        response = self.client.post(reverse('new_user'), data)
+        response = self.client.post(self.url, data)
         self.assertEquals(response.status_code, 302)
         self.assertEquals(response.url, reverse('all_users'))
 
@@ -133,6 +134,27 @@ class TestAdminUpdateUserPermissions(LoggedInTestCase):
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, 302)
         self.assertEquals(response.url, next_url)
+
+    def test_valid_post_update_permissions(self):
+        data = {
+            'is_module_leader': True,
+            'is_office_admin': False,
+            'is_year_tutor': False,
+            'is_admin': True
+        }
+        # check the permissions before update is applied
+        self.assertFalse(self.admin.is_module_leader)
+        self.assertTrue(self.admin.is_admin)
+
+        self.client.force_login(self.admin)
+        response = self.client.post(self.url, data)
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.url, reverse('all_users'))
+
+        # check that the changes took place
+        admin = User.objects.get(id=self.admin.id)
+        self.assertTrue(admin.is_module_leader)
+        self.assertTrue(admin.is_admin)
 
 
 class TestAdminYearTutorListView(LoggedInTestCase):

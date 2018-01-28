@@ -8,30 +8,16 @@
 		<div class="col-md-6 align-self-center">
 			<form action="{% url 'edit_user' user.pk %}" method="POST">
 				{% csrf_token %}
+
+				{% for f in form %}
 				<div class="form-check">
 		  			<label class="form-check-label">
-		    			{{ form.is_module_leader}}
-		    			{{ form.is_module_leader.label }}
+		    			{{ f }}
+		    			{{ f.label }}
+		    			{{ f.errors }}
 		  			</label>
 				</div>
-				<div class="form-check">
-		  			<label class="form-check-label">
-		    			{{ form.is_office_admin}}
-		    			{{ form.is_office_admin.label }}
-		  			</label>
-				</div>
-				<div class="form-check">
-		  			<label class="form-check-label">
-		    			{{ form.is_year_tutor}}
-		    			{{ form.is_year_tutor.label }}
-		  			</label>
-				</div>
-				<div class="form-check">
-		  			<label class="form-check-label">
-		    			{{ form.is_admin }}
-		    			{{ form.is_admin.label }}
-		  			</label>
-				</div>
+				{% endfor %}
 				<div class="row">
 					<div class="col-md-6">
 						<a href="{% url 'all_users' %}" class="btn btn-danger btn-half">Cancel</a>

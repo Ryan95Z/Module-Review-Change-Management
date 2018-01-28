@@ -30,7 +30,7 @@ class AdminNewUserView(AdminTestMixin, CreateView):
         return reverse('all_users')
 
 
-class AdminUpdateUserPermissions(UpdateView):
+class AdminUpdateUserPermissions(AdminTestMixin, UpdateView):
     """
     Update view for allowing users to be updated
     """
