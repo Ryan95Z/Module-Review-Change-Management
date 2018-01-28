@@ -16,10 +16,6 @@ class UserListView(AdminTestMixin, ListView):
     """
     model = User
 
-    def get_context_data(self, **kwargs):
-        context = super(UserListView, self).get_context_data(**kwargs)
-        return context
-
 
 class AdminNewUserView(AdminTestMixin, CreateView):
     model = User
@@ -38,11 +34,6 @@ class AdminUpdateUserPermissions(AdminTestMixin, UpdateView):
     template_name_suffix = '_update_form'
     form_class = UserPermissionsForm
 
-    def get_context_data(self, **kwargs):
-        context = super(
-            AdminUpdateUserPermissions, self).get_context_data(**kwargs)
-        return context
-
     def get_success_url(self):
         return reverse('all_users')
 
@@ -54,13 +45,11 @@ class AdminYearTutorListView(AdminTestMixin, ListView):
     """
     model = YearTutor
 
-    def get_context_data(self, **kwargs):
-        context = super(
-            AdminYearTutorListView, self).get_context_data(**kwargs)
-        return context
-
 
 class AdminYearTutorCreateView(AdminTestMixin, CreateView):
+    """
+    View to create year tutor
+    """
     model = YearTutor
     fields = ['tutor_year', 'year_tutor_user']
 
@@ -86,6 +75,11 @@ class AdminYearTutorUpdateView(AdminTestMixin, UpdateView):
         context['form_url'] = reverse('update_tutor', kwargs=kwargs)
         context['form_type'] = 'Update'
         return context
+
+    def form_valid(self, form):
+        tutor = self.object.year_tutor_user
+        User.objects.filter(id=tutor.id).update(is_year_tutor=True)
+        return super(AdminYearTutorUpdateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('all_tutors')

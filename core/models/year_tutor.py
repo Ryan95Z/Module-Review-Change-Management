@@ -22,7 +22,6 @@ class YearTutorManager(object):
     Manager to assit in the creation of Year Tutors models
     """
     def __init__(self):
-        self.model = YearTutor
         self.user_manager = UserManager()
         self.user_manager.model = User
 
@@ -100,6 +99,8 @@ class YearTutor(models.Model):
     )
 
     year_tutor_user = models.OneToOneField(User)
+
+    objects = YearTutorManager()
 
     def __str__(self):
         return "{} {}".format(self.get_tutor_name(), self.tutor_year)
