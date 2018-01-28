@@ -1,0 +1,35 @@
+{% extends 'core/main.html' %}
+
+{% block title %}
+	Modules
+{% endblock %}
+
+{% block main %}
+	<div class="row">
+		<div class="col-md-12">
+			<h1>Modules <span class="h-sub-action"><a class="btn btn-primary" href="#">Add New</a></span></h1>
+			<table class="table table-bordered table-dark">
+				<thead>
+					<tr>
+						<th scope="col">Code</th>
+						<th scope="col">Name</th>
+						<th scope="col">Credits</th>
+						<th scope="col">Semester</th>
+						<th scope="col">Module Leader</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for module in object_list %}
+					<tr>
+						<th scope="row">{{ module.module_code }}</th>
+						<td>{{ module.module_name }}</td>
+						<td>{{ module.module_credits }} Credits</td>
+						<td>{{ module.semester }}</td>
+						<td>{{ module.module_leader_name }}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{% endblock %}

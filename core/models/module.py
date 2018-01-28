@@ -3,14 +3,14 @@ from django.db import models
 from .user import User
 
 DELIVERY_LANGUAGES = (
-    ('cy', 'Welsh'),
-    ('en', 'English')
+    ('Welsh', 'Welsh'),
+    ('English', 'English')
 )
 
 SEMESTER_OPTIONS = (
-    ('AS', 'Autumn Semester'),
-    ('SS', 'Sprint Semester'),
-    ('DS', 'Double Semester')
+    ('Autumn Semester', 'Autumn Semester'),
+    ('Spring Semester', 'Spring Semester'),
+    ('Double Semester', 'Double Semester')
 )
 
 

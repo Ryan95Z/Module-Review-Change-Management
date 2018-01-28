@@ -6,7 +6,7 @@ from django.shortcuts import render
 
 from .mixins import AdminTestMixin
 from core.forms import UserPermissionsForm, UserCreationForm
-from core.models import User, YearTutor
+from core.models import User, YearTutor, Module
 
 
 class UserListView(AdminTestMixin, ListView):
@@ -99,3 +99,7 @@ class AdminYearTutorUpdateView(AdminTestMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('all_tutors')
+
+
+class AdminModuleListView(AdminTestMixin, ListView):
+    model = Module
