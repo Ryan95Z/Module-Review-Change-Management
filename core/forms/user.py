@@ -45,7 +45,7 @@ class UserDetailsForm(forms.ModelForm):
         fields = ('username', 'first_name', 'last_name', 'email')
 
 
-class UserCreationForm(UserDetailsForm):
+class UserCreationForm(UserDetailsForm, UserPermissionsForm):
     """
     Inherited form from UserDetailsForm. Used to create new users
     from the UI that will generate a password.

@@ -1,16 +1,28 @@
 {% extends 'core/main.html' %}
+{% load core_tags %}
 	
 {% block main %}
 	<h1>New User</h1>
 	<form action="{% url 'new_user' %}" method="POST">
 		{% csrf_token %}
 		{% for field in form %}
-			<div class="form-group">
-				{{ field.label_tag }} 
-				{{ field }}
-				<p>{{ field.errors.as_text }}</p>
-			</div>
+			{% if field|form_type == 'BooleanField' %}
+				<div class="form-check">
+		  			<label class="form-check-label">
+		    			{{ field }}
+		    			{{ field.label }}
+		    			{{ field.errors }}
+		  			</label>
+				</div>
+			{% else %}
+				<div class="form-group">
+					{{ field.label_tag }} 
+					{{ field }}
+					<p>{{ field.errors.as_text }}</p>
+				</div>
+			{% endif %}
 		{% endfor %}
 		<button type="submit" class="btn btn-primary">Create</button>
+		<a href="{% url 'all_users' %}" class="btn btn-danger">Cancel</a>
 	</form>
 {% endblock %}

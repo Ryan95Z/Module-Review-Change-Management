@@ -53,10 +53,19 @@ class AdminYearTutorCreateView(AdminTestMixin, CreateView):
     model = YearTutor
     fields = ['tutor_year', 'year_tutor_user']
 
+    def get_form(self, *args, **kwargs):
+        form = super(AdminYearTutorCreateView, self).get_form(*args, **kwargs)
+        # limit drop down to only contain those with year tutor permission
+        form.fields['year_tutor_user'].queryset = User.objects.filter(
+            is_year_tutor=True)
+        return form
+
     def get_context_data(self, **kwargs):
         context = super(
             AdminYearTutorCreateView, self).get_context_data(**kwargs)
+        # url for form action
         context['form_url'] = reverse('new_tutor')
+        # button text
         context['form_type'] = 'Create'
         return context
 
@@ -65,21 +74,28 @@ class AdminYearTutorCreateView(AdminTestMixin, CreateView):
 
 
 class AdminYearTutorUpdateView(AdminTestMixin, UpdateView):
+    """
+    View to update existing year tutor
+    """
     model = YearTutor
     fields = ['tutor_year', 'year_tutor_user']
+
+    def get_form(self, *args, **kwargs):
+        form = super(AdminYearTutorUpdateView, self).get_form(*args, **kwargs)
+        # limit drop down to only contain those with year tutor permission
+        form.fields['year_tutor_user'].queryset = User.objects.filter(
+            is_year_tutor=True)
+        return form
 
     def get_context_data(self, **kwargs):
         kwargs = {'pk': self.object.id}
         context = super(
             AdminYearTutorUpdateView, self).get_context_data(**kwargs)
+        # url for form action
         context['form_url'] = reverse('update_tutor', kwargs=kwargs)
+        # button text
         context['form_type'] = 'Update'
         return context
-
-    def form_valid(self, form):
-        tutor = self.object.year_tutor_user
-        User.objects.filter(id=tutor.id).update(is_year_tutor=True)
-        return super(AdminYearTutorUpdateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('all_tutors')
