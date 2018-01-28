@@ -6,16 +6,25 @@
 {% endblock %}
 
 {% block main %}
-	<form action="{{ form_url }}" method="POST">
-		{% csrf_token %}
-		{% for f in form %}
-			<div class="form-group">
-			<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-			{{ f|add_css_class:"form-control" }}
-			{{ f.errors }}
-			</div>
-		{% endfor %}
-		<button type="submit" class="btn btn-primary">{{ form_type }}</button>
-		<a href="{% url 'all_tutors' %}" class="btn btn-danger">Cancel</a>
-	</form>
+	<div class="row">
+		<div class="col-md-12">	
+			{% if form_type == 'Create' %}
+				<h1>Create Year Tutor</h1>
+			{% else %}
+				<h1>Update Year Tutor</h1>
+			{% endif %}
+			<form action="{{ form_url }}" method="POST">
+				{% csrf_token %}
+				{% for f in form %}
+					<div class="form-group">
+					<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+					{{ f|add_css_class:"form-control" }}
+					{{ f.errors }}
+					</div>
+				{% endfor %}
+				<button type="submit" class="btn btn-primary">{{ form_type }}</button>
+				<a href="{% url 'all_tutors' %}" class="btn btn-danger">Cancel</a>
+			</form>
+		</div>
+	</div>
 {% endblock %}
