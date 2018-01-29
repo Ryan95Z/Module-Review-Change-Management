@@ -29,10 +29,10 @@ class UserSettingsViewTest(LoggedInTestCase):
         login if they are not logged in.
         """
         kwargs = {'slug': "user1"}
+        next_url = ("?next=") + reverse('user_settings', kwargs=kwargs)
         response = self.client.get(reverse('user_settings', kwargs=kwargs))
         self.assertEquals(response.status_code, 302)
-        self.assertEqual(response.url,
-                         reverse('login') + "?next=/users/profile/user1/")
+        self.assertEqual(response.url, (reverse('login') + next_url))
 
     def test_get_user_settings_for_other_users(self):
         """

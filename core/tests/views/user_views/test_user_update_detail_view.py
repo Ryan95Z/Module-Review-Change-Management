@@ -31,7 +31,7 @@ class UserUpdateDetailsViewTest(LoggedInTestCase):
         login screen if they are not loged in.
         """
         kwargs = {'slug': "user1"}
-        next_url = "?next=/users/profile/user1/details/"
+        next_url = ("?next=") + reverse('user_details', kwargs=kwargs)
         response = self.client.get(reverse('user_details', kwargs=kwargs))
         self.assertEquals(response.status_code, 302)
         self.assertEqual(response.url, reverse('login') + next_url)
@@ -82,8 +82,8 @@ class UserUpdateDetailsViewTest(LoggedInTestCase):
             'last_name': self.user.last_name,
             'email': self.user.email
         }
-        next_url = "?next=/users/profile/user1/details/"
         kwargs = {'slug': self.user.username}
+        next_url = ("?next=") + reverse('user_details', kwargs=kwargs)
         response = self.client.post(
             reverse('user_details', kwargs=kwargs), data)
         self.assertEquals(response.status_code, 302)
