@@ -7,29 +7,35 @@
 {% block main %}
 	<div class="row">
 		<div class="col-md-12">
-			<h1>Modules <span class="h-sub-action"><a class="btn btn-primary" href="#">Add New</a></span></h1>
-			<table class="table table-bordered table-dark">
-				<thead>
-					<tr>
-						<th scope="col">Code</th>
-						<th scope="col">Name</th>
-						<th scope="col">Credits</th>
-						<th scope="col">Semester</th>
-						<th scope="col">Module Leader</th>
-					</tr>
-				</thead>
-				<tbody>
-				{% for module in object_list %}
-					<tr>
-						<th scope="row">{{ module.module_code }}</th>
-						<td>{{ module.module_name }}</td>
-						<td>{{ module.module_credits }} Credits</td>
-						<td>{{ module.semester }}</td>
-						<td>{{ module.module_leader_name }}</td>
-					</tr>
-				{% endfor %}
-				</tbody>
-			</table>
+			<h1>Modules <span class="h-sub-action"><a class="btn btn-primary" href="{% url 'new_module' %}">New Module</a></span></h1>
+			{% if object_list|length < 1 %}
+				<p class="p-msg">There is currently no year tutors</p>
+			{% else %}
+				<table class="table table-bordered table-dark">
+					<thead>
+						<tr>
+							<th scope="col">Code</th>
+							<th scope="col">Name</th>
+							<th scope="col">Credits</th>
+							<th scope="col">Semester</th>
+							<th scope="col">Module Leader</th>
+							<th scope="col">Update Module</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for module in object_list %}
+						<tr>
+							<th scope="row">{{ module.module_code }}</th>
+							<td>{{ module.module_name }}</td>
+							<td>{{ module.module_credits }} Credits</td>
+							<td>{{ module.semester }}</td>
+							<td>{{ module.module_leader_name }}</td>
+							<td><a class="btn btn-primary btn-sm" href="{% url 'update_module' module.module_code %}">Update {{ module.module_code }}</a></td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			{% endif %}
 		</div>
 	</div>
 {% endblock %}

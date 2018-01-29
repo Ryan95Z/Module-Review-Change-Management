@@ -1,0 +1,44 @@
+{% extends 'core/main.html' %}
+{% load core_tags %}
+
+{% block title %}
+	{% if form_type == 'Create' %}
+		New Module
+	{% else %}
+		{{ object.pk }}
+	{% endif %}
+{% endblock %}
+
+{% block main %}
+<div class="row">
+	<div class="col-md-12">
+		{% if form_type == 'Create' %}
+			<h1>New Module</h1>
+		{% else %}
+			<h1>{{ object.pk }} - {{ object.module_name }}</h1>
+		{% endif %}
+		<form action="{{ form_url }}" method="POST">
+			{% csrf_token %}
+			{% for field in form %}
+				{% if field|form_type == 'BooleanField' %}
+					<div class="form-check">
+			  			<label class="form-check-label">
+			    			{{ field|add_css_class:"form-control" }}
+			    			{{ field.label }}
+			    			{{ field.errors }}
+			  			</label>
+					</div>
+				{% else %}
+					<div class="form-group">
+						{{ field.label_tag }} 
+						{{ field|add_css_class:"form-control" }}
+						<p>{{ field.errors.as_text }}</p>
+					</div>
+				{% endif %}
+			{% endfor %}
+			<button type="submit" class="btn btn-primary">{{ form_type }}</button>
+			<a href="{% url 'all_modules'%}" class="btn btn-danger">Cancel</a>
+		</form>
+	</div>
+</div>
+{% endblock %}

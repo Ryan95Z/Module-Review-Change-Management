@@ -25,6 +25,10 @@ urlpatterns = [
     # module urls
     url(r'^modules/$', login_required(
         AdminModuleListView.as_view()), name='all_modules'),
+    url(r'^modules/new/$', login_required(
+        AdminModuleCreateView.as_view()), name='new_module'),
+    url(r'^modules/(?P<pk>[A-Za-z0-9]+)/$', login_required(
+        AdminModuleUpdateView.as_view()), name='update_module'),
 
     # generic user profile urls
     url(r'^profile/(?P<slug>[\w.@+-]+)/$',
