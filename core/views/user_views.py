@@ -52,8 +52,11 @@ class LoginView(LoggedInTestMixin, View):
                 return redirect('dashboard')
             else:
                 # details incorrect
+                messages.add_message(request, messages.ERROR,
+                                     'Invalid login details')
                 return redirect('login')
         # invalid form
+        messages.add_message(request, messages.ERROR, 'Invalid login details')
         return redirect('login')
 
 
