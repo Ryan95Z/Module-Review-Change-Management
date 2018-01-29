@@ -70,4 +70,6 @@ class LogoutView(View):
             del request.session['user_pk']
         except KeyError:
             pass
+        messages.add_message(request, messages.SUCCESS,
+                             'Successfully logged out')
         return redirect('login')
