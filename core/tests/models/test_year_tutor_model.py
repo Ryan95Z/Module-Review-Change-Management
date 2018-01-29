@@ -10,6 +10,7 @@ class YearTutorManagerTests(TestCase):
     def setUp(self):
         super(YearTutorManagerTests, self).setUp()
         self.manager = YearTutorManager()
+        self.manager.model = YearTutor
 
         # create a test user
         user_manager = UserManager()

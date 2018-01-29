@@ -1,14 +1,18 @@
 from django.core.urlresolvers import reverse
 from core.tests.common_test_utils import LoggedInTestCase
-from core.models import YearTutorManager
+from core.models import YearTutorManager, YearTutor, User
 
 
 class AdminYearTutorCreateViewTest(LoggedInTestCase):
     def setUp(self):
         super(AdminYearTutorCreateViewTest, self).setUp()
+        # update admin user permissons for this test
+        self.admin.is_year_tutor = True
+        self.admin.save()
+
         self.url = reverse('new_tutor')
         session = self.client.session
-        session['username'] = "admin"
+        session['username'] = self.admin.username
         session.save()
 
     def test_get_tutor_create_view(self):
@@ -61,6 +65,8 @@ class AdminYearTutorCreateViewTest(LoggedInTestCase):
         further years
         """
         manager = YearTutorManager()
+        manager.model = YearTutor
+
         # create a tutor
         tutor = manager.create_tutor('Year 1', self.user)
 
