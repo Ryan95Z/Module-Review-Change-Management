@@ -1,3 +1,3 @@
-from .user_views import *
+from .user import *
 from .dashboard_views import *
-from .admin_views import *
+from .admin import *
