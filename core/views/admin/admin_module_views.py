@@ -9,6 +9,7 @@ from core.models import Module
 
 class AdminModuleListView(AdminTestMixin, ListView):
     model = Module
+    paginate_by = 1
 
 
 class AdminModuleCreateView(AdminTestMixin, CreateView):
