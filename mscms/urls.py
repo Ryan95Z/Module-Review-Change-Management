@@ -17,13 +17,16 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 
-from core.views import DashboardView
+from core.views import DashboardView, LoginView, LogoutView
 
 urlpatterns = [
     # core view that is the route of the application
     url(r'^$', login_required(DashboardView.as_view()), name='dashboard'),
     url(r'^admin/', include('core.urls.admin')),
     url(r'^user/', include('core.urls.user')),
+    
     # admin panel route
+    url(r'^admin/login/$', LoginView.as_view()),
+    url(r'^admin/logout/$', LogoutView.as_view()),
     url(r'^admin/', admin.site.urls),
 ]
