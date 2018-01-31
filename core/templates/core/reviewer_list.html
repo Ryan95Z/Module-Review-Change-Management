@@ -25,8 +25,8 @@
 						<tr>
 							<td>{{ reviewer.get_reviewer_username }}</td>
 							<td>{{ reviewer.get_reviewer_name }}</td>
-							<td>{{ reviewer.module_code }}</td>
-							<td><a href="{% url 'update_reviewer' reviewer.pk %}" class="btn btn-primary btn-sm">Update {{ reviewer.module_code }}</a></td>
+							<td>{{ reviewer.module_code.module_code }}</td>
+							<td><a href="{% url 'update_reviewer' reviewer.pk %}" class="btn btn-primary btn-sm">Update {{ reviewer.module_code.module_code }}</a></td>
 						</tr>
 					{% endfor %}
 				</tbody>

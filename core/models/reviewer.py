@@ -1,14 +1,9 @@
 from django.db import models
 from django.db import IntegrityError
 from .user import User, UserManager
-
-# choices for module_code field.
-# TEMPORARY, this should pull all module codes from the database
-MODULE_CHOICES = (
-    ('CM1101', 'CM1101'),
-    ('CM1102', 'CM1102'),
-    ('CM1103', 'CM1103')
-)
+from .module import Module
+import logging
+logger = logging.getLogger(__name__)
 
 class ReviewerManager(object):
     """
@@ -78,11 +73,11 @@ class Reviewer(models.Model):
     """
     Model to represent reviewers
     """
-    module_code = models.CharField(
-        max_length=6,
-        unique=True,
-        choices=MODULE_CHOICES,
-        default='CM1101'
+
+    module_code = models.ForeignKey(
+        Module,
+        on_delete=None,
+        db_column = 'module_code'
     )
 
     reviewer_user = models.OneToOneField(User)
