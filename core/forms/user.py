@@ -20,13 +20,16 @@ class UserPermissionsForm(forms.ModelForm):
     is_year_tutor = forms.BooleanField(required=False, widget=CheckboxInput(
         attrs=checkbox_attr))
 
+    is_module_reviewer = forms.BooleanField(required=False, widget=CheckboxInput(
+        attrs=checkbox_attr))
+
     is_admin = forms.BooleanField(required=False, widget=CheckboxInput(
         attrs=checkbox_attr))
 
     class Meta:
         model = User
-        fields = ('is_module_leader', 'is_office_admin', 'is_year_tutor',
-                  'is_admin')
+        fields = ('is_module_leader', 'is_office_admin', 'is_year_tutor', 
+                  'is_module_reviewer', 'is_admin')
 
 
 class UserDetailsForm(forms.ModelForm):
