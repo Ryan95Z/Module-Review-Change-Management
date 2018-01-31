@@ -88,3 +88,22 @@ def range_last_item(_range):
     array or range to be extracted
     """
     return _range[-1]
+
+
+@register.simple_tag
+def create_get_url(query, value, urlencode):
+    """
+    Tag that will generate the get query params for
+    anchor tags. Primarly used for continuing pagination
+    when there is a search in the list view
+    """
+    params = urlencode.split("&")
+    query_str = "{}={}".format(query, value)
+
+    # remove the existing query from the urlencode if it exists
+    filter_params = list(filter(lambda x: x.split("=")[0] != query, params))
+
+    # add the query that is needed into list
+    filter_params.insert(0, query_str)
+    url = "?{}".format("&".join(filter_params))
+    return url

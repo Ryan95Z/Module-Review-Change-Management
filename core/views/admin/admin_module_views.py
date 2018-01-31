@@ -5,11 +5,30 @@ from django.shortcuts import render
 
 from core.views.mixins import AdminTestMixin
 from core.models import Module
+from core.forms import SearchForm
+
+from itertools import chain
 
 
 class AdminModuleListView(AdminTestMixin, ListView):
     model = Module
-    paginate_by = 10
+    paginate_by = 2
+
+    def get_queryset(self):
+        search = self.request.GET.get('search', "")
+        if len(search) > 0:
+            # if we have a search, then get all objects
+            # that meet it.
+            object_list = self.model.objects.filter(
+                module_code__contains=search)
+            return object_list
+        return super(AdminModuleListView, self).get_queryset()
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(
+            AdminModuleListView, self).get_context_data(*args, **kwargs)
+        context['search_form'] = SearchForm
+        return context
 
 
 class AdminModuleCreateView(AdminTestMixin, CreateView):
