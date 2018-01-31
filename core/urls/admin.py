@@ -28,6 +28,14 @@ urlpatterns = [
     url(r'^tutors/(?P<pk>[0-9]+)/$', login_required(
             AdminYearTutorUpdateView.as_view()), name="update_tutor"),
 
+    # reviewer urls
+    url(r'^reviewers/$', login_required(
+        AdminReviewerListView.as_view()), name = 'all_reviewers'),
+    url(r'^reviewers/new/', login_required(
+        AdminReviewerCreateView.as_view()), name='new_reviewer'),
+    url(r'^reviewers/(?P<pk>[0-9]+)/$', login_required(
+        AdminReviewerUpdateView.as_view()), name="update_reviewer"),
+
     # module urls
     url(r'^modules/$', login_required(
         AdminModuleListView.as_view()), name='all_modules'),
