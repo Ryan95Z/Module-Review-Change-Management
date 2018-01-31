@@ -4,7 +4,7 @@ from .user import User, UserManager
 
 # choices for module_code field.
 # TEMPORARY, this should pull all module codes from the database
-YEAR_CHOICES = (
+MODULE_CHOICES = (
     ('CM1101', 'CM1101'),
     ('CM1102', 'CM1102'),
     ('CM1103', 'CM1103')
@@ -34,7 +34,7 @@ class ReviewerManager(object):
         model = self.__create_model(module_code, user)
 
         # set the permissions
-        user.is_reviewer = True
+        user.is_module_reviewer = True
         user.save()
         return model
 
@@ -52,7 +52,7 @@ class ReviewerManager(object):
             return None
 
         # update user permissions now the model has been created.
-        user.is_reviewer = True
+        user.is_module_reviewer = True
         user.save()
         return model
 
