@@ -14,6 +14,7 @@ class UserListView(AdminTestMixin, ListView):
     AdminTestMixin to check that only admins can access this view.
     """
     model = User
+    paginate_by = 10
 
 
 class AdminNewUserView(AdminTestMixin, CreateView):

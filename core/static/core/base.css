@@ -7,6 +7,12 @@ body{
 	padding-top: 3.5em;
 }
 
+#footer {
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+}
+
 .navbar{
 	border-bottom: 3px solid #4d4d4d;
 }
