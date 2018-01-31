@@ -12,7 +12,7 @@ from itertools import chain
 
 class AdminModuleListView(AdminTestMixin, ListView):
     model = Module
-    paginate_by = 2
+    paginate_by = 10
 
     def get_queryset(self):
         search = self.request.GET.get('search', "")
@@ -20,7 +20,7 @@ class AdminModuleListView(AdminTestMixin, ListView):
             # if we have a search, then get all objects
             # that meet it.
             object_list = self.model.objects.filter(
-                module_code__contains=search)
+                module_name__contains=search)
             return object_list
         return super(AdminModuleListView, self).get_queryset()
 
