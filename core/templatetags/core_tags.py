@@ -53,7 +53,6 @@ def pagination_range(current_page: int, end_page: int):
         if cp_start >= 3 and cp_end >= 3:
             start = current_page - 1
             end = current_page + 1
-
             show_start = True
             show_end = True
 
@@ -61,7 +60,6 @@ def pagination_range(current_page: int, end_page: int):
         if cp_start < 3:
             start = 1
             end = 4
-
             show_start = False
             show_end = True
 
@@ -69,7 +67,6 @@ def pagination_range(current_page: int, end_page: int):
         if cp_end < 3:
             start = end_page - 3
             end = end_page
-
             show_start = True
             show_end = False
 

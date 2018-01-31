@@ -2,12 +2,11 @@ from django.urls import reverse
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import render
+from django.db.models import Q
 
 from core.views.mixins import AdminTestMixin
 from core.models import Module
 from core.forms import SearchForm
-
-from itertools import chain
 
 
 class AdminModuleListView(AdminTestMixin, ListView):
@@ -15,12 +14,18 @@ class AdminModuleListView(AdminTestMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
+        """
+        Returns the query set for the view. If we have a search
+        then it will return items based of the seach. Otherwise,
+        it will return all objects.
+        """
         search = self.request.GET.get('search', "")
         if len(search) > 0:
-            # if we have a search, then get all objects
-            # that meet it.
+            # search for modules by the name or code
             object_list = self.model.objects.filter(
-                module_name__contains=search)
+                Q(module_name__icontains=search) |
+                Q(module_code__icontains=search)
+            )
             return object_list
         return super(AdminModuleListView, self).get_queryset()
 
