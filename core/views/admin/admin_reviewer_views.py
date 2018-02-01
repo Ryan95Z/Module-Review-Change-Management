@@ -1,6 +1,6 @@
 from django.urls import reverse
 from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render
 
 from core.views.mixins import AdminTestMixin
@@ -69,3 +69,13 @@ class AdminReviewerUpdateView(AdminTestMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('all_reviewers')
+
+class AdminReviewerDeleteView(AdminTestMixin, DeleteView):
+    """
+    View to delete and existing reviewer
+    """
+    model = Reviewer
+
+    def get_success_url(self):
+        return reverse("all_reviewers")
+

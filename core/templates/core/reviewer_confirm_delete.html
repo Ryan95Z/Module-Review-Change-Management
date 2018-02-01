@@ -1,0 +1,14 @@
+{% extends 'core/main.html' %}
+{% load core_tags %}
+
+{% block title %}
+	Module Reviewers 
+{% endblock %}
+
+{% block main %}
+	<!--Placeholder-->
+    <form action="" method="post">{% csrf_token %}
+        <p>Are you sure you want to delete "{{ object }}"?</p>
+        <input type="submit" value="Confirm" />
+    </form>
+{% endblock %}
