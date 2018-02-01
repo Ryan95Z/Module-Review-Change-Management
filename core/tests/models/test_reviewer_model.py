@@ -99,8 +99,7 @@ class ReviewerManagerTests(TestCase):
 
     def test_create_reviewer_with_no_user(self):
         """
-        Test case for checking that a reviewer cannot be
-        created if there is no user provided.
+        Check that a model will not be created without a user
         """
         module = self.module
         with self.assertRaises(ValueError):
@@ -108,8 +107,7 @@ class ReviewerManagerTests(TestCase):
 
     def test_create_reviewer_with_no_module(self):
         """
-        Test case for checking that an invaid string
-        for module_code will not create a model.
+        Check that a model will not be created without a module
         """
         with self.assertRaises(ValueError):
             self.manager.create_reviewer(None, self.user)
