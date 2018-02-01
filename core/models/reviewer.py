@@ -2,8 +2,6 @@ from django.db import models
 from django.db import IntegrityError
 from .user import User, UserManager
 from .module import Module
-import logging
-logger = logging.getLogger(__name__)
 
 class ReviewerManager(object):
     """
@@ -13,7 +11,7 @@ class ReviewerManager(object):
         self.user_manager = UserManager()
         self.user_manager.model = User
 
-    def create_new_reviewer(self, module_code, username, first_name, last_name,
+    def create_new_reviewer(self, module, username, first_name, last_name,
                          email, password=None):
 
         # create the basic user
@@ -26,23 +24,23 @@ class ReviewerManager(object):
         )
 
         # create the reviewer model
-        model = self.__create_model(module_code, user)
+        model = self.__create_model(module, user)
 
         # set the permissions
         user.is_module_reviewer = True
         user.save()
         return model
 
-    def create_reviewer(self, module_code, user=None):
+    def create_reviewer(self, module, user=None):
         """
         Method to create a reviewer from an existing user.
-        Will configure the user permissions to be a year tutor.
+        Will configure the user permissions to be a reviewer.
         """
         if user is None:
             raise ValueError("Must select a user")
 
         # create the reviewer
-        model = self.__create_model(module_code, user)
+        model = self.__create_model(module, user)
         if model is None:
             return None
 
@@ -51,7 +49,7 @@ class ReviewerManager(object):
         user.save()
         return model
 
-    def __create_model(self, module_code, user):
+    def __create_model(self, module, user):
         # Currently the module code is associated with the user via foreign key, which isn't one to one
         # Need to discuss reviewer access
         """
@@ -59,14 +57,14 @@ class ReviewerManager(object):
         Could raise the Django IntegrityError if one
         to one relationship is violated.
         """
-        if len(module_code) <= 0:
-            raise ValueError("module_code must be a string greater than 0")
+        if module is None:
+            raise ValueError("A module must be included")
         try:
             reviewer = self.model.objects.create(
-                module_code=module_code,
+                module=module,
                 reviewer_user=user
             )
-            return tutor
+            return reviewer
         except IntegrityError:
             return None
 
@@ -76,18 +74,13 @@ class Reviewer(models.Model):
     Model to represent reviewers
     """
 
-    module_code = models.ForeignKey(
-        Module,
-        on_delete=None,
-        db_column = 'module_code'
-    )
-
+    module = models.ForeignKey(Module, on_delete=None)
     reviewer_user = models.OneToOneField(User)
 
     objects = ReviewerManager()
 
     def __str__(self):
-        return "{} {}".format(self.get_reviewer_name(), self.module_code)
+        return "{} {}".format(self.get_reviewer_name(), self.module)
 
     def get_reviewer_name(self):
         """
@@ -109,4 +102,4 @@ class Reviewer(models.Model):
         return self.reviewer_user.id
 
     class Meta:
-        ordering = ['module_code']
+        ordering = ['module']

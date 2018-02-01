@@ -21,7 +21,7 @@ class AdminReviewerCreateView(AdminTestMixin, CreateView):
     View to create reviewer
     """
     model = Reviewer
-    fields = ['module_code', 'reviewer_user']
+    fields = ['module', 'reviewer_user']
 
     def get_form(self, *args, **kwargs):
         form = super(AdminReviewerCreateView, self).get_form(*args, **kwargs)
@@ -48,7 +48,7 @@ class AdminReviewerUpdateView(AdminTestMixin, UpdateView):
     View to update existing reviewer
     """
     model = Reviewer
-    fields = ['module_code', 'reviewer_user']
+    fields = ['module', 'reviewer_user']
 
     def get_form(self, *args, **kwargs):
         form = super(AdminReviewerUpdateView, self).get_form(*args, **kwargs)
