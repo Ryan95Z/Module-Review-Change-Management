@@ -1,22 +1,22 @@
 from django.core.urlresolvers import reverse
-from core.tests.common_test_utils import LoggedInTestCase
+from core.tests.views.admin_views.admin_test_case import AdminViewTestCase
 from core.models import User
 
 
-class TestAdminUpdateUserPermissionsView(LoggedInTestCase):
+class TestAdminUpdateUserPermissionsView(AdminViewTestCase):
     def setUp(self):
         super(TestAdminUpdateUserPermissionsView, self).setUp()
         self.kwargs = {'pk': self.admin.id}
         self.url = reverse('edit_user', kwargs=self.kwargs)
-        session = self.client.session
-        session['username'] = "admin"
-        session.save()
 
     def test_get_update_permission_view(self):
         """
         Test case for accessing the view as an admin
         """
-        login = self.client.login(username="admin", password="password")
+        login = self.client.login(
+            username=self.admin.username,
+            password=self.admin_password
+        )
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, 200)
 

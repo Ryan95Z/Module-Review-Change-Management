@@ -1,9 +1,9 @@
 from django.core.urlresolvers import reverse
-from core.tests.common_test_utils import LoggedInTestCase
+from core.tests.views.admin_views.admin_test_case import AdminViewTestCase
 from core.models import User
 
 
-class UserListViewTest(LoggedInTestCase):
+class UserListViewTest(AdminViewTestCase):
     """
     Test case for testing the UserListView
     """
@@ -17,10 +17,10 @@ class UserListViewTest(LoggedInTestCase):
         Test to check that if we are logged in as
         a admin, then we can access the view.
         """
-        session = self.client.session
-        session['username'] = "admin"
-        session.save()
-        login = self.client.login(username="admin", password="password")
+        login = self.client.login(
+            username=self.admin.username,
+            password=self.admin_password
+        )
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, 200)
 

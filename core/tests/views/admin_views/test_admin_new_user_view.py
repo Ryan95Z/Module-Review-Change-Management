@@ -1,23 +1,23 @@
 from django.core.urlresolvers import reverse
-from core.tests.common_test_utils import LoggedInTestCase
+from core.tests.views.admin_views.admin_test_case import AdminViewTestCase
 
 
-class TestAdminNewUserView(LoggedInTestCase):
+class TestAdminNewUserView(AdminViewTestCase):
     """
     Test case for AdminNewUserView
     """
     def setUp(self):
         super(TestAdminNewUserView, self).setUp()
         self.url = reverse("new_user")
-        session = self.client.session
-        session['username'] = "admin"
-        session.save()
 
     def test_get_new_user_view(self):
         """
         Test to get the form if logged in as an admin
         """
-        self.client.login(username="admin", password="password")
+        self.client.login(
+            username=self.admin.username,
+            password=self.admin_password
+        )
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, 200)
 

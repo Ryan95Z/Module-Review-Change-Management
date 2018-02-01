@@ -1,25 +1,28 @@
 from django.core.urlresolvers import reverse
-from core.tests.common_test_utils import LoggedInTestCase
+from core.tests.views.admin_views.admin_test_case import AdminViewTestCase
 from core.models import YearTutorManager, YearTutor, User
 
 
-class AdminYearTutorCreateViewTest(LoggedInTestCase):
+class AdminYearTutorCreateViewTest(AdminViewTestCase):
+    """
+    Test case for AdminYearTutorCreateView
+    """
     def setUp(self):
         super(AdminYearTutorCreateViewTest, self).setUp()
+        self.url = reverse('new_tutor')
+
         # update admin user permissons for this test
         self.admin.is_year_tutor = True
         self.admin.save()
-
-        self.url = reverse('new_tutor')
-        session = self.client.session
-        session['username'] = self.admin.username
-        session.save()
 
     def test_get_tutor_create_view(self):
         """
         Test case for accessing the view
         """
-        login = self.client.login(username="admin", password="password")
+        login = self.client.login(
+            username=self.admin.username,
+            password=self.admin_password
+        )
         response = self.client.get(self.url)
         context = response.context
 
