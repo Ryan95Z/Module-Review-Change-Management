@@ -52,6 +52,8 @@ class ReviewerManager(object):
         return model
 
     def __create_model(self, module_code, user):
+        # Currently the module code is associated with the user via foreign key, which isn't one to one
+        # Need to discuss reviewer access
         """
         Private method to actually create the model.
         Could raise the Django IntegrityError if one
