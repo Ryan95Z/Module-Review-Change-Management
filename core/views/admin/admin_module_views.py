@@ -1,7 +1,6 @@
 from django.urls import reverse
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
-from django.shortcuts import render
 from django.db.models import Q
 
 from core.views.mixins import AdminTestMixin
