@@ -9,14 +9,16 @@ class ReviewerListViewTests(LoggedInTestCase):
         super(ReviewerListViewTests, self).setUp()
         self.url = reverse('all_reviewers')
 
+        session = self.client.session
+        session['username'] = self.admin.username
+        session.save()
+
     def test_get_reviewer_list_view(self):
         """
         We should be able to access the view if we
         are logged in as admin
         """
-        session = self.client.session
-        session['username'] = "admin"
-        session.save()
+
         login = self.client.login(username="admin", password="password")
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, 200)
