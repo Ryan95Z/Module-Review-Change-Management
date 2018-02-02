@@ -99,6 +99,7 @@ class User(AbstractBaseUser):
     is_module_leader = models.BooleanField(default=False)
     is_office_admin = models.BooleanField(default=False)
     is_year_tutor = models.BooleanField(default=False)
+    is_module_reviewer = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
 
     # Django flags for fields

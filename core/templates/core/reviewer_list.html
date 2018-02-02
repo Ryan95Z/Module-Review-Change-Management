@@ -1,0 +1,38 @@
+{% extends 'core/main.html' %}
+
+{% block title %}
+	Module Reviewers 
+{% endblock %}
+
+{% block main %}
+	<div class="row">
+		<div class="col-md-12">
+			<h1>Module Reviewers <span class="h-sub-action"><a class="btn btn-primary" href="{% url 'new_reviewer' %}">New Module Reviewer</a></span></h1>
+			{% if object_list|length < 1 %}
+				<p class="p-msg">There are currently no module reviewers</p>
+			{% else %}
+				<table class="table table-bordered table-dark">
+				<thead>
+					<tr>
+						<th scope="col">Username</th>
+						<th scope="col">Name</th>
+						<th scope="col">Module Code</th>
+						<th scope="col">Update Reviewer</th>
+						<th scope="col">Delete Reviewer</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for reviewer in object_list %}
+						<tr>
+							<td>{{ reviewer.get_reviewer_username }}</td>
+							<td>{{ reviewer.get_reviewer_name }}</td>
+							<td>{{ reviewer.module.module_code }}</td>
+							<td><a href="{% url 'update_reviewer' reviewer.pk %}" class="btn btn-primary btn-sm">Update</a></td>
+							<td><a href="{% url 'delete_reviewer' reviewer.pk %}" class="btn btn-primary btn-sm">Delete</a></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}
