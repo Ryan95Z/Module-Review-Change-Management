@@ -160,15 +160,36 @@ class ReviewerTests(TestCase):
         Test case to check that the model
         is valid with expected data.
         """
-        self.model.objects.create(
+        reviewer = self.model.objects.create(
             module=self.module,
             reviewer_user=self.user
         )
-
-        reviewer = Reviewer.objects.get(pk=1)
 
         self.assertEqual(reviewer.module, self.module)
         self.assertEquals(reviewer.get_reviewer_name(), self.user.get_full_name())
         self.assertEquals(reviewer.get_reviewer_username(), self.user.username)
         self.assertEquals(reviewer.get_reviewer_id(), self.user.id)
+
+    def test_reviewer_cascade_deleted_module(self):
+        """
+        If the module is deleted, the reviewer should
+        also be deleted.
+        """
+
+        # First create the reviewer and ensure that it was actuall created
+        reviewer = self.model.objects.create(
+            module=self.module,
+            reviewer_user=self.user
+        )
+        self.assertEqual(reviewer.module, self.module)
+
+        # Then delete the module and check if the reviewer was also deleted
+        self.module.delete()
+
+        self.assertIsNone(self.module)
+        self.assertIsNone(reviewer)
+
+
+
+
 

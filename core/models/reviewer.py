@@ -50,13 +50,6 @@ class ReviewerManager(object):
         return model
 
     def __create_model(self, module, user):
-        # Currently the module code is associated with the user via foreign key, which isn't one to one
-        # Need to discuss reviewer access
-        """
-        Private method to actually create the model.
-        Could raise the Django IntegrityError if one
-        to one relationship is violated.
-        """
         if module is None:
             raise ValueError("A module must be included")
         try:
@@ -73,9 +66,8 @@ class Reviewer(models.Model):
     """
     Model to represent reviewers
     """
-
-    module = models.ForeignKey(Module, on_delete=None)
-    reviewer_user = models.OneToOneField(User)
+    module = models.ForeignKey(Module, on_delete=models.CASCADE)
+    reviewer_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     objects = ReviewerManager()
 

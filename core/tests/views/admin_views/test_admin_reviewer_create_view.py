@@ -87,7 +87,7 @@ class ReviewerCreateViewTests(LoggedInTestCase):
         Test request to check that invalid data is not processed
         """
         data = {
-            'module': 1,
+            'module': 1101,
             'reviewer_user': self.admin.username
         }
 
