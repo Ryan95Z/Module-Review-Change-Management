@@ -1,29 +1,27 @@
 from django.core.urlresolvers import reverse
-from core.tests.common_test_utils import LoggedInTestCase
+from core.tests.views.admin_views.admin_test_case import AdminViewTestCase
 from core.models import YearTutorManager, YearTutor, User
 
 
-class AdminYearTutorCreateViewTest(LoggedInTestCase):
+class AdminYearTutorCreateViewTest(AdminViewTestCase):
+    """
+    Test case for AdminYearTutorCreateView
+    """
     def setUp(self):
         super(AdminYearTutorCreateViewTest, self).setUp()
+        self.url = reverse('new_tutor')
+
         # update admin user permissons for this test
         self.admin.is_year_tutor = True
         self.admin.save()
-
-        self.url = reverse('new_tutor')
-        session = self.client.session
-        session['username'] = self.admin.username
-        session.save()
 
     def test_get_tutor_create_view(self):
         """
         Test case for accessing the view
         """
-        login = self.client.login(username="admin", password="password")
-        response = self.client.get(self.url)
+        response = self.run_get_view(self.url)
         context = response.context
 
-        self.assertEquals(response.status_code, 200)
         self.assertEquals(context['form_url'], self.url)
         self.assertEquals(context['form_type'], 'Create')
 
@@ -31,19 +29,13 @@ class AdminYearTutorCreateViewTest(LoggedInTestCase):
         """
         Test case for checking non-admin users can access view
         """
-        self.client.force_login(self.user)
-        response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 302)
-        self.assertEquals(response.url, reverse('dashboard'))
+        self.run_get_view_incorrect_access(self.url)
 
     def test_get_tutor_create_view_not_logged_in(self):
         """
         Test case for non-logged in user
         """
-        next_url = reverse('login') + ("?next=" + self.url)
-        response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 302)
-        self.assertEquals(response.url, next_url)
+        self.run_get_view_not_logged_in(self.url)
 
     def test_valid_post_create_view(self):
         """
@@ -54,9 +46,7 @@ class AdminYearTutorCreateViewTest(LoggedInTestCase):
             'year_tutor_user': self.admin.id
         }
 
-        self.client.force_login(self.admin)
-        response = self.client.post(self.url, data)
-        self.assertEquals(response.status_code, 302)
+        response = self.run_valid_post_view(self.url, data)
         self.assertEquals(response.url, reverse('all_tutors'))
 
     def test_valid_post_with_exsiting_user(self):
@@ -78,10 +68,7 @@ class AdminYearTutorCreateViewTest(LoggedInTestCase):
             'year_tutor_user': self.user.id
         }
 
-        self.client.force_login(self.admin)
-        response = self.client.post(self.url, data)
-        context = response.context
-        self.assertEquals(response.status_code, 200)
+        context = self.run_invalid_post_view(self.url, data).context
         self.assertEquals(context['form_type'], 'Create')
 
         # check that an error was provided
@@ -98,8 +85,5 @@ class AdminYearTutorCreateViewTest(LoggedInTestCase):
             'year_tutor_user': self.admin.username
         }
 
-        self.client.force_login(self.admin)
-        response = self.client.post(self.url, data)
-        context = response.context
-        self.assertEquals(response.status_code, 200)
+        context = self.run_invalid_post_view(self.url, data).context
         self.assertEquals(context['form_type'], 'Create')

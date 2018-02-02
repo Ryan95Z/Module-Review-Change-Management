@@ -44,6 +44,15 @@
             {% block main %}
             {% endblock %}
             {% include "core/misc/messages.html" %}
+            <div class="row" id="footer">
+              <div class="col-12">
+                  {% if is_paginated %}
+                    {% include "core/misc/pagination.html" %}
+                  {% endif %}
+                  {% block footer %}
+                  {% endblock %}
+              </div>
+            </div>
       </div>
     </div>
   </div>
