@@ -95,3 +95,4 @@ class Reviewer(models.Model):
 
     class Meta:
         ordering = ['module']
+        unique_together = ('module', 'reviewer_user')
