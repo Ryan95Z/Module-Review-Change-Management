@@ -24,31 +24,20 @@ class AdminYearTutorUpdateViewTest(AdminViewTestCase):
         """
         Test case for getting the view
         """
-        self.client.login(
-            username=self.admin.username,
-            password=self.admin_password
-        )
-        response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.run_get_view(self.url)
 
     def test_get_tutor_update_view_incorrect_access(self):
         """
         Test case on accessing the view with incorrect access
         """
-        self.client.force_login(self.user)
-        response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 302)
-        self.assertEquals(response.url, reverse('dashboard'))
+        self.run_get_view_incorrect_access(self.url)
 
     def test_get_tutor_update_view_not_logged_in(self):
         """
         Test case for user that is not logged in when
         acessing the view.
         """
-        next_url = reverse('login') + ("?next=" + self.url)
-        response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 302)
-        self.assertEquals(response.url, next_url)
+        self.run_get_view_not_logged_in(self.url)
 
     def test_valid_post_update_view(self):
         """
@@ -59,9 +48,7 @@ class AdminYearTutorUpdateViewTest(AdminViewTestCase):
             'year_tutor_user': self.user.id
         }
 
-        self.client.force_login(self.admin)
-        response = self.client.post(self.url, data)
-        self.assertEquals(response.status_code, 302)
+        response = self.run_valid_post_view(self.url, data)
         self.assertEquals(response.url, reverse('all_tutors'))
 
         updated_tutor = YearTutor.objects.get(id=self.tutor.pk)
@@ -93,19 +80,13 @@ class AdminYearTutorUpdateViewTest(AdminViewTestCase):
             'year_tutor_user': self.user.id
         }
 
-        self.client.force_login(self.admin)
-        # adjust request url to fit tmp_tutor
-        response = self.client.post(
-            reverse('update_tutor', kwargs={'pk': tmp_tutor.pk}),
-            data
-        )
+        url = reverse('update_tutor', kwargs={'pk': tmp_tutor.pk})
+        context = self.run_invalid_post_view(url, data).context
 
-        context = response.context
         # get errors from context
         form_errors = context['form'].errors.as_data()
         form_tutor_error = form_errors['year_tutor_user'][0].__str__()
 
-        self.assertEquals(response.status_code, 200)
         self.assertEquals(context['form_type'], 'Update')
         self.assertEquals(form_tutor_error, tutor_err)
 
@@ -119,16 +100,13 @@ class AdminYearTutorUpdateViewTest(AdminViewTestCase):
             'year_tutor_user': ''
         }
 
-        self.client.force_login(self.admin)
-        response = self.client.post(self.url, data)
+        context = self.run_invalid_post_view(self.url, data).context
 
-        context = response.context
         # get the errors from the view context
         form_errors = context['form'].errors.as_data()
         form_tutor_year_error = form_errors['tutor_year'][0].__str__()
         form_tutor_error = form_errors['year_tutor_user'][0].__str__()
 
-        self.assertEquals(response.status_code, 200)
         self.assertEquals(context['form_type'], 'Update')
         self.assertEquals(form_tutor_error, required_error)
         self.assertEquals(form_tutor_year_error, required_error)
@@ -142,6 +120,4 @@ class AdminYearTutorUpdateViewTest(AdminViewTestCase):
             'year_tutor_user': self.admin.username
         }
 
-        self.client.force_login(self.admin)
-        response = self.client.post(self.url, data)
-        self.assertEquals(response.status_code, 200)
+        self.run_invalid_post_view(self.url, data)

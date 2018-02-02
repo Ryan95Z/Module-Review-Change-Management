@@ -9,6 +9,9 @@ from core.forms import SearchForm
 
 
 class AdminModuleListView(AdminTestMixin, ListView):
+    """
+    View for listing all modules
+    """
     model = Module
     paginate_by = 10
 

@@ -13,30 +13,19 @@ class TestAdminUpdateUserPermissionsView(AdminViewTestCase):
         """
         Test case for accessing the view as an admin
         """
-        login = self.client.login(
-            username=self.admin.username,
-            password=self.admin_password
-        )
-        response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.run_get_view(self.url)
 
     def test_get_update_permission_view_with_incorrect_access(self):
         """
         Test case to check that non-admins cannot access the view
         """
-        self.client.force_login(self.user)
-        response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 302)
-        self.assertEquals(response.url, reverse('dashboard'))
+        self.run_get_view_incorrect_access(self.url)
 
     def test_get_update_permission_view_not_logged_in(self):
         """
         Test case to prevent non-logged in users from accessing it
         """
-        next_url = reverse('login') + ("?next=" + self.url)
-        response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 302)
-        self.assertEquals(response.url, next_url)
+        self.run_get_view_not_logged_in(self.url)
 
     def test_valid_post_update_permissions(self):
         """
@@ -52,9 +41,7 @@ class TestAdminUpdateUserPermissionsView(AdminViewTestCase):
         self.assertFalse(self.admin.is_module_leader)
         self.assertTrue(self.admin.is_admin)
 
-        self.client.force_login(self.admin)
-        response = self.client.post(self.url, data)
-        self.assertEquals(response.status_code, 302)
+        response = self.run_valid_post_view(self.url, data)
         self.assertEquals(response.url, reverse('all_users'))
 
         # check that the changes took place
