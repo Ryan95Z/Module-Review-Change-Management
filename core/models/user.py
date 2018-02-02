@@ -110,6 +110,9 @@ class User(AbstractBaseUser):
     # user manager
     objects = UserManager()
 
+    class Meta:
+        ordering = ['username']
+
     # Methods to access properties
     def __str__(self):
         return self.username

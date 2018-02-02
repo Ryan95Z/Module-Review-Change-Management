@@ -1,0 +1,61 @@
+{% load core_tags %}
+
+{% with limit=page_obj.paginator.page_range|range_last_item %}
+
+{% with pg=page_obj.number|pagination_range:limit %}
+
+	<nav aria-label="Page navigation example">
+	  	<ul class="pagination justify-content-center">
+	  	{% if page_obj.has_previous %}
+	  		<li class="page-item">
+  				<a class="page-link" href="{% create_get_url 'page' page_obj.previous_page_number request.GET.urlencode %}">Previous</a>
+			</li>
+	  	{% else %}
+	  		<li class="page-item disabled">
+  				<a class="page-link" href="#" tabindex="-1">Previous</a>
+			</li>
+		{% endif %}
+
+		{% if pg.show_start %}
+			<li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+			<li class="page-item disabled">
+  				<a class="page-link" href="#" tabindex="-1">...</a>
+			</li>
+		{% endif %}
+
+		{% for page in pg.pagination_range %}
+			{% if page_obj.number == page %}
+				<li class="page-item active">
+  					<a class="page-link" href="#">{{ page }}<span class="sr-only">(current)</span></a>
+				</li>
+			{% else %}
+				<li class="page-item">
+					<a class="page-link" href="{% create_get_url 'page' page request.GET.urlencode %}">{{ page }}</a>
+				</li>
+			{% endif %}
+		{% endfor %}
+
+		{% if pg.show_end %}
+			<li class="page-item disabled">
+  				<a class="page-link" href="#" tabindex="-1">...</a>
+			</li>
+			
+			<li class="page-item">
+				<a class="page-link" href="{% create_get_url 'page' limit request.GET.urlencode %}">{{ limit }}</a>
+			</li>
+			
+		{% endif %}
+
+	    {% if page_obj.has_next %}
+	    	<li class="page-item">
+  				<a class="page-link" href="{% create_get_url 'page' page_obj.next_page_number request.GET.urlencode %}">Next</a>
+			</li>
+	    {% else %}
+	  		<li class="page-item disabled">
+  				<a class="page-link" href="#" tabindex="-1">Next</a>
+			</li>
+		{% endif %}
+	  </ul>
+	</nav>
+{% endwith %}
+{% endwith %}
