@@ -41,6 +41,9 @@ class AdminUserListView(AdminTestMixin, ListView):
 
 
 class AdminNewUserView(AdminTestMixin, CreateView):
+    """
+    View for creating a new user
+    """
     model = User
     template_name_suffix = '_new_form'
     form_class = UserCreationForm
