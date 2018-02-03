@@ -171,24 +171,51 @@ class ReviewerTests(TestCase):
         self.assertEquals(reviewer.get_reviewer_username(), self.user.username)
         self.assertEquals(reviewer.get_reviewer_id(), self.user.id)
 
-    # def test_reviewer_cascade_deleted_module(self):
-    #     """
-    #     If the module is deleted, the reviewer should
-    #     also be deleted.
-    #     """
+    def test_reviewer_cascade_deleted_user(self):
+        """
+        If the user is deleted, the reviewer should
+        also be deleted.
+        """
 
-    #     # First create the reviewer and ensure that it was actuall created
-    #     reviewer = self.model.objects.create(
-    #         modules=self.module,
-    #         user=self.user
-    #     )
-    #     self.assertEqual(reviewer.module, self.module)
+        # First create the reviewer and ensure that it was actually created
+        reviewer = self.model.objects.create(
+            user=self.user
+        )
+        reviewer.modules.add(self.module)
+        reviewer.save()
+        reviewer_id = reviewer.id
 
-    #     # Then delete the module and check if the reviewer was also deleted
-    #     self.module.delete()
+        self.assertEqual(reviewer.modules.get(module_code="CM1101"), self.module)
 
-    #     self.assertIsNone(self.module)
-    #     self.assertIsNone(reviewer)
+        # Then delete the user and check if the reviewer was also deleted
+        self.user.delete()
+
+        with self.assertRaises(User.DoesNotExist):
+            User.objects.get(username="johndoe")
+
+        with self.assertRaises(Reviewer.DoesNotExist):
+            Reviewer.objects.get(id=reviewer_id)
+
+    def test_reviewer_cascade_deleted_module(self):
+        """
+        If a module is deleted, the reviewer should remain, but the said
+        module should not be associated.
+        """
+
+        # First create the reviewer and ensure that it was actually created
+        reviewer = self.model.objects.create(
+            user=self.user
+        )
+        reviewer.modules.add(self.module)
+        reviewer.save()
+        reviewer_id = reviewer.id
+        self.assertEqual(reviewer.modules.get(module_code="CM1101"), self.module)
+
+        self.module.delete()
+
+        self.assertEquals(reviewer.get_reviewer_name(), self.user.get_full_name())
+        with self.assertRaises(Module.DoesNotExist):
+            reviewer.modules.get(module_code="CM1101")
 
 
 
