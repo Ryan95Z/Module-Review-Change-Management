@@ -24,11 +24,10 @@ class AdminReviewerCreateView(AdminTestMixin, CreateView):
     form_class = ReviewerCreationForm
 
     def get_context_data(self, **kwargs):
-        kwargs = {'pk': self.object.id}
         context = super(
             AdminReviewerCreateView, self).get_context_data(**kwargs)
         # url for form action
-        context['form_url'] = reverse('create_reviewer', kwargs=kwargs)
+        context['form_url'] = reverse('new_reviewer', kwargs=kwargs)
         # button text
         context['form_type'] = 'Create'
         return context

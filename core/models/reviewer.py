@@ -6,6 +6,7 @@ from .module import Module
 class ReviewerManager(object):
     """
     Manager to assist in the creation of Reviewer models
+    Module(s) must be stored in a list
     """
     def __init__(self):
         self.user_manager = UserManager()
@@ -35,6 +36,7 @@ class ReviewerManager(object):
         """
         Method to create a reviewer from an existing user.
         Will configure the user permissions to be a reviewer.
+        Accepts a list of module objects and a user object
         """
         if user is None:
             raise ValueError("Must select a user")

@@ -60,7 +60,7 @@ class ReviewerManagerTests(TestCase):
 
         # create the model
         model = self.manager.create_new_reviewer(
-            module=module,
+            modules=[module],
             username=username,
             first_name=first_name,
             last_name=last_name,
@@ -68,11 +68,11 @@ class ReviewerManagerTests(TestCase):
             password=password
         )
 
-        self.assertEquals(model.module, module)
+        self.assertEquals(model.modules.get(module_code="CM1101"), module)
         self.assertEquals(model.get_reviewer_name(), "{} {}".format(first_name, last_name))
         self.assertEquals(model.get_reviewer_username(), username)
 
-        user = model.reviewer_user
+        user = model.user
         self.assertEquals(user.email, email)
         # check that manager set the permission to be true
         self.assertTrue(user.is_module_reviewer)
@@ -86,14 +86,14 @@ class ReviewerManagerTests(TestCase):
         # check permission is not already set
         self.assertFalse(self.user.is_module_reviewer)
 
-        model = self.manager.create_reviewer(module, self.user)
+        model = self.manager.create_reviewer([module], self.user)
 
-        self.assertEquals(model.module, module)
+        self.assertEquals(model.modules.get(module_code="CM1101"), module)
         self.assertEquals(model.get_reviewer_name(), self.user.get_full_name())
         self.assertEquals(model.get_reviewer_username(), self.user.username)
 
         # check that the permissions were updated
-        user = model.reviewer_user
+        user = model.user
         self.assertEquals(user.email, self.user.email)
         self.assertTrue(self.user.is_module_reviewer)
 
@@ -103,7 +103,7 @@ class ReviewerManagerTests(TestCase):
         """
         module = self.module
         with self.assertRaises(ValueError):
-            self.manager.create_reviewer(module, None)
+            self.manager.create_reviewer([module], None)
 
     def test_create_reviewer_with_no_module(self):
         """
@@ -161,33 +161,34 @@ class ReviewerTests(TestCase):
         is valid with expected data.
         """
         reviewer = self.model.objects.create(
-            module=self.module,
-            reviewer_user=self.user
+            user=self.user
         )
+        reviewer.modules.add(self.module)
+        reviewer.save()
 
-        self.assertEqual(reviewer.module, self.module)
+        self.assertEqual(reviewer.modules.get(module_code="CM1101"), self.module)
         self.assertEquals(reviewer.get_reviewer_name(), self.user.get_full_name())
         self.assertEquals(reviewer.get_reviewer_username(), self.user.username)
         self.assertEquals(reviewer.get_reviewer_id(), self.user.id)
 
-    def test_reviewer_cascade_deleted_module(self):
-        """
-        If the module is deleted, the reviewer should
-        also be deleted.
-        """
+    # def test_reviewer_cascade_deleted_module(self):
+    #     """
+    #     If the module is deleted, the reviewer should
+    #     also be deleted.
+    #     """
 
-        # First create the reviewer and ensure that it was actuall created
-        reviewer = self.model.objects.create(
-            module=self.module,
-            reviewer_user=self.user
-        )
-        self.assertEqual(reviewer.module, self.module)
+    #     # First create the reviewer and ensure that it was actuall created
+    #     reviewer = self.model.objects.create(
+    #         modules=self.module,
+    #         user=self.user
+    #     )
+    #     self.assertEqual(reviewer.module, self.module)
 
-        # Then delete the module and check if the reviewer was also deleted
-        self.module.delete()
+    #     # Then delete the module and check if the reviewer was also deleted
+    #     self.module.delete()
 
-        self.assertIsNone(self.module)
-        self.assertIsNone(reviewer)
+    #     self.assertIsNone(self.module)
+    #     self.assertIsNone(reviewer)
 
 
 
