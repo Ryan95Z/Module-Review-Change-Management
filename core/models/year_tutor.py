@@ -1,6 +1,6 @@
 from django.db import models
 from django.db import IntegrityError
-from .user import User, UserManager
+from core.models import User, UserManager
 
 # choices for tutor_year field in YearTutor model
 YEAR_CHOICES = (

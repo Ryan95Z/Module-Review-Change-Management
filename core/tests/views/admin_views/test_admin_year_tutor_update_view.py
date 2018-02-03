@@ -58,7 +58,7 @@ class AdminYearTutorUpdateViewTest(AdminViewTestCase):
         # assert that the year was updated
         self.assertEquals(data['tutor_year'], updated_tutor.tutor_year)
 
-    def test_valid_post_with_tutor_already_assigned(self):
+    def test_invalid_post_with_tutor_already_assigned(self):
         """
         Test case for asserting what happens if a year tutor
         is re-assigned when they have a year already applied to them.

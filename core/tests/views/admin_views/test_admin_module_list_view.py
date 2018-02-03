@@ -4,6 +4,9 @@ from core.models import Module
 
 
 class TestAdminModuleListView(AdminViewTestCase):
+    """
+    Unit test for AdminModuleListView
+    """
 
     def setUp(self):
         super(TestAdminModuleListView, self).setUp()
