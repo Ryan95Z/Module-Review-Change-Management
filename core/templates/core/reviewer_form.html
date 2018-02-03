@@ -8,7 +8,11 @@
 {% block main %}
 	<div class="row">
 		<div class="col-md-12">	
-			<h1>New Module Reviewer</h1>
+			{% if form_type == 'Create' %}
+				<h1>New Module Reviewer</h1>
+			{% else %}
+				<h1>Update Module Reviewer</h1>
+			{% endif %}
 			<form action="{{ form_url }}" method="POST">
 				{% csrf_token %}
 				{% for field in form %}
@@ -20,7 +24,7 @@
 				{% endfor %}
 				{{ form.non_field_errors }}
 				<button type="submit" class="btn btn-sm btn-primary">Create</button>
-				<a href="{% url 'all_reviewers' %}" class="btn btn-danger">Cancel</a>
+				<a href="{% url 'all_reviewers' %}" class="btn btn-sm btn-danger">Cancel</a>
 			</form>
 		</div>
 	</div>

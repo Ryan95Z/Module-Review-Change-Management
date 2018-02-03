@@ -23,7 +23,15 @@ class AdminReviewerCreateView(AdminTestMixin, CreateView):
     model = Reviewer
     form_class = ReviewerCreationForm
 
-    #fields = ['user', 'modules']
+    def get_context_data(self, **kwargs):
+        kwargs = {'pk': self.object.id}
+        context = super(
+            AdminReviewerCreateView, self).get_context_data(**kwargs)
+        # url for form action
+        context['form_url'] = reverse('create_reviewer', kwargs=kwargs)
+        # button text
+        context['form_type'] = 'Create'
+        return context
 
     def get_success_url(self):
         return reverse('all_reviewers')
@@ -34,7 +42,7 @@ class AdminReviewerUpdateView(AdminTestMixin, UpdateView):
     View to update existing reviewer
     """
     model = Reviewer
-    fields = ['modules', 'user']
+    fields = ['user', 'modules']
 
     def get_form(self, *args, **kwargs):
         form = super(AdminReviewerUpdateView, self).get_form(*args, **kwargs)
