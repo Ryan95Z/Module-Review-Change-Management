@@ -14,7 +14,8 @@ Contains all of the urls that are only for the admins. Includes
 
 urlpatterns = [
     # urls for accessing admin parts
-    url(r'^all/$', login_required(UserListView.as_view()), name='all_users'),
+    url(r'^all/$', login_required(
+        AdminUserListView.as_view()), name='all_users'),
     url(r'^all/edit/(?P<pk>[0-9]+)/$', login_required(
         AdminUpdateUserPermissions.as_view()), name='edit_user'),
     url(r'^all/new/', login_required(

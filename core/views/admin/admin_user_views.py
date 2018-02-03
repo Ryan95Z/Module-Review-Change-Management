@@ -8,7 +8,7 @@ from core.forms import UserPermissionsForm, UserCreationForm, SearchForm
 from core.models import User
 
 
-class UserListView(AdminTestMixin, ListView):
+class AdminUserListView(AdminTestMixin, ListView):
     """
     Generic view that will list all users. Inherits
     AdminTestMixin to check that only admins can access this view.
@@ -32,10 +32,10 @@ class UserListView(AdminTestMixin, ListView):
                 Q(last_name__icontains=search)
             )
             return object_list
-        return super(UserListView, self).get_queryset()
+        return super(AdminUserListView, self).get_queryset()
 
     def get_context_data(self, *args, **kwargs):
-        context = super(UserListView, self).get_context_data()
+        context = super(AdminUserListView, self).get_context_data()
         context['search_form'] = SearchForm
         return context
 
