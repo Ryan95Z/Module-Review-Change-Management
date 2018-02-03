@@ -11,7 +11,7 @@ class ReviewerManager(object):
         self.user_manager = UserManager()
         self.user_manager.model = User
 
-    def create_new_reviewer(self, module, username, first_name, last_name,
+    def create_new_reviewer(self, modules, username, first_name, last_name,
                          email, password=None):
 
         # create the basic user
@@ -24,14 +24,14 @@ class ReviewerManager(object):
         )
 
         # create the reviewer model
-        model = self.__create_model(module, user)
+        model = self.__create_model(modules, user)
 
         # set the permissions
         user.is_module_reviewer = True
         user.save()
         return model
 
-    def create_reviewer(self, module, user=None):
+    def create_reviewer(self, modules, user=None):
         """
         Method to create a reviewer from an existing user.
         Will configure the user permissions to be a reviewer.
@@ -40,7 +40,7 @@ class ReviewerManager(object):
             raise ValueError("Must select a user")
 
         # create the reviewer
-        model = self.__create_model(module, user)
+        model = self.__create_model(modules, user)
         if model is None:
             return None
 
@@ -49,14 +49,14 @@ class ReviewerManager(object):
         user.save()
         return model
 
-    def __create_model(self, module, user):
-        if module is None:
-            raise ValueError("A module must be included")
+    def __create_model(self, modules, user):
+        if modules is None:
+            raise ValueError("At least one module must be selected")
         try:
-            reviewer = self.model.objects.create(
-                module=module,
-                reviewer_user=user
-            )
+            reviewer = self.model.objects.create(user=user)
+            reviewer.save()
+            for module in modules:
+                reviewer.modules.add(module)
             return reviewer
         except IntegrityError:
             return None
@@ -66,33 +66,45 @@ class Reviewer(models.Model):
     """
     Model to represent reviewers
     """
-    module = models.ForeignKey(Module, on_delete=models.CASCADE)
-    reviewer_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    user = models.OneToOneField(User)
+    modules = models.ManyToManyField(Module)
 
     objects = ReviewerManager()
 
     def __str__(self):
-        return "{} {}".format(self.get_reviewer_name(), self.module)
+        return "{} {}".format(self.get_reviewer_name(), self.modules)
 
     def get_reviewer_name(self):
         """
         Method to get the reviewers full name
         """
-        return self.reviewer_user.get_full_name()
+        return self.user.get_full_name()
 
     def get_reviewer_username(self):
         """
         Method to get the username of the reviewer
         """
-        return self.reviewer_user.username
+        return self.user.username
 
     def get_reviewer_id(self):
         """
         Method to return the id of the user assigned
         to module.
         """
-        return self.reviewer_user.id
+        return self.user.id
+
+    def get_reviewer_modules_list(self):
+        """
+        Returns a comma seperated list of the modules which this user
+        is the reviewer of
+        """
+
+        module_list = []
+        for module in self.modules.all():
+            module_list.append(module.module_code)
+
+        return ", ".join(module_list)
 
     class Meta:
-        ordering = ['module']
-        unique_together = ('module', 'reviewer_user')
+        ordering = ['user']

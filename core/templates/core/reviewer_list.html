@@ -16,7 +16,7 @@
 					<tr>
 						<th scope="col">Username</th>
 						<th scope="col">Name</th>
-						<th scope="col">Module Code</th>
+						<th scope="col">Modules</th>
 						<th scope="col">Update Reviewer</th>
 						<th scope="col">Delete Reviewer</th>
 					</tr>
@@ -26,9 +26,9 @@
 						<tr>
 							<td>{{ reviewer.get_reviewer_username }}</td>
 							<td>{{ reviewer.get_reviewer_name }}</td>
-							<td>{{ reviewer.module.module_code }}</td>
+							<td>{{ reviewer.get_reviewer_modules_list}}</td>
 							<td><a href="{% url 'update_reviewer' reviewer.pk %}" class="btn btn-primary btn-sm">Update</a></td>
-							<td><a href="{% url 'delete_reviewer' reviewer.pk %}" class="btn btn-primary btn-sm">Delete</a></td>
+							<td><a href="{% url 'delete_reviewer' reviewer.pk %}" class="btn btn-danger btn-sm">Delete</a></td>
 						</tr>
 					{% endfor %}
 				</tbody>
