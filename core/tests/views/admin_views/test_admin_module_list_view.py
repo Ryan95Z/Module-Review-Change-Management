@@ -31,6 +31,9 @@ class TestAdminModuleListView(AdminViewTestCase):
         self.run_get_view_not_logged_in(self.url)
 
     def test_get_module_list_with_search(self):
+        """
+        Test case for searching the module list
+        """
         # create a 3 modules to test search
         Module.objects.create(
             module_code="CM3301",

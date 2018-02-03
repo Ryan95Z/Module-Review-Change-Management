@@ -32,3 +32,20 @@ class AdminUserListViewTest(AdminViewTestCase):
         then we are redirected to the login.
         """
         self.run_get_view_not_logged_in(self.url)
+
+    def test_get_user_list_with_search(self):
+        """
+        Test case for searching the user list
+        """
+        # test based on the 2 test users that have alreay been created
+        object_list = self.run_get_view(self.url).context['object_list']
+        self.assertEquals(2, object_list.count())
+
+        search = "user"
+        response = self.client.get(self.url, {'search': search})
+        self.assertEquals(response.status_code, 200)
+
+        # assert 1 is returned when looking searching
+        # for something specific.
+        object_list = response.context['object_list']
+        self.assertEquals(1, object_list.count())
