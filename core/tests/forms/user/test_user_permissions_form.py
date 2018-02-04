@@ -19,6 +19,7 @@ class TestUserPermissionsForm(TestCase):
             'is_module_leader': True,
             'is_office_admin': False,
             'is_year_tutor': False,
+            'is_module_reviewer': True,
             'is_admin': False
         }
 
@@ -29,6 +30,7 @@ class TestUserPermissionsForm(TestCase):
         self.assertTrue(form.cleaned_data['is_module_leader'])
         self.assertFalse(form.cleaned_data['is_office_admin'])
         self.assertFalse(form.cleaned_data['is_year_tutor'])
+        self.assertTrue(form.cleaned_data['is_module_reviewer'])
         self.assertFalse(form.cleaned_data['is_admin'])
         self.assertEquals(form.errors, {})
 
@@ -46,6 +48,7 @@ class TestUserPermissionsForm(TestCase):
         self.assertFalse(form.cleaned_data['is_module_leader'])
         self.assertFalse(form.cleaned_data['is_office_admin'])
         self.assertFalse(form.cleaned_data['is_year_tutor'])
+        self.assertFalse(form.cleaned_data['is_module_reviewer'])
         self.assertFalse(form.cleaned_data['is_admin'])
         self.assertEquals(form.errors, {})
 
@@ -66,5 +69,6 @@ class TestUserPermissionsForm(TestCase):
         self.assertTrue(form.cleaned_data['is_module_leader'])
         self.assertFalse(form.cleaned_data['is_office_admin'])
         self.assertFalse(form.cleaned_data['is_year_tutor'])
+        self.assertFalse(form.cleaned_data['is_module_reviewer'])
         self.assertTrue(form.cleaned_data['is_admin'])
         self.assertEquals(form.errors, {})
