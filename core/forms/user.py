@@ -31,7 +31,7 @@ class UserPermissionsForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('is_module_leader', 'is_office_admin', 'is_year_tutor', 
+        fields = ('is_module_leader', 'is_office_admin', 'is_year_tutor',
                   'is_module_reviewer', 'is_admin')
 
 
@@ -66,9 +66,9 @@ class UserCreationForm(UserDetailsForm, UserPermissionsForm):
         mail = UserPasswordEmail(user, password)
         mail.send()
 
-        # if commit:
-        #     user.save()
-        mail.send()
+        if commit:
+            user.save()
+            mail.send()
         return user
 
 

@@ -32,7 +32,7 @@ class UserPasswordEmail(Email):
     """
 
     # subject of the email
-    subject = "Module Management - User Account"
+    subject_title = "Module Management - User Account"
 
     # text template of the message that is sent to the user's email.
     # Has to be formated this way to prevent the extra space being
@@ -59,7 +59,7 @@ Admin
         )
 
         super(UserPasswordEmail, self).__init__(
-            self.subject,
+            self.subject_title,
             user.email,
             self.msg
         )

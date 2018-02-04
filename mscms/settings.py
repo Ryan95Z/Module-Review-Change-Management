@@ -127,4 +127,5 @@ AUTH_USER_MODEL = 'core.User'
 
 LOGIN_URL = reverse_lazy('login')
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
