@@ -3,6 +3,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms.widgets import TextInput, CheckboxInput
 from core.models import User
 
+# from django.core.mail import send_mail
+from core.utils.email import UserPasswordEmail
+
 
 class UserPermissionsForm(forms.ModelForm):
     """
@@ -60,8 +63,12 @@ class UserCreationForm(UserDetailsForm, UserPermissionsForm):
         password = User.objects.make_random_password()
         user.set_password(password)
 
+        mail = UserPasswordEmail(user, password)
+        mail.send()
+
         # if commit:
         #     user.save()
+        mail.send()
         return user
 
 
