@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse
 from core.tests.views.admin_views.admin_test_case import AdminViewTestCase
-from core.models import YearTutorManager, YearTutor, User
+from core.models import ProgrammeTutorManager, ProgrammeTutor, User
 
 
 class AdminYearTutorCreateViewTest(AdminViewTestCase):
@@ -42,8 +42,9 @@ class AdminYearTutorCreateViewTest(AdminViewTestCase):
         Test of valid create view
         """
         data = {
+            'programme_name': 'Computer Science',
             'tutor_year': "Year 1",
-            'year_tutor_user': self.admin.id
+            'programme_tutor_user': self.admin.id
         }
 
         response = self.run_valid_post_view(self.url, data)
@@ -54,18 +55,19 @@ class AdminYearTutorCreateViewTest(AdminViewTestCase):
         Test case for ensuring user cannot be applied to
         further years
         """
-        manager = YearTutorManager()
-        manager.model = YearTutor
+        manager = ProgrammeTutorManager()
+        manager.model = ProgrammeTutor
 
         # create a tutor
-        tutor = manager.create_tutor('Year 1', self.user)
+        tutor = manager.create_tutor('Computer Science', 'Year 1', self.user)
 
-        tutor_err = "['Year tutor with this Year tutor user already exists.']"
+        tutor_err = "['Programme tutor with this Programme tutor user already exists.']"
 
         # attempt to add user ad a tutor again
         data = {
+            'programme_name': 'Computer Science',
             'tutor_year': "Year 2",
-            'year_tutor_user': self.user.id
+            'programme_tutor_user': self.user.id
         }
 
         context = self.run_invalid_post_view(self.url, data).context
@@ -73,7 +75,7 @@ class AdminYearTutorCreateViewTest(AdminViewTestCase):
 
         # check that an error was provided
         form_errors = context['form'].errors.as_data()
-        tutor_error = form_errors['year_tutor_user'][0].__str__()
+        tutor_error = form_errors['programme_tutor_user'][0].__str__()
         self.assertEquals(tutor_error, tutor_err)
 
     def test_invalid_post_create_view(self):
@@ -81,8 +83,9 @@ class AdminYearTutorCreateViewTest(AdminViewTestCase):
         Test request to check that invalid data is not processed
         """
         data = {
+            'programme_name': 'Computer Science',
             'tutor_year': 1,
-            'year_tutor_user': self.admin.username
+            'programme_tutor_user': self.admin.username
         }
 
         context = self.run_invalid_post_view(self.url, data).context

@@ -76,7 +76,7 @@ class ProgrammeTutorManager(object):
             tutor = self.model.objects.create(
                 programme_name=programme_name,
                 tutor_year=tutor_year,
-                year_tutor_user=user
+                programme_tutor_user=user
             )
             return tutor
         except IntegrityError:
