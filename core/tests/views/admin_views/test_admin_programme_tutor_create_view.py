@@ -3,12 +3,12 @@ from core.tests.views.admin_views.admin_test_case import AdminViewTestCase
 from core.models import ProgrammeTutorManager, ProgrammeTutor, User
 
 
-class AdminYearTutorCreateViewTest(AdminViewTestCase):
+class AdminProgrammeTutorCreateViewTest(AdminViewTestCase):
     """
-    Test case for AdminYearTutorCreateView
+    Test case for AdminProgrammeTutorCreateView
     """
     def setUp(self):
-        super(AdminYearTutorCreateViewTest, self).setUp()
+        super(AdminProgrammeTutorCreateViewTest, self).setUp()
         self.url = reverse('new_tutor')
 
         # update admin user permissons for this test
@@ -63,7 +63,7 @@ class AdminYearTutorCreateViewTest(AdminViewTestCase):
 
         tutor_err = "['Programme tutor with this Programme tutor user already exists.']"
 
-        # attempt to add user ad a tutor again
+        # attempt to add user who is already an existing tutor
         data = {
             'programme_name': 'Computer Science',
             'tutor_year': "Year 2",
@@ -83,7 +83,7 @@ class AdminYearTutorCreateViewTest(AdminViewTestCase):
         Test request to check that invalid data is not processed
         """
         data = {
-            'programme_name': 'Computer Science',
+            'programme_name': 40540,
             'tutor_year': 1,
             'programme_tutor_user': self.admin.username
         }

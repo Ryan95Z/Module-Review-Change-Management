@@ -4,12 +4,12 @@ from core.models import (ProgrammeTutor, ProgrammeTutorManager,
                          User, UserManager)
 
 
-class YearTutorManagerTests(TestCase):
+class ProgrammeManagerTests(TestCase):
     """
     Test cases for ProgrammeTutorManager
     """
     def setUp(self):
-        super(YearTutorManagerTests, self).setUp()
+        super(ProgrammeManagerTests, self).setUp()
         self.manager = ProgrammeTutorManager()
         self.manager.model = ProgrammeTutor
 
@@ -48,6 +48,7 @@ class YearTutorManagerTests(TestCase):
             password=password
         )
 
+        self.assertEquals(model.programme_name, programme_name)
         self.assertEquals(model.tutor_year, tutor_year)
         self.assertEquals(model.get_tutor_name(), "{} {}".format(
             first_name, last_name))
@@ -60,7 +61,7 @@ class YearTutorManagerTests(TestCase):
 
     def test_create_model_existing_user(self):
         """
-        Test case for creating a year tutor from an existing
+        Test case for creating a programme tutor from an existing
         user model.
         """
         tutor_year = "Year 1"
@@ -73,6 +74,7 @@ class YearTutorManagerTests(TestCase):
         model = self.manager.create_tutor(
             programme_name, tutor_year, self.user)
 
+        self.assertEquals(model.programme_name, programme_name)
         self.assertEquals(model.tutor_year, tutor_year)
         self.assertEquals(model.get_tutor_name(), self.user.get_full_name())
         self.assertEquals(model.get_tutor_username(), self.user.username)
@@ -115,12 +117,12 @@ class YearTutorManagerTests(TestCase):
         self.assertEquals(tutor, None)
 
 
-class YearTutorTests(TestCase):
+class ProgrammeTutorTests(TestCase):
     """
-    Test cases for YearTutor
+    Test cases for ProgrammeTutor
     """
     def setUp(self):
-        super(YearTutorTests, self).setUp()
+        super(ProgrammeTutorTests, self).setUp()
         self.model = ProgrammeTutor
 
         user_manager = UserManager()
@@ -134,37 +136,44 @@ class YearTutorTests(TestCase):
             password="password"
         )
 
-    def test_valid_year_tutor(self):
+    def test_valid_programme_tutor(self):
         """
         Test case to check that the model
         is valid with expected data.
         """
+        name = "Computer Science"
+        year = "Year 1"
+
         self.model.objects.create(
-            programme_name="Computer Science",
-            tutor_year="Year 1",
+            programme_name=name,
+            tutor_year=year,
             programme_tutor_user=self.user
         )
 
         # test getting the model
         tutor = ProgrammeTutor.objects.get(pk=1)
 
-        self.assertEquals(tutor.programme_name, "Computer Science")
-        self.assertEquals(tutor.tutor_year, "Year 1")
+        # assert the model is correct
+        self.assertEquals(tutor.programme_name, name)
+        self.assertEquals(tutor.tutor_year, year)
         self.assertEquals(tutor.get_tutor_name(), self.user.get_full_name())
         self.assertEquals(tutor.get_tutor_username(), self.user.username)
         self.assertEquals(tutor.get_tutor_id(), self.user.id)
 
-    def test_year_tutor_one_to_one_error(self):
+    def test_programme_tutor_one_to_one_error(self):
         """
         Test case to see that one to one is maintained
         if user that is already assigned to a model
         is assigned again.
         """
 
+        name = "Computer Science"
+        year = "Year 1"
+
         # create a valid object first
         self.model.objects.create(
-            programme_name="Computer Science",
-            tutor_year="Year 1",
+            programme_name=name,
+            tutor_year=year,
             programme_tutor_user=self.user
         )
 
@@ -172,12 +181,12 @@ class YearTutorTests(TestCase):
         # a user that is already linked one to one
         with self.assertRaises(IntegrityError):
             self.model.objects.create(
-                programme_name="Computer Science",
-                tutor_year="Year 1",
+                programme_name=name,
+                tutor_year=year,
                 programme_tutor_user=self.user
             )
 
-    def test_year_tutor_with_random_tutor_string(self):
+    def test_programme_tutor_with_random_tutor_string(self):
         """
         Test case to see that model could handle
         a different year that is not in the choices
@@ -196,6 +205,7 @@ class YearTutorTests(TestCase):
             programme_tutor_user=self.user
         )
 
+        self.assertEquals(tutor.programme_name, programme)
         self.assertEquals(tutor.tutor_year, year)
         self.assertEquals(tutor.get_tutor_name(), self.user.get_full_name())
         self.assertEquals(tutor.get_tutor_username(), self.user.username)

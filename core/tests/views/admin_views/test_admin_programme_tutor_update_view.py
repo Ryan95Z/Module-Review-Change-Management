@@ -3,17 +3,18 @@ from core.tests.views.admin_views.admin_test_case import AdminViewTestCase
 from core.models import ProgrammeTutor, ProgrammeTutorManager
 
 
-class AdminYearTutorUpdateViewTest(AdminViewTestCase):
+class AdminProgrammeTutorUpdateViewTest(AdminViewTestCase):
     """
-    Test case for Admin Year Tutor Update View
+    Test case for Admin Programme Tutor Update View
     """
 
     # status code: 200 - Invalid form so user is direct back to it
     # status code: 302 - Form valid and user is re-directed
 
     def setUp(self):
-        super(AdminYearTutorUpdateViewTest, self).setUp()
-        # create a sample year tutor for tests
+        super(AdminProgrammeTutorUpdateViewTest, self).setUp()
+
+        # create a sample programme tutor for tests
         self.manager = ProgrammeTutorManager()
         self.manager.model = ProgrammeTutor
         self.tutor = self.manager.create_tutor(
@@ -58,6 +59,7 @@ class AdminYearTutorUpdateViewTest(AdminViewTestCase):
 
         # make sure they are the same objects
         self.assertEquals(updated_tutor.pk, self.tutor.pk)
+
         # assert that the year was updated
         self.assertEquals(data['tutor_year'], updated_tutor.tutor_year)
 
@@ -110,10 +112,12 @@ class AdminYearTutorUpdateViewTest(AdminViewTestCase):
 
         # get the errors from the view context
         form_errors = context['form'].errors.as_data()
+        form_tutor_name_error = form_errors['programme_name'][0].__str__()
         form_tutor_year_error = form_errors['tutor_year'][0].__str__()
         form_tutor_error = form_errors['programme_tutor_user'][0].__str__()
 
         self.assertEquals(context['form_type'], 'Update')
+        self.assertEquals(form_tutor_name_error, required_error)
         self.assertEquals(form_tutor_error, required_error)
         self.assertEquals(form_tutor_year_error, required_error)
 
