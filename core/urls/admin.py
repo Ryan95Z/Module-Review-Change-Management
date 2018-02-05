@@ -23,11 +23,11 @@ urlpatterns = [
 
     # year tutor urls
     url(r'^tutors/$', login_required(
-        AdminYearTutorListView.as_view()), name='all_tutors'),
+        AdminProgrammeTutorListView.as_view()), name='all_tutors'),
     url(r'^tutors/new/', login_required(
-        AdminYearTutorCreateView.as_view()), name='new_tutor'),
+        AdminProgrammeTutorCreateView.as_view()), name='new_tutor'),
     url(r'^tutors/(?P<pk>[0-9]+)/$', login_required(
-            AdminYearTutorUpdateView.as_view()), name="update_tutor"),
+        AdminProgrammeTutorUpdateView.as_view()), name="update_tutor"),
 
     # reviewer urls
     url(r'^reviewers/$', login_required(

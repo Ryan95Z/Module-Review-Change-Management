@@ -8,31 +8,33 @@ from core.forms import UserPermissionsForm, UserCreationForm
 from core.models import User, ProgrammeTutor
 
 
-class AdminYearTutorListView(AdminTestMixin, ListView):
+class AdminProgrammeTutorListView(AdminTestMixin, ListView):
     """
-    Generic view that lists all of the current year tutors
+    Generic view that lists all of the current programme tutors
     in the system.
     """
     model = ProgrammeTutor
 
 
-class AdminYearTutorCreateView(AdminTestMixin, CreateView):
+class AdminProgrammeTutorCreateView(AdminTestMixin, CreateView):
     """
-    View to create year tutor
+    View to create programme tutor
     """
     model = ProgrammeTutor
     fields = ['programme_name', 'tutor_year', 'programme_tutor_user']
 
     def get_form(self, *args, **kwargs):
-        form = super(AdminYearTutorCreateView, self).get_form(*args, **kwargs)
-        # limit drop down to only contain those with year tutor permission
-        form.fields['year_tutor_user'].queryset = User.objects.filter(
+        form = super(
+            AdminProgrammeTutorCreateView, self).get_form(*args, **kwargs)
+
+        # limit drop down to only contain those with programme tutor permission
+        form.fields['programme_tutor_user'].queryset = User.objects.filter(
             is_year_tutor=True)
         return form
 
     def get_context_data(self, **kwargs):
         context = super(
-            AdminYearTutorCreateView, self).get_context_data(**kwargs)
+            AdminProgrammeTutorCreateView, self).get_context_data(**kwargs)
         # url for form action
         context['form_url'] = reverse('new_tutor')
         # button text
@@ -43,16 +45,18 @@ class AdminYearTutorCreateView(AdminTestMixin, CreateView):
         return reverse('all_tutors')
 
 
-class AdminYearTutorUpdateView(AdminTestMixin, UpdateView):
+class AdminProgrammeTutorUpdateView(AdminTestMixin, UpdateView):
     """
-    View to update existing year tutor
+    View to update existing programme tutor
     """
     model = ProgrammeTutor
     fields = ['programme_name', 'tutor_year', 'programme_tutor_user']
 
     def get_form(self, *args, **kwargs):
-        form = super(AdminYearTutorUpdateView, self).get_form(*args, **kwargs)
-        # limit drop down to only contain those with year tutor permission
+        form = super(
+            AdminProgrammeTutorUpdateView, self).get_form(*args, **kwargs)
+
+        # limit drop down to only contain those with programme tutor permission
         form.fields['programme_tutor_user'].queryset = User.objects.filter(
             is_year_tutor=True)
         return form
@@ -60,7 +64,7 @@ class AdminYearTutorUpdateView(AdminTestMixin, UpdateView):
     def get_context_data(self, **kwargs):
         kwargs = {'pk': self.object.id}
         context = super(
-            AdminYearTutorUpdateView, self).get_context_data(**kwargs)
+            AdminProgrammeTutorUpdateView, self).get_context_data(**kwargs)
         # url for form action
         context['form_url'] = reverse('update_tutor', kwargs=kwargs)
         # button text
