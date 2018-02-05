@@ -59,11 +59,20 @@ class ReviewerDeleteTests(AdminViewTestCase):
         response = self.run_get_view(self.url)
         contains_form = False
         for template in response.templates:
-            print(template.name)
             if template.name == "core/reviewer_confirm_delete.html":
                 contains_form = True
                 break
         self.assertTrue(contains_form)
 
 
-    #def test_valid_post_reviewer_delete(self):
+    def test_valid_post_reviewer_delete(self):
+        """
+        If the view is requested with a post, the object should be deleted
+        and the user should be redirected to all_reviewers
+        """
+        reviewer_id = self.reviewer.id
+        data = {}
+        response = self.run_valid_post_view(self.url, data)
+        with self.assertRaises(Reviewer.DoesNotExist):
+            Reviewer.objects.get(id=reviewer_id)
+        self.assertEqual(response.url, reverse('all_reviewers'))

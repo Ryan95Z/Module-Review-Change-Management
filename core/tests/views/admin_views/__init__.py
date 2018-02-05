@@ -7,3 +7,5 @@ from .test_admin_year_tutor_update_view import *
 from .test_admin_module_list_view import *
 from .test_admin_reviewer_create_view import *
 from .test_admin_reviewer_list_view import *
+from .test_admin_reviewer_delete_view import *
+from .test_admin_reviewer_update_view import *

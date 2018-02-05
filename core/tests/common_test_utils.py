@@ -78,6 +78,18 @@ class ModuleTestCase(TestCase):
             module_leader = self.module_leader
         )
 
+        # Create a second test module
+        self.module_two = Module.objects.create(
+            module_code = "CMYYYY",
+            module_name = "Test Module 2",
+            module_credits = "10",
+            module_level = "L1",
+            module_year = "Year 1",
+            semester = "Autumn Semester",
+            delivery_language = "English",
+            module_leader = self.module_leader
+        )
+
 
 class BaseViewTestCase(LoggedInTestCase, ABC):
     """
