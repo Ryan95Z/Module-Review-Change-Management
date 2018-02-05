@@ -15,6 +15,9 @@ class ReviewerManager(object):
     def create_new_reviewer(self, modules, username, first_name, last_name,
                          email, password=None):
 
+        if not isinstance(modules, (list,)):
+            modules = [modules]
+
         # create the basic user
         user = self.user_manager.create_user(
             username=username,
@@ -38,8 +41,12 @@ class ReviewerManager(object):
         Will configure the user permissions to be a reviewer.
         Accepts a list of module objects and a user object
         """
+        if modules is None:
+            raise ValueError("At least one module must be selected")
         if user is None:
             raise ValueError("Must select a user")
+        if not isinstance(modules, (list,)):
+            modules = [modules]
 
         # create the reviewer
         model = self.__create_model(modules, user)
@@ -52,8 +59,6 @@ class ReviewerManager(object):
         return model
 
     def __create_model(self, modules, user):
-        if modules is None:
-            raise ValueError("At least one module must be selected")
         try:
             reviewer = self.model.objects.create(user=user)
             reviewer.save()
