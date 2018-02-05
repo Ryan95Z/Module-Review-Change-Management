@@ -7,15 +7,16 @@
 {% block main %}
 	<div class="row">
 		<div class="col-md-12">
-			<h1>Year Tutors <span class="h-sub-action"><a class="btn btn-primary" href="{% url 'new_tutor' %}">New Tutor</a></span></h1>
+			<h1>Programme Tutors <span class="h-sub-action"><a class="btn btn-primary" href="{% url 'new_tutor' %}">New Tutor</a></span></h1><hr>
 			{% if object_list|length < 1 %}
 				<p class="p-msg">There is currently no year tutors</p>
 			{% else %}
 				<table class="table table-bordered table-dark">
 				<thead>
 					<tr>
-						<th scope="col">Username</th>
-						<th scope="col">Name</th>
+						<th scope="col">Tutor Name</th>
+						<th scope="col">Tutor Username</th>
+						<th scope="col">Programme Name</th>
 						<th scope="col">Tutor Year</th>
 						<th scope="col">Update Tutor</th>
 					</tr>
@@ -23,8 +24,9 @@
 				<tbody>
 					{% for tutor in object_list %}
 						<tr>
-							<td>{{ tutor.get_tutor_username }}</td>
 							<td>{{ tutor.get_tutor_name }}</td>
+							<td>{{ tutor.get_tutor_username }}</td>
+							<td>{{ tutor.programme_name }}</td>
 							<td>{{ tutor.tutor_year }}</td>
 							<td><a href="{% url 'update_tutor' tutor.pk %}" class="btn btn-primary btn-sm">Update {{ tutor.tutor_year }}</a></td>
 						</tr>

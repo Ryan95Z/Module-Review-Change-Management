@@ -5,7 +5,7 @@ from django.shortcuts import render
 
 from core.views.mixins import AdminTestMixin
 from core.forms import UserPermissionsForm, UserCreationForm
-from core.models import User, YearTutor
+from core.models import User, ProgrammeTutor
 
 
 class AdminYearTutorListView(AdminTestMixin, ListView):
@@ -13,15 +13,15 @@ class AdminYearTutorListView(AdminTestMixin, ListView):
     Generic view that lists all of the current year tutors
     in the system.
     """
-    model = YearTutor
+    model = ProgrammeTutor
 
 
 class AdminYearTutorCreateView(AdminTestMixin, CreateView):
     """
     View to create year tutor
     """
-    model = YearTutor
-    fields = ['tutor_year', 'year_tutor_user']
+    model = ProgrammeTutor
+    fields = ['programme_name', 'tutor_year', 'programme_tutor_user']
 
     def get_form(self, *args, **kwargs):
         form = super(AdminYearTutorCreateView, self).get_form(*args, **kwargs)
@@ -47,13 +47,13 @@ class AdminYearTutorUpdateView(AdminTestMixin, UpdateView):
     """
     View to update existing year tutor
     """
-    model = YearTutor
-    fields = ['tutor_year', 'year_tutor_user']
+    model = ProgrammeTutor
+    fields = ['programme_name', 'tutor_year', 'programme_tutor_user']
 
     def get_form(self, *args, **kwargs):
         form = super(AdminYearTutorUpdateView, self).get_form(*args, **kwargs)
         # limit drop down to only contain those with year tutor permission
-        form.fields['year_tutor_user'].queryset = User.objects.filter(
+        form.fields['programme_tutor_user'].queryset = User.objects.filter(
             is_year_tutor=True)
         return form
 
