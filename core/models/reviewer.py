@@ -75,7 +75,7 @@ class Reviewer(models.Model):
     objects = ReviewerManager()
 
     def __str__(self):
-        return "{} {}".format(self.get_reviewer_name(), self.modules)
+        return "{} - {}".format(self.get_reviewer_name(), self.get_reviewer_modules_list())
 
     def get_reviewer_name(self):
         """
