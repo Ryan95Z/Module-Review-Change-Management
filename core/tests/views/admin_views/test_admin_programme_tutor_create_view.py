@@ -65,7 +65,7 @@ class AdminProgrammeTutorCreateViewTest(AdminViewTestCase):
 
         # attempt to add user who is already an existing tutor
         data = {
-            'programme_name': 'Computer Science',
+            'programme_name': "Computer Science",
             'tutor_year': "Year 2",
             'programme_tutor_user': self.user.id
         }
@@ -90,3 +90,4 @@ class AdminProgrammeTutorCreateViewTest(AdminViewTestCase):
 
         context = self.run_invalid_post_view(self.url, data).context
         self.assertEquals(context['form_type'], 'Create')
+        form_errors = context['form'].errors.as_data()
