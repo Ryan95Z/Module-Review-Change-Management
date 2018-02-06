@@ -82,12 +82,27 @@ class AdminProgrammeTutorCreateViewTest(AdminViewTestCase):
         """
         Test request to check that invalid data is not processed
         """
+        name = 40540
+        year = 1
+
         data = {
-            'programme_name': 40540,
-            'tutor_year': 1,
+            'programme_name': name,
+            'tutor_year': year,
             'programme_tutor_user': self.admin.username
         }
 
+
+        # expected errors
+        ex_user_err = "['Select a valid choice. That choice is not one of the available choices.']"
+        ex_year_err = "['Select a valid choice. {} is not one of the available choices.']".format(year)
+
         context = self.run_invalid_post_view(self.url, data).context
-        self.assertEquals(context['form_type'], 'Create')
         form_errors = context['form'].errors.as_data()
+
+        year_err = form_errors['tutor_year'][0].__str__()
+        user_err = form_errors['programme_tutor_user'][0].__str__()
+
+        self.assertEquals(context['form_type'], 'Create')
+        self.assertEquals(year_err, ex_year_err)
+        self.assertEquals(user_err, ex_user_err)
+
