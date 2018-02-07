@@ -1,0 +1,15 @@
+{% extends 'core/main.html' %}
+{% load core_tags %}
+
+{% block title %}
+    {{ object.pk }}
+{% endblock %}
+
+{% block main %}
+<div class="row">
+	<div class="col-md-12">
+		{{ object.pk }}
+		
+	</div>
+</div>
+{% endblock %}
