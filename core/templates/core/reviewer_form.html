@@ -11,19 +11,20 @@
 			{% if form_type == 'Create' %}
 				<h1>New Module Reviewer</h1>
 			{% else %}
-				<h1>Update {{ object.module }}</h1>
+				<h1>Update Module Reviewer</h1>
 			{% endif %}
 			<form action="{{ form_url }}" method="POST">
 				{% csrf_token %}
-				{% for f in form %}
+				{% for field in form %}
 					<div class="form-group">
-					<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-					{{ f|add_css_class:"form-control" }}
-					{{ f.errors }}
+						{{ field.label_tag }} 
+						{{ field|add_css_class:"form-control" }}
+						<p>{{ field.errors.as_text }}</p>
 					</div>
 				{% endfor %}
-				<button type="submit" class="btn btn-primary">{{ form_type }}</button>
-				<a href="{% url 'all_reviewers' %}" class="btn btn-danger">Cancel</a>
+				{{ form.non_field_errors }}
+				<button type="submit" class="btn btn-sm btn-primary">Create</button>
+				<a href="{% url 'all_reviewers' %}" class="btn btn-sm btn-danger">Cancel</a>
 			</form>
 		</div>
 	</div>
