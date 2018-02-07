@@ -4,7 +4,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render
 
 from core.views.mixins import AdminTestMixin
-from core.forms import UserPermissionsForm, UserCreationForm
+from core.forms import ReviewerCreationForm
 from core.models import User, Reviewer
 
 
@@ -21,21 +21,11 @@ class AdminReviewerCreateView(AdminTestMixin, CreateView):
     View to create reviewer
     """
     model = Reviewer
-    fields = ['module', 'reviewer_user']
-
-    def get_form(self, *args, **kwargs):
-        form = super(AdminReviewerCreateView, self).get_form(*args, **kwargs)
-        # limit drop down to only contain those with reviewer permission
-        form.fields['reviewer_user'].queryset = User.objects.filter(
-            is_module_reviewer=True)
-        return form
+    fields = ['user', 'modules']
 
     def get_context_data(self, **kwargs):
-        context = super(
-            AdminReviewerCreateView, self).get_context_data(**kwargs)
-        # url for form action
+        context = super(AdminReviewerCreateView, self).get_context_data(**kwargs)
         context['form_url'] = reverse('new_reviewer')
-        # button text
         context['form_type'] = 'Create'
         return context
 
@@ -48,12 +38,12 @@ class AdminReviewerUpdateView(AdminTestMixin, UpdateView):
     View to update existing reviewer
     """
     model = Reviewer
-    fields = ['module', 'reviewer_user']
+    fields = ['user', 'modules']
 
     def get_form(self, *args, **kwargs):
         form = super(AdminReviewerUpdateView, self).get_form(*args, **kwargs)
         # limit drop down to only contain those with reviewer permission
-        form.fields['reviewer_user'].queryset = User.objects.filter(
+        form.fields['user'].queryset = User.objects.filter(
             is_module_reviewer=True)
         return form
 

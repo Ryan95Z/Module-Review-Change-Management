@@ -1,7 +1,7 @@
 from importlib import import_module
 from django.test import Client, TestCase
 from django.conf import settings
-from core.models import User, UserManager
+from core.models import User, UserManager, Module
 from abc import ABC, abstractmethod
 
 """
@@ -44,6 +44,50 @@ class LoggedInTestCase(TestCase):
             last_name='user',
             email='admin@example.com',
             password='password'
+        )
+
+class ModuleTestCase(TestCase):
+    """
+    Custom base test case which can be used
+    to test views which require modules
+    """
+    def setUp(self):
+        super(ModuleTestCase, self).setUp()
+
+        manager = UserManager()
+        manager.model = User
+        
+        # Create a sample module leader
+        self.module_leader = manager.create_user(
+            username='moduleleader',
+            first_name='Module',
+            last_name='Leader',
+            email='ml@example.com',
+            password='password'
+        )
+
+        # Create a test module
+        self.module = Module.objects.create(
+            module_code = "CMXXXX",
+            module_name = "Test Module",
+            module_credits = "10",
+            module_level = "L1",
+            module_year = "Year 1",
+            semester = "Autumn Semester",
+            delivery_language = "English",
+            module_leader = self.module_leader
+        )
+
+        # Create a second test module
+        self.module_two = Module.objects.create(
+            module_code = "CMYYYY",
+            module_name = "Test Module 2",
+            module_credits = "10",
+            module_level = "L1",
+            module_year = "Year 1",
+            semester = "Autumn Semester",
+            delivery_language = "English",
+            module_leader = self.module_leader
         )
 
 
