@@ -3,10 +3,13 @@ from core.tests.views.admin_views.admin_test_case import AdminViewTestCase
 from core.models import Module
 
 
-class AdminTestModuleCreateView(AdminViewTestCase):
+class TestAdminModuleCreateView(AdminViewTestCase):
+    """
+    Unit test for AdminModuleCreateView
+    """
 
     def setUp(self):
-        super(AdminTestModuleCreateView, self).setUp()
+        super(TestAdminModuleCreateView, self).setUp()
         self.url = reverse('new_module')
 
     def test_get_module_create_view(self):
@@ -32,6 +35,9 @@ class AdminTestModuleCreateView(AdminViewTestCase):
         self.run_get_view_not_logged_in(self.url)
 
     def test_valid_post_create_view(self):
+        """
+        Test case for valid post request
+        """
         data = {
             'module_code': 'CM3301',
             'module_name': 'Software Engineering Project',

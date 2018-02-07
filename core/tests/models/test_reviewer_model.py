@@ -2,6 +2,7 @@ from django.db import IntegrityError
 from django.test import TestCase
 from core.models import (Reviewer, ReviewerManager, User, UserManager, Module)
 
+
 class ReviewerManagerTests(TestCase):
     """
     Test cases for ReviewerManager
@@ -35,16 +36,15 @@ class ReviewerManagerTests(TestCase):
         # create a test module
         module_model = Module
         self.module = module_model.objects.create(
-            module_code = "CM1101",
-            module_name = "Test Module",
-            module_credits = "10",
-            module_level = "1",
-            module_year = "1",
-            semester = "Autumn Semester",
-            delivery_language = "English",
-            module_leader = self.module_leader
+            module_code="CM1101",
+            module_name="Test Module",
+            module_credits="10",
+            module_level="1",
+            module_year="1",
+            semester="Autumn Semester",
+            delivery_language="English",
+            module_leader=self.module_leader
         )
-
 
     def test_create_new_model_instance(self):
         """
@@ -112,6 +112,7 @@ class ReviewerManagerTests(TestCase):
         with self.assertRaises(ValueError):
             self.manager.create_reviewer(None, self.user)
 
+
 class ReviewerTests(TestCase):
     """
     Test cases for Reviewer
@@ -145,14 +146,14 @@ class ReviewerTests(TestCase):
         # create a test module
         module_model = Module
         self.module = module_model.objects.create(
-            module_code = "CM1101",
-            module_name = "Test Module",
-            module_credits = "10",
-            module_level = "1",
-            module_year = "1",
-            semester = "Autumn Semester",
-            delivery_language = "English",
-            module_leader = self.module_leader
+            module_code="CM1101",
+            module_name="Test Module",
+            module_credits="10",
+            module_level="1",
+            module_year="1",
+            semester="Autumn Semester",
+            delivery_language="English",
+            module_leader=self.module_leader
         )
 
     def test_valid_reviewer(self):
@@ -210,14 +211,12 @@ class ReviewerTests(TestCase):
         reviewer.save()
         reviewer_id = reviewer.id
         self.assertEqual(reviewer.modules.get(module_code="CM1101"), self.module)
-
         self.module.delete()
 
         self.assertEquals(reviewer.get_reviewer_name(), self.user.get_full_name())
         with self.assertRaises(Module.DoesNotExist):
             reviewer.modules.get(module_code="CM1101")
 
-
-
-
-
+        # make sure the reviewer created in test is deleted
+        with self.assertRaises(self.model.DoesNotExist):
+            self.model.objects.get(id=reviewer_id)

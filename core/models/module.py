@@ -1,6 +1,7 @@
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from .user import User
+from django.db.utils import IntegrityError
+from django.core.validators import MaxValueValidator, MinValueValidator
+from core.models import User
 
 DELIVERY_LANGUAGES = (
     ('Welsh', 'Welsh'),
@@ -12,6 +13,43 @@ SEMESTER_OPTIONS = (
     ('Spring Semester', 'Spring Semester'),
     ('Double Semester', 'Double Semester')
 )
+
+
+class ModuleManager(object):
+    """
+    Manager for the module model
+    """
+
+    def create_module(self, module_code, module_name, module_credits,
+                      module_level, module_year, semester,
+                      delivery_language, module_leader):
+        """
+        Method to create a module model
+        """
+        # ensure that module leader is not None
+        if module_leader is None:
+            raise IntegrityError("Module Leader cannot be None")
+
+        # check that credits do not exceed ranges
+        if module_credits < 10 or module_credits > 120:
+            raise ValueError(
+                "Module credits must be between 10 to 120 credits"
+            )
+
+        model = self.model.objects.create(
+            module_code=module_code,
+            module_name=module_name,
+            module_credits=module_credits,
+            module_year=module_year,
+            module_level=module_level,
+            semester=semester,
+            delivery_language=delivery_language,
+            module_leader=module_leader
+        )
+
+        module_leader.is_module_leader = True
+        module_leader.save()
+        return model
 
 
 class Module(models.Model):
@@ -37,6 +75,8 @@ class Module(models.Model):
         choices=DELIVERY_LANGUAGES
     )
     module_leader = models.ForeignKey(User)
+
+    objects = ModuleManager()
 
     def __str__(self):
         return "{}: {}".format(self.module_code, self.module_name)

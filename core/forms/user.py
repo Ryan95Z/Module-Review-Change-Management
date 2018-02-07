@@ -1,7 +1,9 @@
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.widgets import TextInput, CheckboxInput
+
 from core.models import User
+from core.utils.email import UserPasswordEmail
 
 
 class UserPermissionsForm(forms.ModelForm):
@@ -28,7 +30,7 @@ class UserPermissionsForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('is_module_leader', 'is_office_admin', 'is_year_tutor', 
+        fields = ('is_module_leader', 'is_office_admin', 'is_year_tutor',
                   'is_module_reviewer', 'is_admin')
 
 
@@ -51,17 +53,20 @@ class UserDetailsForm(forms.ModelForm):
 class UserCreationForm(UserDetailsForm, UserPermissionsForm):
     """
     Inherited form from UserDetailsForm. Used to create new users
-    from the UI that will generate a password.
-
-    TODO : write unit test for this
+    from the UI and will generate a password that is then emailed.
     """
     def save(self, commit=True):
         user = super(UserCreationForm, self).save(commit=False)
         password = User.objects.make_random_password()
         user.set_password(password)
 
-        # if commit:
-        #     user.save()
+        # prepare the email
+        mail = UserPasswordEmail(user, password)
+
+        if commit:
+            # save user and send the email
+            user.save()
+            mail.send()
         return user
 
 
