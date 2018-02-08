@@ -72,5 +72,10 @@ class AdminModuleUpdateView(AdminTestMixin, UpdateView):
         context['form_type'] = 'Update'
         return context
 
+    def form_valid(self, form):
+        respone = super(AdminModuleUpdateView, self).form_valid(form)
+        EntryFactory.makeEntry("update", self.object)
+        return respone
+
     def get_success_url(self):
         return reverse('all_modules')
