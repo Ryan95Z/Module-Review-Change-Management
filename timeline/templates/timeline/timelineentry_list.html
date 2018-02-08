@@ -1,5 +1,7 @@
 {% extends 'core/main.html' %}
+{% load timeline_tags %}
 {% load static %}
+
 
 {% block title %}
 	{{ module_code }}
@@ -17,18 +19,16 @@
 		<section class="timeline">
 			<ul>
 				{% for entry in object_list %}
-					<li>
+					<li class="timeline-item">
 						<div class="timeline-entry">
 							<h5>{{ entry.title }} <time>{{ entry.created|date:"SHORT_DATE_FORMAT" }}</time></h5>
-							<p>{{ entry.changes }}</p>
-							<div>
-								<span class="timeline-entry-author">By: {{ entry.created_by_username }}</span>
-								<span class="timeline-entry-comments">Comments: 0</span>
-							</div>
+							{% autoescape off %}
+							{{ entry.changes|covert_markdown }}
+							{% endautoescape %}
 						</div>
 					</li>
 				{% endfor %}
-				<li></li>
+				<li class="timeline-item"></li>
 			</ul>
 		</section>
 	{% endif %}

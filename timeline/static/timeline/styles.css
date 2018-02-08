@@ -1,6 +1,6 @@
 
 /* timeline styling */
-.timeline ul li {
+.timeline ul > .timeline-item {
 	list-style-type: none;
 	position: relative;
 	width: 10px;
@@ -10,7 +10,7 @@
 	background: #fff;
 }
 
-.timeline ul li:after {
+.timeline ul > .timeline-item:after {
 	content: '';
 	position: absolute;
 	bottom: 0;
@@ -22,17 +22,17 @@
 		background-color: inherit;
 }
 
-.timeline ul li:last-child{
+.timeline ul > .timeline-item:last-child{
 	height: 100px;
 }
 
-.timeline ul li:last-child:after {
+.timeline ul > .timeline-item:last-child:after {
 	border-radius: 0;
 	width: 0;
 	height: 0;
 }
 
-.timeline ul li .timeline-entry {
+.timeline ul > .timeline-item .timeline-entry {
 	position: relative;
 	width: 500px;
 	top: 20%;
@@ -42,34 +42,34 @@
 	border-radius: 10px;
 }
 
-.timeline ul li:nth-child(odd) .timeline-entry {
+.timeline ul > .timeline-item:nth-child(odd) .timeline-entry {
 	transform: translateX(-106%);
 }
 
-.timeline ul li .timeline-entry h5 {
+.timeline ul > .timeline-item .timeline-entry h5 {
 	padding-bottom: 2px;
 	font-size: 23px;
 	border-bottom: 1px solid black;
 	margin-bottom: 10px;
 }
 
-.timeline ul li .timeline-entry h5 time {
+.timeline ul > .timeline-item .timeline-entry h5 time {
 	top: 5px;
 	font-size: 10px;
 	position: relative;
 	float: right;
 }
 
-.timeline ul li .timeline-entry div {
+.timeline ul > .timeline-item .timeline-entry div {
 	padding-top: 2%;
 }
 
-.timeline ul li .timeline-entry div .timeline-entry-author {
+.timeline ul > .timeline-item .timeline-entry div .timeline-entry-author {
 	font-size: 12px;
 	padding-bottom: 20px;
 }
 
-.timeline ul li .timeline-entry div .timeline-entry-comments {
+.timeline ul > .timeline-item .timeline-entry div .timeline-entry-comments {
 	font-size: 12px;
 	padding-bottom: 20px;
 	float: right;

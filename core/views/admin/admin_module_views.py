@@ -7,6 +7,8 @@ from core.views.mixins import AdminTestMixin
 from core.models import Module
 from core.forms import SearchForm
 
+from timeline.utils.factory import EntryFactory
+
 
 class AdminModuleListView(AdminTestMixin, ListView):
     """
@@ -48,6 +50,11 @@ class AdminModuleCreateView(AdminTestMixin, CreateView):
         context['form_url'] = reverse('new_module')
         context['form_type'] = 'Create'
         return context
+
+    def form_valid(self, form):
+        respone = super(AdminModuleCreateView, self).form_valid(form)
+        EntryFactory.makeEntry("init", self.object)
+        return respone
 
     def get_success_url(self):
         return reverse('all_modules')
