@@ -29,4 +29,7 @@ urlpatterns = [
     url(r'^admin/login/$', LoginView.as_view()),
     url(r'^admin/logout/$', LogoutView.as_view()),
     url(r'^admin/', admin.site.urls),
+
+    # timeline urls
+    url(r'timeline/', include('timeline.urls.timeline')),
 ]

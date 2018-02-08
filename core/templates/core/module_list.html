@@ -31,6 +31,7 @@
 							<th scope="col">Semester</th>
 							<th scope="col">Module Leader</th>
 							<th scope="col">Update Module</th>
+							<th scope="col">Timeline</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -42,6 +43,7 @@
 							<td>{{ module.semester }}</td>
 							<td>{{ module.module_leader_name }}</td>
 							<td><a class="btn btn-primary btn-sm" href="{% url 'update_module' module.module_code %}">Update {{ module.module_code }}</a></td>
+							<td><a class="btn btn-info btn-sm" href="{% url 'module_timeline' module.module_code %}">See Timeline</a></td>
 						</tr>
 					{% endfor %}
 					</tbody>

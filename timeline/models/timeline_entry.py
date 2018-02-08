@@ -10,7 +10,7 @@ class TimelineEntry(models.Model):
     module = models.ForeignKey(Module)
 
     def __str__(self):
-        return "{}@{}".format(title, created)
+        return "{}@{}".format(self.title, self.created)
 
     def created_by_username(self):
         return self.created_by.username
@@ -23,3 +23,6 @@ class TimelineEntry(models.Model):
 
     def module_name(self):
         return self.module.module_name
+
+    class Meta:
+        ordering = ['-created']

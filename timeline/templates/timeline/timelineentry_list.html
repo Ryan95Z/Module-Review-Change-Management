@@ -1,0 +1,12 @@
+{% extends 'core/main.html' %}
+
+{% block title %}
+	{{ module_code }}
+{% endblock %}
+
+{% block main %}
+	<h1>Timeline: {{ module_code }}</h1><hr>
+	{% for entry in object_list %}
+		<h2>{{ entry.title }}</h2>
+	{% endfor %}
+{% endblock %}
