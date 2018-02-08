@@ -1,0 +1,78 @@
+
+/* timeline styling */
+.timeline ul li {
+	list-style-type: none;
+	position: relative;
+	width: 10px;
+	height: 200px;
+	margin: 0 auto;
+	padding-top: 50px;
+	background: #fff;
+}
+
+.timeline ul li:after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 25px;
+		height: 25px;
+		border-radius: 100%;
+		background-color: inherit;
+}
+
+.timeline ul li:last-child{
+	height: 100px;
+}
+
+.timeline ul li:last-child:after {
+	border-radius: 0;
+	width: 0;
+	height: 0;
+}
+
+.timeline ul li .timeline-entry {
+	position: relative;
+	width: 500px;
+	top: 20%;
+	transform: translateX(5%);
+	background-color: #ffbb99;
+	padding: 5px 10px;
+	border-radius: 10px;
+}
+
+.timeline ul li:nth-child(odd) .timeline-entry {
+	transform: translateX(-106%);
+}
+
+.timeline ul li .timeline-entry h5 {
+	padding-bottom: 2px;
+	font-size: 23px;
+	border-bottom: 1px solid black;
+	margin-bottom: 10px;
+}
+
+.timeline ul li .timeline-entry h5 time {
+	top: 5px;
+	font-size: 10px;
+	position: relative;
+	float: right;
+}
+
+.timeline ul li .timeline-entry div {
+	padding-top: 2%;
+}
+
+.timeline ul li .timeline-entry div .timeline-entry-author {
+	font-size: 12px;
+	padding-bottom: 20px;
+}
+
+.timeline ul li .timeline-entry div .timeline-entry-comments {
+	font-size: 12px;
+	padding-bottom: 20px;
+	float: right;
+	position: relative;
+	top: 4px;
+}

@@ -1,12 +1,35 @@
 {% extends 'core/main.html' %}
+{% load static %}
 
 {% block title %}
 	{{ module_code }}
 {% endblock %}
 
+{% block styles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'timeline/styles.css' %}">
+{% endblock %}
+
 {% block main %}
 	<h1>Timeline: {{ module_code }}</h1><hr>
-	{% for entry in object_list %}
-		<h2>{{ entry.title }}</h2>
-	{% endfor %}
+	{% if object_list|length < 1 %}
+		<p>No timeline is present for this module</p>
+	{% else %}
+		<section class="timeline">
+			<ul>
+				{% for entry in object_list %}
+					<li>
+						<div class="timeline-entry">
+							<h5>{{ entry.title }} <time>{{ entry.created|date:"SHORT_DATE_FORMAT" }}</time></h5>
+							<p>{{ entry.changes }}</p>
+							<div>
+								<span class="timeline-entry-author">By: {{ entry.created_by_username }}</span>
+								<span class="timeline-entry-comments">Comments: 0</span>
+							</div>
+						</div>
+					</li>
+				{% endfor %}
+				<li></li>
+			</ul>
+		</section>
+	{% endif %}
 {% endblock %}
