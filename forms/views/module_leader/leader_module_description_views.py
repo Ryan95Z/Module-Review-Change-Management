@@ -8,5 +8,5 @@ class LeaderModuleDescriptionView(DetailView):
     """
     
     model = Module
-    template_name="forms/module_description_view.html"
+    template_name="module_description_view.html"
 

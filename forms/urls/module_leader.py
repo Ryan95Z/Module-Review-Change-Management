@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
-from core.views import *
+from forms.views import *
 
 """
 urls.module_leader
