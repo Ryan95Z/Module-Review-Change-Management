@@ -51,11 +51,6 @@ class AdminModuleCreateView(AdminTestMixin, CreateView):
         context['form_type'] = 'Create'
         return context
 
-    def form_valid(self, form):
-        respone = super(AdminModuleCreateView, self).form_valid(form)
-        EntryFactory.makeEntry("init", self.object)
-        return respone
-
     def get_success_url(self):
         return reverse('all_modules')
 
@@ -71,11 +66,6 @@ class AdminModuleUpdateView(AdminTestMixin, UpdateView):
         context['form_url'] = reverse('update_module', kwargs=kwargs)
         context['form_type'] = 'Update'
         return context
-
-    def form_valid(self, form):
-        respone = super(AdminModuleUpdateView, self).form_valid(form)
-        EntryFactory.makeEntry("update", self.object)
-        return respone
 
     def get_success_url(self):
         return reverse('all_modules')
