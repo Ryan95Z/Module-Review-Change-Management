@@ -10,4 +10,4 @@ class EntryFactory(object):
             e = InitEntry(module)
         elif entry_type == 'update':
             e = UpdateEntry(module)
-        e.create()
+        return e.create()
