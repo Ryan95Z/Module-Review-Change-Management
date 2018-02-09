@@ -4,11 +4,14 @@ python:
   - "3.5"
   - "3.6"
 
+sudo: true
+
 install:
   - pip install -r requirements.txt
 
 before_script:
+  - cp -v ./mscms/email_settings-example.py ./mscms/email_settings.py
   - python manage.py migrate
-  
+
 script:
   - python manage.py test
