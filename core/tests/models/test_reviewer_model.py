@@ -216,7 +216,3 @@ class ReviewerTests(TestCase):
         self.assertEquals(reviewer.get_reviewer_name(), self.user.get_full_name())
         with self.assertRaises(Module.DoesNotExist):
             reviewer.modules.get(module_code="CM1101")
-
-        # make sure the reviewer created in test is deleted
-        with self.assertRaises(self.model.DoesNotExist):
-            self.model.objects.get(id=reviewer_id)
