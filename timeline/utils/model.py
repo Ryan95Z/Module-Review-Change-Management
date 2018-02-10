@@ -8,7 +8,9 @@ class ModelDifferance(object):
     """
     def __init__(self, *args, **kwargs):
         super(ModelDifferance, self).__init__(*args, **kwargs)
-        self.base = model_to_dict(self)
+        self.base = {}
+        if len(self.module_code) > 0:
+            self.base = model_to_dict(self)
 
     def differences(self):
         """
@@ -19,6 +21,10 @@ class ModelDifferance(object):
         # convert the model to a dict
         current = model_to_dict(self)
         diff = {}
+
+
+        if not bool(self.base):
+            return diff
 
         # loop through each item in dict
         # and check for any changes
