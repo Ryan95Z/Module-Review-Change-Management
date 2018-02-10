@@ -1,0 +1,14 @@
+<div class="card w-25">
+    <div class="card-header">
+        Your Module(s)
+    </div>
+    <ul class="list-group list-group-flush">
+    {% if my_modules%}
+        {% for module in my_modules %}
+            <li class="list-group-item">{{ module.module_name }}</a>
+        {% endfor %}
+    {% else %}
+        <li class="list-group-item">You aren't assigned to any modules</li>
+    {% endif %}
+    </ul>
+</div>

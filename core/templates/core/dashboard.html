@@ -3,5 +3,7 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block main %}
-
+    {% if user.is_module_leader %}
+        {% include  'dashboard_your_modules_list.html' with my_modules=my_modules %}
+    {% endif %}
 {% endblock %}
