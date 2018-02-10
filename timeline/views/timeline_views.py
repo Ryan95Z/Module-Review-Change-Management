@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.views.generic import View
 from django.views.generic.list import ListView
 from timeline.models import TimelineEntry
@@ -6,6 +5,7 @@ from timeline.models import TimelineEntry
 
 class TimelineListView(ListView):
     model = TimelineEntry
+    paginate_by = 15
 
     def get_queryset(self):
         module_id = self.kwargs['module_pk']
@@ -15,4 +15,5 @@ class TimelineListView(ListView):
         context = super(
             TimelineListView, self).get_context_data(*args, **kwargs)
         context['module_code'] = self.kwargs['module_pk']
+        context['block_pagination'] = True
         return context

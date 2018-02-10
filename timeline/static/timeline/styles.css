@@ -1,3 +1,25 @@
+.timeline-pageination {
+	text-align: center;
+	margin: 0 auto;
+	position: relative;
+	left: 19px;
+	width: 20%;
+	margin-bottom: 1%;
+	bottom: 20px;
+}
+
+.timeline-pageination a,
+.timeline-pageination a:link,
+.timeline-pageination a:visited {
+	color: #fff;
+	font-size: 5em;
+}
+
+.timeline-pageination a:hover,
+.timeline-pageination a:active {
+	color: #ff8080;
+}
+
 
 /* timeline styling */
 .timeline-title {
@@ -13,12 +35,14 @@
 .timeline ul > .timeline-item {
 	list-style-type: none;
 	position: relative;
-	width: 15px;
+	width: 19px;
 	height: auto;
 	min-height: 250px;
 	margin: 0 auto;
 	padding-top: 50px;
 	background: #fff;
+	border-left: 2px solid #ff8080;
+	border-right: 2px solid #ff8080;
 }
 
 .timeline ul > .timeline-item:after {
@@ -57,8 +81,26 @@
 	box-shadow: 12px 11px 32px -1px rgba(77,77,77,1);
 }
 
+.timeline ul > .timeline-item .timeline-entry:before{
+	content: '';
+	position: absolute;
+	width: 0;
+	height: 10px;
+	margin-top: 7px;
+	right: 100%;
+	border: solid 15px transparent;
+	border-right-color: #ff8080;
+}
+
+.timeline ul > .timeline-item:nth-child(odd) .timeline-entry:before{
+	right: 0;
+	left: 100%;
+	border-left-color: #ff8080;
+	border-right-color: transparent;
+}
+
 .timeline ul > .timeline-item:nth-child(odd) .timeline-entry {
-	transform: translateX(-106%);
+	transform: translateX(-107%);
 	-webkit-box-shadow: -6px 10px 33px -1px rgba(77,77,77,1);
 	-moz-box-shadow: -6px 10px 33px -1px rgba(77,77,77,1);
 	box-shadow: -6px 10px 33px -1px rgba(77,77,77,1);

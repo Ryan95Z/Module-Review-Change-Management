@@ -4,7 +4,7 @@
 
 
 {% block title %}
-	{{ module_code }}
+	{{ module_code }} Timeline
 {% endblock %}
 
 {% block styles %}
@@ -19,6 +19,15 @@
 		<p>No timeline is present for this module</p>
 	{% else %}
 		<section class="timeline">
+			
+			{% if page_obj.has_previous %}
+				<div class="timeline-pageination">
+					<a href="?page={{ page_obj.previous_page_number }}">
+						<i class="fa fa-chevron-up " aria-hidden="true"></i>
+					</a>
+				</div>
+			{% endif %}
+			
 			<ul>
 				{% for entry in object_list %}
 					<li class="timeline-item">
@@ -36,9 +45,16 @@
 						</div>
 					</li>
 				{% endfor %}
-<!-- 				<li class="timeline-item"></li>
-				 -->
 			</ul>
+			
+			{% if page_obj.has_next %}
+				<div class="timeline-pageination">
+					<a href="?page={{ page_obj.next_page_number }}">
+						<i class="fa fa-chevron-down" aria-hidden="true"></i>
+					</a>
+				</div>
+			{% endif %}
+
 		</section>
 	{% endif %}
 {% endblock %}

@@ -22,7 +22,6 @@ class ModelDifferance(object):
         current = model_to_dict(self)
         diff = {}
 
-
         if not bool(self.base):
             return diff
 
