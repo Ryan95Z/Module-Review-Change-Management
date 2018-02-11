@@ -12,16 +12,16 @@
 	<ul class="nav nav-pills">
 		<li class="nav-item dropdown">
 			<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-				Module Description
+				Tracking Form
 			</a>
 			<div class="dropdown-menu">
-				<a class="dropdown-item active" href="#">Module Description</a>
-				<a class="dropdown-item" href="{% url 'view_module_tracking_form' pk=object.pk %}">Tracking Form</a>
+				<a class="dropdown-item" href="{% url 'view_module_description' pk=object.pk %}">Module Description</a>
+				<a class="dropdown-item active" href="#">Tracking Form</a>
 			</div>
 			<!--<a class="nav-link active" href="{% url 'view_module_description' pk=object.pk %}">View</a>-->
 		</li>
 		<li class="nav-item">
-			<a class="nav-link" href="#">New Module Description</a>
+			<a class="nav-link" href="#">New Tracking Form</a>
 		</li>
 		<li class="nav-item">
 			<a class="nav-link" href="#">Submit</a>
@@ -42,4 +42,12 @@
 		</ul>
 	</div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$(".dropdown-toggle").dropdown();
+		});
+	</script>
 {% endblock %}
