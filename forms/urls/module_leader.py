@@ -19,5 +19,8 @@ urlpatterns = [
 
     # urls for module tracking forms
     url(r'^modules/(?P<pk>[A-Za-z0-9]+)/tracking-form/view/$', login_required(
-        LeaderModuleTrackingFormView.as_view()), name='view_module_tracking_form')
+        LeaderModuleTrackingFormView.as_view()), name='view_module_tracking_form'),
+    url(r'^modules/(?P<pk>[A-Za-z0-9]+)/tracking-form/new/$', login_required(
+        LeaderModuleTrackingFormView.as_view()), name='new_module_tracking_form')
+    
 ]
