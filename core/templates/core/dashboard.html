@@ -3,7 +3,10 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block main %}
+    <div class="card-columns">
     {% if user.is_module_leader %}
         {% include  'dashboard_your_modules_list.html' with my_modules=my_modules %}
     {% endif %}
+    {% include  'dashboard_all_modules_list.html' with my_modules=my_modules %}
+    </div>
 {% endblock %}

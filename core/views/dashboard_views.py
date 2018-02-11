@@ -11,6 +11,7 @@ class DashboardView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['my_modules'] = Module.objects.filter(module_leader=self.request.user)
+        context['all_modules'] = Module.objects.all()
         return context
 
     
