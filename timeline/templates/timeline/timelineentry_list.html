@@ -42,6 +42,13 @@
 								{{ entry.changes|covert_markdown }}
 								{% endautoescape %}
 							</div>
+							<div class="timeline-actions">
+								{% if entry.status == 'Draft' %}
+									<a href="{% url 'entry_edit' entry.module_code entry.pk %}">
+									<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+								{% endif %}
+							</a>
+							</div>
 						</div>
 					</li>
 				{% endfor %}

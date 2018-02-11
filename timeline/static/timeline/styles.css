@@ -127,3 +127,24 @@
 	padding: 10px 20px;
 }
 
+.timeline ul > .timeline-item .timeline-entry .timeline-actions {
+	padding: 5px 10px;
+}
+
+.timeline ul > .timeline-item .timeline-entry .timeline-actions i {
+	font-size: 20px;
+}
+
+/* Form to update timeline entry styles */
+.markdown-notice{
+	width: 100%;
+	border: 1px inset #f2f2f2;
+	padding: 10px 20px;
+	margin-bottom: 20px;
+	background-color: #f2f2f2;
+}
+
+
+.markdown-notice > p {
+	margin: 0;
+}
