@@ -24,8 +24,8 @@ class ModuleManager(models.Manager):
     """
 
     def create_module(self, module_code, module_name, module_credits,
-                      module_level, module_year, semester,
-                      delivery_language, module_leader):
+                      module_level, semester, delivery_language,
+                      module_leader):
         """
         Method to create a module model
         """
@@ -43,7 +43,6 @@ class ModuleManager(models.Manager):
             module_code=module_code,
             module_name=module_name,
             module_credits=module_credits,
-            module_year=module_year,
             module_level=module_level,
             semester=semester,
             delivery_language=delivery_language,
@@ -55,7 +54,7 @@ class ModuleManager(models.Manager):
         return model
 
 
-class Module(models.Model, ModelDifferance):
+class Module(ModelDifferance):
     """
     Model for representing a module
     """
@@ -66,7 +65,6 @@ class Module(models.Model, ModelDifferance):
             MinValueValidator(10)
     ])
     module_level = models.CharField(max_length=10)
-    module_year = models.CharField(max_length=15)
 
     semester = models.CharField(
         max_length=15,

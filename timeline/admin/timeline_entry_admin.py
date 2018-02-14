@@ -9,7 +9,7 @@ class TimelineEntryAdmin(admin.ModelAdmin):
     Django interface.
     """
 
-    list_display = ('title', 'changes', 'module')
+    list_display = ('pk', 'title', 'changes', 'module')
 
     ordering = ('created', )
 
@@ -23,5 +23,6 @@ class TimelineEntryAdmin(admin.ModelAdmin):
         self.exclude = ('approved_by', )
         form = super(TimelineEntryAdmin, self).get_form(request, obj, **kwargs)
         return form
+
 
 admin.site.register(TimelineEntry, TimelineEntryAdmin)

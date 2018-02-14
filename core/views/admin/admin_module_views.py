@@ -41,7 +41,7 @@ class AdminModuleListView(AdminTestMixin, ListView):
 class AdminModuleCreateView(AdminTestMixin, CreateView):
     model = Module
     fields = ['module_code', 'module_name', 'module_credits', 'module_level',
-              'module_year', 'semester', 'delivery_language', 'module_leader']
+              'semester', 'delivery_language', 'module_leader']
 
     def get_context_data(self, **kwargs):
         context = super(AdminModuleCreateView, self).get_context_data(**kwargs)
@@ -56,7 +56,7 @@ class AdminModuleCreateView(AdminTestMixin, CreateView):
 class AdminModuleUpdateView(AdminTestMixin, UpdateView):
     model = Module
     fields = ['module_code', 'module_name', 'module_credits', 'module_level',
-              'module_year', 'semester', 'delivery_language', 'module_leader']
+              'semester', 'delivery_language', 'module_leader']
 
     def get_context_data(self, **kwargs):
         kwargs = {'pk': self.object.module_code}

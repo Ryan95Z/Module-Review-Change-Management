@@ -72,7 +72,6 @@ class ModuleTestCase(TestCase):
             module_name = "Test Module",
             module_credits = "10",
             module_level = "L1",
-            module_year = "Year 1",
             semester = "Autumn Semester",
             delivery_language = "English",
             module_leader = self.module_leader
@@ -84,7 +83,6 @@ class ModuleTestCase(TestCase):
             module_name = "Test Module 2",
             module_credits = "10",
             module_level = "L1",
-            module_year = "Year 1",
             semester = "Autumn Semester",
             delivery_language = "English",
             module_leader = self.module_leader

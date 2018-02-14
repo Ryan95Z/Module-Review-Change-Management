@@ -1,6 +1,6 @@
-from core.models import Module, User
-from timeline.models import TimelineEntry
 from abc import ABC, abstractmethod
+from core.models import Module, User
+from timeline.models import TimelineEntry, TableChange
 from timeline.utils.factory import EntryFactory
 
 
@@ -12,6 +12,7 @@ class BaseEntry(ABC):
         # public variables
         self.model = model
         self.title = None
+        self.type = "Generic"
 
         # protected variable
         self._tl_entry = TimelineEntry
@@ -41,11 +42,28 @@ class BaseEntry(ABC):
         fields = [field.name for field in self.model._meta.get_fields()]
         return fields
 
+    def _process_changes(self, changes, entry, instance):
+        cls_name = instance.__class__.__name__
+        for field, values in changes.items():
+            current = values[0]
+            change = values[0]
+
+            TableChange.objects.create(
+                changes_for_model=cls_name,
+                model_id=instance.pk,
+                changes_field=field,
+                current_value=current,
+                new_value=change,
+                related_entry=entry,
+            )
+
 
 class InitEntry(BaseEntry):
+
     def __init__(self, model):
         super(InitEntry, self).__init__(model)
         self.title = "{} created"
+        self.type = "Init"
 
     def create(self, instance):
         fields = self._extract_fields()
@@ -62,7 +80,8 @@ class InitEntry(BaseEntry):
             title=title,
             changes=md,
             status="Confirmed",
-            module=instance
+            module=instance,
+            entry_type=self.type
         )
         return entry
 
@@ -74,9 +93,11 @@ class InitEntry(BaseEntry):
 
 
 class UpdatedEntry(BaseEntry):
+
     def __init__(self, model):
         super(UpdatedEntry, self).__init__(model)
         self.title = "Changes to {}:\n\n"
+        self.type = "Update"
 
     def create(self, instance):
         fields = self._extract_fields()
@@ -105,8 +126,11 @@ class UpdatedEntry(BaseEntry):
             entry = self._tl_entry.objects.create(
                 title=title,
                 changes=md,
-                module=instance
+                module=instance,
+                entry_type=self.type
             )
+
+            self._process_changes(diff, entry, instance)
             return entry
         return entry
 

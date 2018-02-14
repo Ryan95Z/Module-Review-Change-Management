@@ -14,7 +14,7 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
         self.module = manager.create_module(
                 'CM3301',
                 'Software Engineering Project',
-                40, 'L3', 'Year 3',
+                40, 'L3',
                 'Autumn Semester',
                 'English',
                 self.user
@@ -53,7 +53,6 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
             'module_name': 'Software Engineering Project',
             'module_credits': 40,
             'module_level': 'L3',
-            'module_year': 'Year 3',
             'semester': 'Double Semester',
             'delivery_language': 'English',
             'module_leader': self.user.id
@@ -76,7 +75,6 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
             'module_name': '',
             'module_credits': 40,
             'module_level': '',
-            'module_year': 'Year 3',
             'semester': 'Double Semester',
             'delivery_language': 'English',
             'module_leader': self.user.id
@@ -108,7 +106,6 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
             'module_name': 'Software Engineering Project',
             'module_credits': 2000,
             'module_level': 'L3',
-            'module_year': 'Year 3',
             'semester': 'Double Semester',
             'delivery_language': 'English',
             'module_leader': self.user.id
@@ -120,7 +117,6 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
             'module_name': 'Software Engineering Project',
             'module_credits': 0,
             'module_level': 'L3',
-            'module_year': 'Year 3',
             'semester': 'Double Semester',
             'delivery_language': 'English',
             'module_leader': self.user.id
@@ -132,7 +128,6 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
             'module_name': 'Software Engineering Project',
             'module_credits': -20,
             'module_level': 'L3',
-            'module_year': 'Year 3',
             'semester': 'Double Semester',
             'delivery_language': 'English',
             'module_leader': self.user.id

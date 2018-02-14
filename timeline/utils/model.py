@@ -1,11 +1,14 @@
+from django.db import models
 from django.forms.models import model_to_dict
 
 
-class ModelDifferance(object):
+class ModelDifferance(models.Model):
     """
     Class to allow changes that are made to a model
     to be tracked.
     """
+    created = models.DateTimeField(auto_now_add=True)
+
     def __init__(self, *args, **kwargs):
         super(ModelDifferance, self).__init__(*args, **kwargs)
         self.base = {}
@@ -38,3 +41,13 @@ class ModelDifferance(object):
         Returns boolean on if there are any changes.
         """
         return bool(self.difference())
+
+    def save(self, *args, **kwargs):
+        # if not self.created:
+        #     print("Not been created yet")
+        # else:
+        #     print("Being updated")
+        super(ModelDifferance, self).save(*args, **kwargs)
+
+    class Meta:
+        abstract = True

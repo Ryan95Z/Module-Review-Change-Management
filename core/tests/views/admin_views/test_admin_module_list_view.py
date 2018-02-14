@@ -40,7 +40,6 @@ class TestAdminModuleListView(AdminViewTestCase):
             module_name="Software Engineering Project",
             module_credits=40,
             module_level="L3",
-            module_year="Year 3",
             semester="Double Semester",
             delivery_language="English",
             module_leader=self.user
@@ -51,7 +50,6 @@ class TestAdminModuleListView(AdminViewTestCase):
             module_name="Emerging Technologies",
             module_credits=20,
             module_level="L3",
-            module_year="Year 3",
             semester="Sprint Semester",
             delivery_language="English",
             module_leader=self.user
@@ -62,7 +60,6 @@ class TestAdminModuleListView(AdminViewTestCase):
             module_name="Project and Change Management",
             module_credits=20,
             module_level="L3",
-            module_year="Year 3",
             semester="Sprint Semester",
             delivery_language="English",
             module_leader=self.user

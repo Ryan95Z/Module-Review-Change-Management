@@ -31,24 +31,25 @@
 			<ul>
 				{% for entry in object_list %}
 					<li class="timeline-item">
-						<div class="timeline-entry">
+						<div class="timeline-entry entry-{{ entry.entry_type|lower }}">
 							<div class="timeline-header">
 								<h5>
 									<i>{{ entry.title }}</i> <time>{{ entry.created|date:"SHORT_DATE_FORMAT" }}</time>
 								</h5>
 							</div>
-							<div class="timeline-content">
-								{% autoescape off %}
-								{{ entry.changes|covert_markdown }}
-								{% endautoescape %}
-							</div>
-							<div class="timeline-actions">
-								{% if entry.status == 'Draft' %}
-									<a href="{% url 'entry_edit' entry.module_code entry.pk %}">
-										<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-									</a>
-								{% endif %}
-							
+							<div class="entry-{{ entry.status|lower }}">
+								<div class="timeline-content">
+									{% autoescape off %}
+									{{ entry.changes|covert_markdown }}
+									{% endautoescape %}
+								</div>
+								<div class="timeline-actions">
+									<!-- {% if entry.status == 'Draft' %}
+										<a href="{% url 'entry_edit' entry.module_code entry.pk %}">
+											<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+										</a>
+									{% endif %} -->
+								</div>
 							</div>
 						</div>
 					</li>

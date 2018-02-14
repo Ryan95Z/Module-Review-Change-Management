@@ -7,6 +7,12 @@ ENTRY_STATUS = (
     ('Confirmed', 'Confirmed')
 )
 
+ENTRY_TYPE = (
+    ('Generic', 'Generic'),
+    ('Init', 'Init'),
+    ('Update', 'Update')
+)
+
 
 class TimelineEntry(models.Model):
     """
@@ -22,6 +28,12 @@ class TimelineEntry(models.Model):
         max_length=9,
         choices=ENTRY_STATUS,
         default='Draft'
+    )
+
+    entry_type = models.CharField(
+        max_length=6,
+        choices=ENTRY_TYPE,
+        default="Generic"
     )
 
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
