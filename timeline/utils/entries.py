@@ -1,85 +1,93 @@
-import markdown
-from timeline.models import TimelineEntry
 from core.models import Module, User
+from timeline.models import TimelineEntry
 from abc import ABC, abstractmethod
+from timeline.utils.factory import EntryFactory
 
 
 class BaseEntry(ABC):
     """
-    Abstract base class for various types of entries in the
-    module timeline.
+    Base class for entry types
     """
-    def __init__(self, module):
-        if module is None:
-            raise ValueError("module must not be none")
+    def __init__(self, model):
+        # public variables
+        self.model = model
+        self.title = None
 
-        # public instance properties
-        self.module = module
-        self.model = TimelineEntry
-
-        # extract all possible field names
-        self.fields = [field.name for field in Module._meta.get_fields()]
+        # protected variable
+        self._tl_entry = TimelineEntry
 
     @abstractmethod
-    def create(self):
+    def create(self, instance):
         """
-        Abstract method for creating the entry
+        Abstract method to create an entry on the timeline.
+        Requires an instance as a parameter.
         """
         pass
 
+    @abstractmethod
+    def factory(self):
+        """
+        Abstract method that is used to
+        create new objects when passed to the factory.
+        """
+        pass
+
+    def _extract_fields(self):
+        """
+        Protected method to extract all
+        of the field names from the model assigned
+        to the class.
+        """
+        fields = [field.name for field in self.model._meta.get_fields()]
+        return fields
+
 
 class InitEntry(BaseEntry):
-    def __init__(self, module):
-        super(InitEntry, self).__init__(module)
-        self.title = "{} created".format(module.module_code)
-        self.changes = None
+    def __init__(self, model):
+        super(InitEntry, self).__init__(model)
+        self.title = "{} created"
 
-    def create(self):
-        """
-        Method to create an init entry in the timeline for a module.
-        Returns the entry that was created.
-        """
-
-        md = "{} contains currently:\n\n".format(self.module.module_name)
-        for field in self.fields:
+    def create(self, instance):
+        fields = self._extract_fields()
+        title = self.title.format(instance.module_code)
+        md = ""
+        for field in fields:
             try:
-                value = getattr(self.module, field)
+                value = getattr(instance, field)
                 field_string = field.replace("_", " ")
                 md += "* {}: {}\n".format(field_string, value)
             except AttributeError:
                 pass
-        self.changes = md
-        entry = self.model.objects.create(
-            title=self.title,
+        entry = self._tl_entry.objects.create(
+            title=title,
             changes=md,
-            module=self.module
+            status="Confirmed",
+            module=instance
         )
         return entry
 
-
-class UpdateEntry(BaseEntry):
-    def __init__(self, module):
-        super(UpdateEntry, self).__init__(module)
-        self.title = "Changes to {}".format(module.module_code)
-        self.changes = None
-
-    def create(self):
+    def factory(self):
         """
-        Method to create an update entry in the timeline for a module.
-        Returns the entry that was created.
+        Factory implementation to create object
         """
+        return self.__class__(self.model)
 
-        # check for changes in model
-        diff = self.module.differences()
-        md = "Changes to {}:\n\n".format(self.module.module_code)
+
+class UpdatedEntry(BaseEntry):
+    def __init__(self, model):
+        super(UpdatedEntry, self).__init__(model)
+        self.title = "Changes to {}:\n\n"
+
+    def create(self, instance):
+        fields = self._extract_fields()
+        diff = instance.differences()
+        title = self.title.format(instance.module_code)
 
         entry = None
-
-        # if there are changes
+        md = ""
         if bool(diff):
 
-            # loop through changes and process
-            # into markdown
+            # loop through changes and process into markdown
             for field, values in diff.items():
                 field_str = field.replace("_", " ")
                 orignal = values[0]
@@ -94,12 +102,21 @@ class UpdateEntry(BaseEntry):
 
                 md += "* {}: {} => {}\n".format(field_str, orignal, updated)
 
-            self.changes = md
-
-            entry = self.model.objects.create(
-                title=self.title,
+            entry = self._tl_entry.objects.create(
+                title=title,
                 changes=md,
-                module=self.module
+                module=instance
             )
             return entry
         return entry
+
+    def factory(self):
+        """
+        Factory implementation to create object
+        """
+        return self.__class__(self.model)
+
+
+# register the classes to the factory
+EntryFactory.register(InitEntry, "init", Module)
+EntryFactory.register(UpdatedEntry, "update", Module)

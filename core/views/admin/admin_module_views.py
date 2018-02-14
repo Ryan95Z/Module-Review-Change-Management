@@ -7,8 +7,6 @@ from core.views.mixins import AdminTestMixin
 from core.models import Module
 from core.forms import SearchForm
 
-from timeline.utils.factory import EntryFactory
-
 
 class AdminModuleListView(AdminTestMixin, ListView):
     """

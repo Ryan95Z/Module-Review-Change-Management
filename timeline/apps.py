@@ -6,3 +6,4 @@ class TimelineConfig(AppConfig):
 
     def ready(self):
         import timeline.utils.signals
+        import timeline.utils.entries

@@ -25,6 +25,7 @@ class TimelineEntry(models.Model):
     )
 
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
+    approved_by = models.ForeignKey(User, blank=True, null=True)
 
     def __str__(self):
         return "{}@{}".format(self.title, self.created)
@@ -42,6 +43,12 @@ class TimelineEntry(models.Model):
         associated with the entry.
         """
         return self.module.module_name
+
+    def approver_username(self):
+        return self.approved_by.username
+
+    def approver_name(self):
+        return self.approved_by.get_full_name()
 
     class Meta:
         ordering = ['-created']
