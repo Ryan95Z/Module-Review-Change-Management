@@ -39,6 +39,9 @@
 			<button type="submit" class="btn btn-primary">{{ form_type }}</button>
 			<a href="{% url 'all_modules'%}" class="btn btn-danger">Cancel</a>
 		</form>
+		{% if changes %}
+			<p>This module has {{ changes }} that need to be commited.</p>
+		{% endif %}
 	</div>
 </div>
 {% endblock %}

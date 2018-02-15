@@ -44,6 +44,15 @@
 									{% endautoescape %}
 								</div>
 								<div class="timeline-actions">
+									<form action="{% url 'approve_entry' module_code entry.id %}" method="POST">
+									{% csrf_token %}
+									{% if entry.status == 'Draft' %}
+										<button type="submit" class="btn btn-sm btn-warning">Approve</button>
+										
+									{% elif entry.status == 'Staged' %}
+										<button type="submit" class="btn btn-sm btn-success">Approve</button>
+									{% endif %}
+									</form>
 									<!-- {% if entry.status == 'Draft' %}
 										<a href="{% url 'entry_edit' entry.module_code entry.pk %}">
 											<i class="fa fa-pencil-square-o" aria-hidden="true"></i>

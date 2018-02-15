@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms.models import model_to_dict
+from timeline.utils.factory import EntryFactory
 
 
 class ModelDifferance(models.Model):
@@ -40,14 +41,20 @@ class ModelDifferance(models.Model):
         """
         Returns boolean on if there are any changes.
         """
-        return bool(self.difference())
+        return bool(self.differences())
 
     def save(self, *args, **kwargs):
-        # if not self.created:
-        #     print("Not been created yet")
-        # else:
-        #     print("Being updated")
-        super(ModelDifferance, self).save(*args, **kwargs)
+        override_update = kwargs.pop('override_update', False)
+        save_changes = True
+        if not self.created:
+            EntryFactory.makeEntry("init", self)
+        else:
+            if not override_update:
+                EntryFactory.makeEntry("update", self)
+                save_changes = not bool(self.hasDifferences())
+
+        if save_changes:
+            super(ModelDifferance, self).save(*args, **kwargs)
 
     class Meta:
         abstract = True

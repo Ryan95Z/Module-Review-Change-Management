@@ -5,6 +5,8 @@ from django.views.generic.edit import UpdateView
 from django.shortcuts import redirect
 
 from timeline.models import TimelineEntry
+from timeline.utils.changes import process_changes
+from django.http import HttpResponse
 
 
 class TimelineListView(ListView):
@@ -67,3 +69,22 @@ class TimelineUpdateView(UpdateView):
     def get_success_url(self):
         kwargs = {'module_pk': self.object.module_code()}
         return reverse('module_timeline', kwargs=kwargs)
+
+
+class TimelineUpdateStatus(View):
+    def post(request, *args, **kwargs):
+        entry_pk = kwargs['pk']
+        module_pk = kwargs['module_pk']
+
+        response_kwargs = {'module_pk': module_pk}
+
+        entry = TimelineEntry.objects.get(pk=entry_pk)
+        if entry.status == 'Draft':
+            entry.status = 'Staged'
+        elif entry.status == 'Staged':
+            process_changes(entry_pk)
+            entry.status = 'Confirmed'
+        else:
+            pass
+        entry.save()
+        return redirect(reverse('module_timeline', kwargs=response_kwargs))

@@ -46,7 +46,7 @@ class BaseEntry(ABC):
         cls_name = instance.__class__.__name__
         for field, values in changes.items():
             current = values[0]
-            change = values[0]
+            change = values[1]
 
             TableChange.objects.create(
                 changes_for_model=cls_name,
