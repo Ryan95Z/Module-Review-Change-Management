@@ -6,6 +6,7 @@ from django.db.models import Q
 from core.views.mixins import AdminTestMixin
 from core.models import Module
 from core.forms import SearchForm
+from timeline.utils.changes import have_changes
 
 
 class AdminModuleListView(AdminTestMixin, ListView):
@@ -63,6 +64,7 @@ class AdminModuleUpdateView(AdminTestMixin, UpdateView):
         context = super(AdminModuleUpdateView, self).get_context_data(**kwargs)
         context['form_url'] = reverse('update_module', kwargs=kwargs)
         context['form_type'] = 'Update'
+        context['changes'] = have_changes(self.object.module_code)
         return context
 
     def get_success_url(self):
