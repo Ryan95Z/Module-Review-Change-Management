@@ -11,6 +11,8 @@ urlpatterns = [
     url(r'(?P<module_pk>[A-Za-z0-9]+)/update/(?P<pk>[0-9]+)/$',
         login_required(TimelineUpdateView.as_view()), name="entry_edit"),
 
+    # view to cause changes to be made to the model that the
+    # timeline is assigned
     url(r'(?P<module_pk>[A-Za-z0-9]+)/approve/(?P<pk>[0-9]+)/$',
         login_required(TimelineUpdateStatus.as_view()), name="approve_entry"),
 ]

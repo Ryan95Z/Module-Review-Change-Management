@@ -72,13 +72,31 @@ class TimelineUpdateView(UpdateView):
 
 
 class TimelineUpdateStatus(View):
-    def post(request, *args, **kwargs):
+    """
+    View to enable a timeline entry to be updated,
+    which will push the changes in the model it is monitoring.
+    """
+
+    def get(self, request, *args, **kwargs):
+        """
+        Get method to return user to the timeline,
+        if they attempt to access the view.
+        """
+        return redirect(redirect(self.__get_url(**kwargs)))
+
+    def post(self, request, *args, **kwargs):
+        """
+        Post method to take the current entry and
+        move it to the next status. If confirmed from
+        being at status 'Staged', it will make the changes
+        to the model.
+        """
         entry_pk = kwargs['pk']
         module_pk = kwargs['module_pk']
 
-        response_kwargs = {'module_pk': module_pk}
-
+        # get the current timeline entry.
         entry = TimelineEntry.objects.get(pk=entry_pk)
+
         if entry.status == 'Draft':
             entry.status = 'Staged'
         elif entry.status == 'Staged':
@@ -87,4 +105,14 @@ class TimelineUpdateStatus(View):
         else:
             pass
         entry.save()
-        return redirect(reverse('module_timeline', kwargs=response_kwargs))
+        return redirect(self.__get_url(**kwargs))
+
+    """
+    Private Methods
+    """
+    def __get_url(self, **kwargs):
+        """
+        Method to get the url once finished processing.
+        """
+        kwargs.pop('pk', '')
+        return reverse('module_timeline', kwargs=kwargs)

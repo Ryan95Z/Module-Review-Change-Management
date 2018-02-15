@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse
 from core.tests.views.admin_views.admin_test_case import AdminViewTestCase
 from core.models import Module, ModuleManager
+from timeline.utils.changes import have_changes
 
 
 class TestAdminModuleUpdateView(AdminViewTestCase):
@@ -46,11 +47,13 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
 
     def test_valid_post_update_view(self):
         """
-        Test case for valid post request
+        Test case for valid post request. Since introducting
+        the timeline, it will freeze the changes, until they have been
+        confirmed for processing.
         """
         data = {
-            'module_code': 'CM3302',
-            'module_name': 'Software Engineering Project',
+            'module_code': 'CM3301',
+            'module_name': 'Software Engineering',
             'module_credits': 40,
             'module_level': 'L3',
             'semester': 'Double Semester',
@@ -60,15 +63,15 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
 
         self.run_valid_post_view(self.url, data)
 
-        # test that the module has been updated
+        # test that the module has not been updated and
+        # that changes do exist.
 
-        # TODO: Fix test once updated code has been added
-        # This has occured from blocking saves if data changed
+        module = Module.objects.get(module_code='CM3301')
+        self.assertEquals(module.module_code, data['module_code'])
+        self.assertEquals(module.module_leader, self.user)
 
-        # module = Module.objects.get(module_code='CM3302')
-        # self.assertEquals(module.module_code, data['module_code'])
-        # self.assertEquals(module.semester, data['semester']),
-        # self.assertEquals(module.module_leader, self.user)
+        n_changes = have_changes('CM3301')
+        self.assertEquals(n_changes, 2)
 
     def test_invalid_post_with_some_empty_data(self):
         """
