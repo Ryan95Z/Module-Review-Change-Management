@@ -35,84 +35,71 @@
         <hr>
         <h5>Module Code: {{ object.module_code }} ({{ object.module_name }})</h5>
         <hr>
-        <div id="accordion">
-            <div class="card">
-                <div class="card-header" id="soc-heading">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#soc-collapse" aria-expanded="true" aria-controls="soc-collapse">
-                    1. Summary of Changes
-                    </button>
-                </h5>
-                </div>
-            
-                <div id="soc-collapse" class="collapse show" aria-labelledby="soc-heading" data-parent="#accordion">
-                <div class="card-body">
-                    Please indicate where changes to the module description have been proposed by completing the checkbox
-                    and all fields that apply.    
-                </div>
-                </div>
+        <div class="card">
+            <div class="card-header" data-toggle="collapse" data-target="#soc-collapse" id="soc-heading" aria-expanded="true" aria-controls="soc-collapse" style="cursor:pointer">
+            <h6 class="mb-0">
+                1. Summary of Changes
+            </h6>
             </div>
-            <div class="card">
-                <div class="card-header" id="mot-heading">
-                <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#mot-collapse" aria-expanded="false" aria-controls="mot-collapse">
-                    2. Methods of Teaching
-                    </button>
-                </h5>
-                </div>
-                <div id="mot-collapse" class="collapse" aria-labelledby="mot-heading" data-parent="#accordion">
-                <div class="card-body">
-                    Please provide accurate figures for each teaching activity. This information will be used for
-                    timetabling, workload modelling and the School's KIS return, so it is essential that it is correct. One
-                    credit point equates to 10 learning hours.
-                </div>
-                </div>
+            <div id="soc-collapse" class="collapse show" aria-labelledby="soc-heading" data-parent="#accordion">
+            <div class="card-body">
+                Please indicate where changes to the module description have been proposed by completing the checkbox
+                and all fields that apply.    
             </div>
-            <div class="card">
-                <div class="card-header" id="ts-heading">
-                <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#ts-collapse" aria-expanded="false" aria-controls="ts-collapse">
-                    3. Teaching Support
-                    </button>
-                </h5>
-                </div>
-                <div id="ts-collapse" class="collapse" aria-labelledby="ts-heading" data-parent="#accordion">
-                <div class="card-body">
-                    
-                </div>
-                </div>
             </div>
-            <div class="card">
-                <div class="card-header" id="assessment-heading">
-                <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#assessment-collapse" aria-expanded="false" aria-controls="assessment-collapse">
-                    4. Assessments
-                    </button>
-                </h5>
-                </div>
-                <div id="assessment-collapse" class="collapse" aria-labelledby="assessment-heading" data-parent="#accordion">
-                <div class="card-body">
-                    Please provide data for all exams and assignments below (see guidance note 4). Total weighting
-                    must equal 100%. Durations for coursework assessments should be realistic estimates of the time
-                    required to complete the assessment.    
-                </div>
-                </div>
+        </div>
+        <div class="card">
+            <div class="card-header" id="mot-heading" data-toggle="collapse" data-target="#mot-collapse" aria-expanded="false" aria-controls="mot-collapse" style="cursor:pointer">
+            <h6 class="mb-0">
+                2. Methods of Teaching
+            </h6>
             </div>
-            <div class="card">
-                <div class="card-header" id="swlr-heading">
-                <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#swlr-collapse" aria-expanded="false" aria-controls="swlr-collapse">
-                    5. Software and Lab Requirements
-                    </button>
-                </h5>
-                </div>
-                <div id="swlr-collapse" class="collapse" aria-labelledby="swlr-heading" data-parent="#accordion">
-                <div class="card-body">
-                    Please provide details of the software and labs you will require. You should only list specific
-                    applications or version numbers where it is strictly necessary - for example, “text editor” is
-                    sufficient detail if any text editor will do, or “Python” if either of 2.* or 3.* are ok.    
-                </div>
-                </div>
+            <div id="mot-collapse" class="collapse show" aria-labelledby="mot-heading" data-parent="#accordion">
+            <div class="card-body">
+                Please provide accurate figures for each teaching activity. This information will be used for
+                timetabling, workload modelling and the School's KIS return, so it is essential that it is correct. One
+                credit point equates to 10 learning hours.
+            </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" id="ts-heading" data-toggle="collapse" data-target="#ts-collapse" aria-expanded="false" aria-controls="ts-collapse" style="cursor:pointer">
+            <h6 class="mb-0">
+                3. Teaching Support
+            </h6>
+            </div>
+            <div id="ts-collapse" class="collapse show" aria-labelledby="ts-heading" data-parent="#accordion">
+            <div class="card-body">
+                
+            </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" id="assessment-heading" data-toggle="collapse" data-target="#assessment-collapse" aria-expanded="false" aria-controls="assessment-collapse" style="cursor:pointer">
+            <h6 class="mb-0">
+                4. Assessments
+            </h6>
+            </div>
+            <div id="assessment-collapse" class="collapse show" aria-labelledby="assessment-heading" data-parent="#accordion">
+            <div class="card-body">
+                Please provide data for all exams and assignments below (see guidance note 4). Total weighting
+                must equal 100%. Durations for coursework assessments should be realistic estimates of the time
+                required to complete the assessment.    
+            </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" id="swlr-heading" data-toggle="collapse" data-target="#swlr-collapse" aria-expanded="false" aria-controls="swlr-collapse" style="cursor:pointer">
+            <h6 class="mb-0">
+                5. Software and Lab Requirements
+            </h6>
+            </div>
+            <div id="swlr-collapse" class="collapse show" aria-labelledby="swlr-heading" data-parent="#accordion">
+            <div class="card-body">
+                Please provide details of the software and labs you will require. You should only list specific
+                applications or version numbers where it is strictly necessary - for example, “text editor” is
+                sufficient detail if any text editor will do, or “Python” if either of 2.* or 3.* are ok.    
+            </div>
             </div>
         </div>
 	</div>
