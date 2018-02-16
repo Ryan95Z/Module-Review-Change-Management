@@ -44,10 +44,12 @@ class LeaderModuleTrackingFormCreate(View):
         """
         POST method which submits the new tracking form
         """
-        teaching_hours_form = ModuleTeachingHoursForm(request.POST)
-        support_form = ModuleSupportForm(request.POST)
-        assessments_form = ModuleAssessmentsForm(request.POST)
-        software_form = ModuleSoftwareForm(request.POST)
+        module_code = kwargs.get('pk')
+
+        teaching_hours_form = self.teaching_hours_form(request.POST)
+        support_form = self.support_form(request.POST)
+        assessments_form = self.assessment_form(request.POST)
+        software_form = self.software_form(request.POST)
         
         teaching_hours_valid = teaching_hours_form.is_valid()
         support_valid = support_form.is_valid()
@@ -55,16 +57,32 @@ class LeaderModuleTrackingFormCreate(View):
         software_valid = software_form.is_valid()
 
         if teaching_hours_valid and support_valid and assessments_valid and software_valid:
-            module_code = request.context.pk
-            teaching_hours_form.module_code = module_code
-            support_form.module_code = module_code
-            assessments_form.module_code = module_code
-            software_form.module_code = module_code
+            module = Module.objects.get(pk=module_code)
+
+            new_teaching_hours_object = teaching_hours_form.save(commit=False)
+            new_support_object = support_form.save(commit=False)
+            new_assessment_object = assessments_form.save(commit=False)
+            new_software_object = software_form.save(commit=False)
+
+            new_teaching_hours_object.module_code = module
+            new_support_object.module_code = module
+            new_assessment_object.module_code = module
+            new_software_object.module_code = module
             
-            teaching_hours_form.save()
-            support_form.save()
-            assessments_form.save()
-            software_form.save()
+            new_teaching_hours_object.save()
+            new_support_object.save()
+            new_assessment_object.save()
+            new_software_object.save()
 
             return redirect('view_module_tracking_form', pk=module_code)
-
+        else:
+            print("not valid")
+            error_context = {
+                'pk': module_code,
+                'module': Module.objects.get(pk=module_code), 
+                'teaching_hours_form': teaching_hours_form,
+                'support_form': support_form,
+                'assessment_form': assessment_form,
+                'software_form': software_form
+            }
+            return render(request, 'module_tracking_form_new', context=error_context)

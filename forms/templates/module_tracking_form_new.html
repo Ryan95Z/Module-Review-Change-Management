@@ -7,7 +7,8 @@
 
 {% block main %}
 
-<form action="{% url 'new_module_tracking_form' module.module_code %}" method="POST">
+<form action="" method="POST">
+{% csrf_token %}
 
 <div class="row">
 	<ul class="nav nav-pills">
