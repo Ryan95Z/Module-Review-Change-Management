@@ -15,13 +15,13 @@
 				Tracking Form
 			</a>
 			<div class="dropdown-menu">
-				<a class="dropdown-item" href="{% url 'view_module_description' pk=object.pk %}">Module Description</a>
+				<a class="dropdown-item" href="{% url 'view_module_description' object.module_code %}">Module Description</a>
 				<a class="dropdown-item active" href="#">Tracking Form</a>
 			</div>
 			<!--<a class="nav-link active" href="{% url 'view_module_description' pk=object.pk %}">View</a>-->
 		</li>
 		<li class="nav-item">
-			<a class="nav-link" href="{% url 'new_module_tracking_form' pk=object.pk %}">New Tracking Form</a>
+			<a class="nav-link" href="{% url 'new_module_tracking_form' object.module_code %}">New Tracking Form</a>
 		</li>
 		<li class="nav-item">
 			<a class="nav-link" href="#">Submit</a>
