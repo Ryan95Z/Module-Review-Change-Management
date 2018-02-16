@@ -38,14 +38,14 @@ class ModuleAssessment(models.Model):
     """
 
     assessment_id = models.AutoField(primary_key=True)
-    assessment_title = models.CharField(max_length=100)
-    assessment_type = models.CharField(max_length=50)
-    assessment_weight = models.PositiveSmallIntegerField(validators=[MaxValueValidator(100)])
-    assessment_duration = models.PositiveSmallIntegerField()
-    assessment_hand_out = models.CharField(choices=HAND_OUT_IN_OPTIONS, max_length=15)
-    assessment_hand_in = models.CharField(choices=HAND_OUT_IN_OPTIONS, max_length=15)
-    assessment_semester = models.CharField(choices=SEMESTER_OPTIONS, max_length=15)
-    learning_outcomes_covered = models.CharField(max_length=500)
+    assessment_title = models.CharField(max_length=100, verbose_name="Title")
+    assessment_type = models.CharField(max_length=50, verbose_name="Type")
+    assessment_weight = models.PositiveSmallIntegerField(validators=[MaxValueValidator(100)], verbose_name="Weighting")
+    assessment_duration = models.PositiveSmallIntegerField(verbose_name="Duration (hours)")
+    assessment_hand_out = models.CharField(choices=HAND_OUT_IN_OPTIONS, max_length=15, verbose_name="Hand out week")
+    assessment_hand_in = models.CharField(choices=HAND_OUT_IN_OPTIONS, max_length=15, verbose_name="Hand in week")
+    assessment_semester = models.CharField(choices=SEMESTER_OPTIONS, max_length=15, verbose_name="Semester")
+    learning_outcomes_covered = models.CharField(max_length=500, verbose_name="Learning Outcomes Covered")
     module_code = models.ForeignKey(Module, on_delete=models.CASCADE)
 
     def __str__(self):

@@ -7,12 +7,16 @@ class ModuleSupport(models.Model):
     Model which represents the support information related to a module
     """
     support_id = models.AutoField(primary_key=True)
-    lab_support_required = models.BooleanField(default=False)
-    lab_support_skills = models.CharField(blank=True, max_length=500)
-    lab_support_notes = models.TextField(blank=True, max_length=1000)
-    tutorial_support_required = models.BooleanField(default=False)
-    tutorial_support_skills = models.CharField(blank=True, max_length=500)
-    tutorial_support_notes = models.TextField(blank=True, max_length=1000)
+    lab_support_required = models.BooleanField(default=False, 
+        verbose_name="Do you require PhD student support for your labs?")
+    lab_support_skills = models.CharField(blank=True, max_length=500, 
+        verbose_name="What skills will lab tutors require?")
+    lab_support_notes = models.TextField(blank=True, max_length=1000, verbose_name="Notes")
+    tutorial_support_required = models.BooleanField(default=False, 
+        verbose_name="Do you require Phd student support for your tutorials?")
+    tutorial_support_skills = models.CharField(blank=True, max_length=500, 
+        verbose_name="What skills will the tutors require?")
+    tutorial_support_notes = models.TextField(blank=True, max_length=1000, verbose_name="Notes")
     module_code = models.OneToOneField(Module, on_delete=models.CASCADE)
 
     def __str__(self):
