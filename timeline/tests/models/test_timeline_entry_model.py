@@ -1,36 +1,16 @@
-from django.test import TestCase
+from .base_timeline_model_testcase import BaseTimelineModelTestCase
 from django.db.utils import IntegrityError
 from core.models import User, Module
 from timeline.models import TimelineEntry
 
 
-class TestTimelineEntry(TestCase):
+class TestTimelineEntry(BaseTimelineModelTestCase):
     """
     Test case for the TimelineEntry model
     """
     def setUp(self):
         super(TestTimelineEntry, self).setUp()
         self.model = TimelineEntry
-
-        # create a test user
-        self.user = User.objects.create_user(
-            username="test",
-            first_name="test",
-            last_name="test",
-            email="test@test.com",
-            password="password"
-        )
-
-        # create a test module
-        self.module = Module.objects.create_module(
-            module_code="CM1234",
-            module_name="Software Engineering",
-            module_credits=40,
-            module_level="L6",
-            semester="Double Semester",
-            delivery_language="English",
-            module_leader=self.user
-        )
 
     def test_create_valid_model(self):
         """
@@ -42,7 +22,7 @@ class TestTimelineEntry(TestCase):
         entry_type = "Generic"
         module = self.module
 
-        entry = TimelineEntry.objects.create(
+        entry = self.model.objects.create(
             title=title,
             changes=changes,
             status=status,
@@ -78,7 +58,7 @@ class TestTimelineEntry(TestCase):
         entry_type = "Random Entry"
         module = self.module
 
-        en1 = TimelineEntry.objects.create(
+        en1 = self.model.objects.create(
             title=title,
             changes=changes,
             status=status,
@@ -87,7 +67,7 @@ class TestTimelineEntry(TestCase):
             approved_by=self.user
         )
 
-        en2 = TimelineEntry.objects.create(
+        en2 = self.model.objects.create(
             title=title,
             changes=changes,
             status=status,
@@ -96,7 +76,7 @@ class TestTimelineEntry(TestCase):
             approved_by=self.user
         )
 
-        n_entries = len(TimelineEntry.objects.filter(module=self.module))
+        n_entries = len(self.model.objects.filter(module=self.module))
 
         # includes extra entry from creating the test module
         self.assertEquals(n_entries, 3)
@@ -115,7 +95,7 @@ class TestTimelineEntry(TestCase):
         entry_type = "Generic"
         module = self.module
 
-        entry = TimelineEntry.objects.create(
+        entry = self.model.objects.create(
             title=title,
             changes=changes,
             status=status,
@@ -130,11 +110,11 @@ class TestTimelineEntry(TestCase):
         self.module.delete()
 
         # check that entry has been removed
-        with self.assertRaises(TimelineEntry.DoesNotExist):
-            TimelineEntry.objects.get(id=entry_id)
+        with self.assertRaises(self.model.DoesNotExist):
+            self.model.objects.get(id=entry_id)
 
         # check that there are no entries
-        n_entries = len(TimelineEntry.objects.filter(module=self.module))
+        n_entries = len(self.model.objects.filter(module=self.module))
         self.assertEquals(n_entries, 0)
 
     def test_model_no_approver(self):
@@ -148,7 +128,7 @@ class TestTimelineEntry(TestCase):
         entry_type = "Generic"
         module = self.module
 
-        entry = TimelineEntry.objects.create(
+        entry = self.model.objects.create(
             title=title,
             changes=changes,
             status=status,
@@ -177,7 +157,7 @@ class TestTimelineEntry(TestCase):
         # check with None parameter it
         # still triggers an exception.
         with self.assertRaises(IntegrityError):
-            TimelineEntry.objects.create(
+            self.model.objects.create(
                 title=title,
                 changes=changes,
                 status=status,

@@ -1,9 +1,11 @@
 from django.db import models
 from timeline.models import TimelineEntry
-from core.models import Module
 
 
 class TableChange(models.Model):
+    """
+    Model to represent changes that are made in the timeline.
+    """
     changes_for_model = models.CharField(max_length=30)
     model_id = models.CharField(max_length=30)
     changes_field = models.CharField(max_length=30)
@@ -16,4 +18,8 @@ class TableChange(models.Model):
     )
 
     def related_module_code(self):
-        return self.entry.module_code
+        """
+        Method to get the module code for the assigned
+        changes.
+        """
+        return self.related_entry.module_code()
