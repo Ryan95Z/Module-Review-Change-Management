@@ -19,17 +19,24 @@
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="{% url 'view_module_description' module.module_code %}">Module Description</a>
 				<a class="dropdown-item active" href="#">Tracking Form</a>
-			</div>
-		</li>
+            </div>
+        </li>
+        {% if not edit_form %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'new_module_tracking_form' pk=pk %}">New Tracking Form</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'view_module_tracking_form' pk=pk %}">Back</a>
+        </li>
+        {% endif %}
 	</ul>
 </div>
 
 <div class="row">
 	<div class="col-md-12">
-        <h2>Module Description Tracking Form</h2>
-        <hr>
-        <h6>Module Code: {{ module.module_code }} ({{ module.module_name }})</h6>
-        <hr>
+        <h2>Module Description Tracking Form {% if edit_form %} (Edit Mode) {% else %} (View Mode){% endif %}</h2><hr>
+        <h6>Module Code: {{ module.module_code }} ({{ module.module_name }})</h6><hr>
             <div class="card">
                 <div class="card-header" data-toggle="collapse" data-target="#soc-collapse" id="soc-heading" aria-expanded="true" aria-controls="soc-collapse" style="cursor:pointer">
                 <h6 class="mb-0">
@@ -106,7 +113,9 @@
                 </div>
                 </div>
             </div>
+        {% if edit_form %}
         <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
+        {% endif %}
 	</div>
 </div>
 
