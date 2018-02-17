@@ -57,9 +57,13 @@ class TimelineEntry(models.Model):
         return self.module.module_name
 
     def approver_username(self):
+        if self.approved_by is None:
+            return None
         return self.approved_by.username
 
     def approver_name(self):
+        if self.approved_by is None:
+            return None
         return self.approved_by.get_full_name()
 
     class Meta:
