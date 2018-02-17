@@ -4,22 +4,16 @@ from core.views.mixins import LoggedInTestMixin
 from django.shortcuts import render, redirect
 
 from core.models import Module
+from forms.models import ModuleTeaching, ModuleSupport, ModuleAssessment, ModuleSoftware
 from forms.forms import ModuleTeachingHoursForm, ModuleSupportForm, ModuleAssessmentsForm, ModuleSoftwareForm
+from forms.utils.tracking_form_utils import populate_tracking_forms
 
-class LeaderModuleTrackingFormView(DetailView):
+class LeaderModuleTrackingForm(View):
     """
-    View a module tracking form
-    """
-    
-    model = Module
-    template_name="module_tracking_form_view.html"
-
-class LeaderModuleTrackingFormCreate(View):
-    """
-    Allows module leaders to create new module tracking forms
+    Allows module leaders to view and create tracking forms
     """
     def __init__(self):
-        super(LeaderModuleTrackingFormCreate, self).__init__()
+        super(LeaderModuleTrackingForm, self).__init__()
         self.teaching_hours_form = ModuleTeachingHoursForm
         self.support_form = ModuleSupportForm
         self.assessment_form = ModuleAssessmentsForm
@@ -29,8 +23,15 @@ class LeaderModuleTrackingFormCreate(View):
         """
         GET method which provides the tracking form
         """
+        form_type = kwargs.get('form_type', 'view')
+        edit_form = True if form_type == 'new' else False
+
+        if not edit_form:
+            self.teaching_hours_form, self.support_form, self.assessment_form, self.software_form = populate_tracking_forms(self.kwargs.get('pk'))
+
         module = Module.objects.get(pk=self.kwargs.get('pk'))
         context = {
+            'edit_form': edit_form,
             'pk': module.module_code,
             'module': module, 
             'teaching_hours_form': self.teaching_hours_form,
@@ -38,7 +39,7 @@ class LeaderModuleTrackingFormCreate(View):
             'assessment_form': self.assessment_form,
             'software_form': self.software_form
         }
-        return render(request, 'module_tracking_form_new.html', context)
+        return render(request, 'module_tracking_form.html', context)
 
     def post(self, request, *args, **kwargs):
         """
@@ -76,8 +77,8 @@ class LeaderModuleTrackingFormCreate(View):
 
             return redirect('view_module_tracking_form', pk=module_code)
         else:
-            print("not valid")
             error_context = {
+                'editForm': True,
                 'pk': module_code,
                 'module': Module.objects.get(pk=module_code), 
                 'teaching_hours_form': teaching_hours_form,
