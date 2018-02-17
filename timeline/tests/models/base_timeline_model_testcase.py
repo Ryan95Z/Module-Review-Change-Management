@@ -4,6 +4,8 @@ from core.models import User, Module
 
 class BaseTimelineModelTestCase(TestCase):
         def setUp(self):
+            super(BaseTimelineModelTestCase, self).setUp()
+
             # create a test user
             self.user = User.objects.create_user(
                 username="test",

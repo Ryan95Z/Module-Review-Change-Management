@@ -46,6 +46,7 @@ class LoggedInTestCase(TestCase):
             password='password'
         )
 
+
 class ModuleTestCase(TestCase):
     """
     Custom base test case which can be used
@@ -56,7 +57,7 @@ class ModuleTestCase(TestCase):
 
         manager = UserManager()
         manager.model = User
-        
+
         # Create a sample module leader
         self.module_leader = manager.create_user(
             username='moduleleader',
@@ -68,24 +69,24 @@ class ModuleTestCase(TestCase):
 
         # Create a test module
         self.module = Module.objects.create(
-            module_code = "CMXXXX",
-            module_name = "Test Module",
-            module_credits = "10",
-            module_level = "L1",
-            semester = "Autumn Semester",
-            delivery_language = "English",
-            module_leader = self.module_leader
+            module_code="CMXXXX",
+            module_name="Test Module",
+            module_credits="10",
+            module_level="L1",
+            semester="Autumn Semester",
+            delivery_language="English",
+            module_leader=self.module_leader
         )
 
         # Create a second test module
         self.module_two = Module.objects.create(
-            module_code = "CMYYYY",
-            module_name = "Test Module 2",
-            module_credits = "10",
-            module_level = "L1",
-            semester = "Autumn Semester",
-            delivery_language = "English",
-            module_leader = self.module_leader
+            module_code="CMYYYY",
+            module_name="Test Module 2",
+            module_credits="10",
+            module_level="L1",
+            semester="Autumn Semester",
+            delivery_language="English",
+            module_leader=self.module_leader
         )
 
 
