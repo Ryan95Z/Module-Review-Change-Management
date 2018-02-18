@@ -64,7 +64,7 @@ class AdminModuleUpdateView(AdminTestMixin, UpdateView):
         context = super(AdminModuleUpdateView, self).get_context_data(**kwargs)
         context['form_url'] = reverse('update_module', kwargs=kwargs)
         context['form_type'] = 'Update'
-        context['changes'] = have_changes(self.object.module_code)
+        context['changes'] = have_changes(self.object.module_code, self.object)
         return context
 
     def get_success_url(self):

@@ -2,10 +2,10 @@ from django.urls import reverse
 from django.views.generic import View
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 
 from timeline.models import TimelineEntry
-from timeline.utils.changes import process_changes
+from timeline.utils.changes import process_changes, revert_changes
 from django.http import HttpResponse
 
 
@@ -71,18 +71,31 @@ class TimelineUpdateView(UpdateView):
         return reverse('module_timeline', kwargs=kwargs)
 
 
-class TimelineUpdateStatus(View):
+class TimelinePostViews(View):
     """
-    View to enable a timeline entry to be updated,
-    which will push the changes in the model it is monitoring.
+    Base View for making post requests to the
+    timeline.
     """
-
     def get(self, request, *args, **kwargs):
         """
         Get method to return user to the timeline,
         if they attempt to access the view.
         """
-        return redirect(redirect(self.__get_url(**kwargs)))
+        return redirect(redirect(self._get_url(**kwargs)))
+
+    def _get_url(self, **kwargs):
+        """
+        Method to get the url once finished processing.
+        """
+        kwargs.pop('pk', '')
+        return reverse('module_timeline', kwargs=kwargs)
+
+
+class TimelineUpdateStatus(TimelinePostViews):
+    """
+    View to enable a timeline entry to be updated,
+    which will push the changes in the model it is monitoring.
+    """
 
     def post(self, request, *args, **kwargs):
         """
@@ -95,7 +108,7 @@ class TimelineUpdateStatus(View):
         module_pk = kwargs['module_pk']
 
         # get the current timeline entry.
-        entry = TimelineEntry.objects.get(pk=entry_pk)
+        entry = get_object_or_404(TimelineEntry, pk=entry_pk)
 
         if entry.status == 'Draft':
             entry.status = 'Staged'
@@ -105,14 +118,30 @@ class TimelineUpdateStatus(View):
         else:
             pass
         entry.save()
-        return redirect(self.__get_url(**kwargs))
+        return redirect(self._get_url(**kwargs))
 
+
+class TimelineRevertStage(TimelinePostViews):
     """
-    Private Methods
+    View to allow uncommited changes to be pushed
+    back to the previous status before confirmed.
+    Once it is a draft, it will have changes deleted
+    with the entry.
     """
-    def __get_url(self, **kwargs):
+    def post(self, request, *args, **kwargs):
         """
-        Method to get the url once finished processing.
+        Post request to enable the rollback
         """
-        kwargs.pop('pk', '')
-        return reverse('module_timeline', kwargs=kwargs)
+        entry_pk = kwargs['pk']
+        module_pk = kwargs['module_pk']
+
+        entry = get_object_or_404(TimelineEntry, pk=entry_pk)
+        if entry.status == 'Draft':
+            revert_changes(entry_pk)
+            entry.delete()
+        elif entry.status == 'Staged':
+            entry.status = 'Draft'
+            entry.save()
+        else:
+            pass
+        return redirect(self._get_url(**kwargs))

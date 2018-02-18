@@ -7,12 +7,29 @@ from django.db.models import ForeignKey
 MODEL_LOCATION = 'core'
 
 
-def have_changes(model_pk):
-    changes = TableChange.objects.filter(model_id=model_pk)
+def have_changes(model_pk, model):
+    """
+    Function to return any changes that have not been
+    commited for a model instance
+    """
+    if len(str(model_pk)) < 1 or model is None:
+        raise ValueError("A valid model pk and model instance is required")
+
+    model_str = model.__class__.__name__
+    changes = TableChange.objects.filter(
+        model_id=model_pk,
+        changes_for_model=model_str
+    )
     return len(changes)
 
 
 def process_changes(entry_pk):
+    """
+    Processes the changes for an entry on the timeline.
+    """
+    if entry_pk < 1:
+        raise ValueError("entry pk needs to be freater than zero")
+
     changes = TableChange.objects.filter(related_entry=entry_pk)
     for change in changes:
         model = apps.get_model(
@@ -48,3 +65,20 @@ def process_changes(entry_pk):
         # remove the change entry
         change.delete()
     return True
+
+
+def revert_changes(entry_pk):
+    """
+    Function to remove changes for a entry in the timeline
+    """
+    if entry_pk < 1:
+        raise ValueError("entry pk needs to be freater than zero")
+
+    changes = TableChange.objects.filter(related_entry=entry_pk)
+
+    # check for changes. If there are, the delete each one.
+    if len(changes) > 0:
+        for change in changes:
+            change.delete()
+        return True
+    return False

@@ -15,4 +15,8 @@ urlpatterns = [
     # timeline is assigned
     url(r'(?P<module_pk>[A-Za-z0-9]+)/approve/(?P<pk>[0-9]+)/$',
         login_required(TimelineUpdateStatus.as_view()), name="approve_entry"),
+
+    # view to remove the changes that are being staged in the timeline
+    url(r'(?P<module_pk>[A-Za-z0-9]+)/revert/(?P<pk>[0-9]+)/$',
+        login_required(TimelineRevertStage.as_view()), name="revert_entry"),
 ]

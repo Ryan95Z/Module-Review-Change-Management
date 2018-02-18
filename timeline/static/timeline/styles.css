@@ -136,6 +136,11 @@
 	font-size: 20px;
 }
 
+.timeline ul > .timeline-item .timeline-entry .timeline-actions .timeline-approve,
+.timeline ul > .timeline-item .timeline-entry .timeline-actions .timeline-cancel {
+	display: inline-block;
+}
+
 /* Form to update timeline entry styles */
 .markdown-notice{
 	width: 100%;

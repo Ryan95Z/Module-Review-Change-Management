@@ -57,11 +57,17 @@ class TimelineEntry(models.Model):
         return self.module.module_name
 
     def approver_username(self):
+        """
+        Method to get the approver's username.
+        """
         if self.approved_by is None:
             return None
         return self.approved_by.username
 
     def approver_name(self):
+        """
+        Method to get the approver's fullname.
+        """
         if self.approved_by is None:
             return None
         return self.approved_by.get_full_name()
