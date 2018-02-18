@@ -7,7 +7,7 @@
 
 {% block main %}
 
-<form action="" method="POST">
+<form action="" method="POST" id="tracking-form">
 {% csrf_token %}
 
 <div class="row">
@@ -65,7 +65,14 @@
                     timetabling, workload modelling and the School's KIS return, so it is essential that it is correct. One
                     credit point equates to 10 learning hours. <br><br>
 
-                    {{ teaching_hours_form.as_p }}
+                    {% for field in teaching_hours_form %}
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label col-form-label-sm">{{field.label}}</label>
+                        <div class="col-sm-2">
+                            {{ field|add_css_class:"form-control form-control-sm"}}
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
                 </div>
             </div>
@@ -120,4 +127,11 @@
 </div>
 
 </form>
+{% endblock %}
+{% block scripts %}
+    {% if not edit_form %}
+    <script type="text/javascript">
+        $("#tracking-form :input").attr("disabled", true)
+    </script>
+    {% endif %}
 {% endblock %}
