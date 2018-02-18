@@ -1,3 +1,4 @@
+from django.urls import reverse
 from core.tests.common_test_utils import BaseViewTestCase, ModuleTestCase
 from timeline.models import TimelineEntry
 

@@ -14,7 +14,7 @@ class TestTimelineEntry(BaseTimelineModelTestCase):
 
     def test_create_valid_model(self):
         """
-        Unit test for creating a valid model
+        Test for creating a valid model
         """
         title = "Test Changes"
         changes = "Test changes to report"
@@ -49,7 +49,7 @@ class TestTimelineEntry(BaseTimelineModelTestCase):
 
     def test_model_one_to_many(self):
         """
-        Unit test for checking that a module
+        Test for checking that a module
         can have multiple entries in timeline.
         """
         title = "Test Changes"
@@ -86,7 +86,7 @@ class TestTimelineEntry(BaseTimelineModelTestCase):
 
     def test_module_cascade_delete(self):
         """
-        Unit test for checking that model
+        Test for checking that model
         entries are deleted in module is deleted
         """
         title = "Test Changes"
@@ -119,7 +119,7 @@ class TestTimelineEntry(BaseTimelineModelTestCase):
 
     def test_model_no_approver(self):
         """
-        Unit test for checking a entry can be made
+        Test for checking a entry can be made
         when no approver is provided.
         """
         title = "Test Changes"
@@ -146,7 +146,7 @@ class TestTimelineEntry(BaseTimelineModelTestCase):
 
     def test_invlid_model_no_module(self):
         """
-        Unit test for providing no module
+        Test for providing no module
         to create an entry
         """
         title = "Test Changes"
@@ -164,3 +164,40 @@ class TestTimelineEntry(BaseTimelineModelTestCase):
                 entry_type=entry_type,
                 module=None,
             )
+
+    def test_valid_model_extreme_changes_data(self):
+        """
+        Test to ensure that changes attribute can support
+        a large amount of data if required.
+        """
+        title = "Test Changes"
+        status = "Draft",
+        entry_type = "Generic"
+        module = self.module
+        changes = """
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit
+            Mauris rutrum eget justo ac pulvinar. Cras dolor nunc, euismod
+            tincidunt dignissim at, vestibulum nec tortor. Nunc et dolor
+            rhoncus ipsum condimentum volutpat. Pellentesque pulvinar pharetra
+            purus, ut cursus dui consectetur ac. Suspendisse et pharetra nunc.
+            Praesent porta, tellus a rutrum rutrum, purus magna gravida dui,
+            ut rhoncus sapien nisl nec nulla. Cras venenatis pharetra
+            dignissim. Fusce finibus lorem in sem commodo, ac sagittis quam
+            aliquam. Aenean justo ante, hendrerit ut sapien eget, tristique
+            scelerisque tellus. Donec sed egestas nunc. Curabitur ut erat id
+            puru malesuada ornare. Nullam a velit tempor dolor rutrum
+            convallis. Integer sollicitudin ut tellus nec venenatis.
+            Maecenas ac ullamcorper leo. Quisque vel augue non velit fringilla
+             fringilla.
+        """
+
+        entry = self.model.objects.create(
+            title=title,
+            changes=changes,
+            status=status,
+            entry_type=entry_type,
+            module=module,
+        )
+
+        self.maxDiff = None
+        self.assertEquals(entry.changes, changes)
