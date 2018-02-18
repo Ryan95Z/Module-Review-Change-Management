@@ -51,8 +51,8 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
         the timeline, it will freeze the changes, until they have been
         confirmed for processing.
         """
+        expected_name = 'Software Engineering Project'
         data = {
-            'module_code': 'CM3301',
             'module_name': 'Software Engineering',
             'module_credits': 40,
             'module_level': 'L3',
@@ -67,18 +67,19 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
         # that changes do exist.
 
         module = Module.objects.get(module_code='CM3301')
-        self.assertEquals(module.module_code, data['module_code'])
+
+        # check that old title remains
+        self.assertEquals(module.module_name, expected_name)
         self.assertEquals(module.module_leader, self.user)
 
         n_changes = have_changes('CM3301', module)
-        self.assertEquals(n_changes, 2)
+        self.assertEquals(len(n_changes), 2)
 
     def test_invalid_post_with_some_empty_data(self):
         """
         Test case for empty data in post request
         """
         data = {
-            'module_code': '',
             'module_name': '',
             'module_credits': 40,
             'module_level': '',
@@ -93,12 +94,10 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
         form_errors = context['form'].errors.as_data()
 
         # get the errors based on the empty values
-        code_err = form_errors['module_code'][0].__str__()
         name_err = form_errors['module_name'][0].__str__()
         level_err = form_errors['module_level'][0].__str__()
 
         # test we got the expected validation error
-        self.assertEquals(code_err, expected_validation_err)
         self.assertEquals(name_err, expected_validation_err)
         self.assertEquals(level_err, expected_validation_err)
 

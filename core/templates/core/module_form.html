@@ -20,28 +20,22 @@
 		<form action="{{ form_url }}" method="POST">
 			{% csrf_token %}
 			{% for field in form %}
-				{% if field|form_type == 'BooleanField' %}
-					<div class="form-check">
-			  			<label class="form-check-label">
-			    			{{ field|add_css_class:"form-control" }}
-			    			{{ field.label }}
-			    			{{ field.errors }}
-			  			</label>
-					</div>
-				{% else %}
-					<div class="form-group">
-						{{ field.label_tag }} 
+				<div class="form-group">
+					{{ field.label_tag }} 
+					{% if field.name in changes %}
+						{{ field|readonly_add_css_class:"form-control" }}
+						<ul>
+							<li>{{ field.label }} needs to be commited on timeline.</li>
+						</ul>
+					{% else %}
 						{{ field|add_css_class:"form-control" }}
-						<p>{{ field.errors.as_text }}</p>
-					</div>
-				{% endif %}
+					{% endif %}
+					{{ field.errors }}
+				</div>
 			{% endfor %}
 			<button type="submit" class="btn btn-primary">{{ form_type }}</button>
 			<a href="{% url 'all_modules'%}" class="btn btn-danger">Cancel</a>
 		</form>
-		{% if changes %}
-			<p>This module has {{ changes }} that need to be commited.</p>
-		{% endif %}
 	</div>
 </div>
 {% endblock %}

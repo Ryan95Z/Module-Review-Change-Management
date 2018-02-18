@@ -16,7 +16,7 @@ def have_changes(model_pk, model):
         model_id=model_pk,
         changes_for_model=model_str
     )
-    return len(changes)
+    return [c.changes_field for c in changes]
 
 
 def process_changes(entry_pk):

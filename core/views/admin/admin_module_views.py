@@ -56,7 +56,7 @@ class AdminModuleCreateView(AdminTestMixin, CreateView):
 
 class AdminModuleUpdateView(AdminTestMixin, UpdateView):
     model = Module
-    fields = ['module_code', 'module_name', 'module_credits', 'module_level',
+    fields = ['module_name', 'module_credits', 'module_level',
               'semester', 'delivery_language', 'module_leader']
 
     def get_context_data(self, **kwargs):
