@@ -8,6 +8,7 @@ class TableChange(models.Model):
     """
     changes_for_model = models.CharField(max_length=30)
     model_id = models.CharField(max_length=30)
+    model_app_label = models.CharField(max_length=30)
     changes_field = models.CharField(max_length=30)
     current_value = models.CharField(max_length=50)
     new_value = models.CharField(max_length=50)

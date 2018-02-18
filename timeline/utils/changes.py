@@ -2,10 +2,6 @@ from django.apps import apps
 from timeline.models import TableChange
 from django.db.models import ForeignKey
 
-# this is temporary for the time
-# until I make the timeline dynamic
-MODEL_LOCATION = 'core'
-
 
 def have_changes(model_pk, model):
     """
@@ -27,13 +23,13 @@ def process_changes(entry_pk):
     """
     Processes the changes for an entry on the timeline.
     """
-    if entry_pk < 1:
+    if int(entry_pk) < 1:
         raise ValueError("entry pk needs to be freater than zero")
 
     changes = TableChange.objects.filter(related_entry=entry_pk)
     for change in changes:
         model = apps.get_model(
-            app_label=MODEL_LOCATION,
+            app_label=change.model_app_label,
             model_name=change.changes_for_model
         )
 
@@ -71,7 +67,7 @@ def revert_changes(entry_pk):
     """
     Function to remove changes for a entry in the timeline
     """
-    if entry_pk < 1:
+    if int(entry_pk) < 1:
         raise ValueError("entry pk needs to be freater than zero")
 
     changes = TableChange.objects.filter(related_entry=entry_pk)

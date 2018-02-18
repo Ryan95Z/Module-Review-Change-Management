@@ -35,7 +35,6 @@ class ModelDifferance(models.Model):
             base_value = self.base[key]
             if base_value != value:
                 diff[key] = (base_value, value)
-        diff.pop('created', '')
         return diff
 
     def hasDifferences(self):

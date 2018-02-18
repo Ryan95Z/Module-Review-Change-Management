@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
+from django.db.models import ForeignKey
 from core.models import Module, User
 from timeline.models import TimelineEntry, TableChange
 from timeline.utils.factory import EntryFactory
+from timeline.utils.model import ModelDifferance
 
 
 class BaseEntry(ABC):
@@ -9,8 +11,13 @@ class BaseEntry(ABC):
     Base class for entry types
     """
     def __init__(self, model):
+        # check that model inherits ModelDifferance
+        if not issubclass(model, ModelDifferance):
+            ValueError("model needs to inherit from ModelDifferance")
+
         # public variables
         self.model = model
+        self.model_app_label = self.model._meta.app_label
         self.title = None
         self.type = "Generic"
 
@@ -33,16 +40,32 @@ class BaseEntry(ABC):
         """
         pass
 
+    """
+    Protected methods
+    """
     def _extract_fields(self):
         """
-        Protected method to extract all
+        Method to extract all
         of the field names from the model assigned
         to the class.
         """
         fields = [field.name for field in self.model._meta.get_fields()]
+        # remove created from fields as not needed for timline.
+        fields.remove('created')
         return fields
 
     def _process_changes(self, changes, entry, instance):
+        """
+        Method to process the changes for a timeline entry
+        """
+        if instance is None or not isinstance(instance, self.model):
+            raise ValueError("instance must not be None")
+
+        if entry is None or not isinstance(entry, self._tl_entry):
+            raise ValueError("entry for timeline must not be None")
+
+        # loop through changes and create table
+        # change entries for them.
         cls_name = instance.__class__.__name__
         for field, values in changes.items():
             current = values[0]
@@ -51,6 +74,7 @@ class BaseEntry(ABC):
             TableChange.objects.create(
                 changes_for_model=cls_name,
                 model_id=instance.pk,
+                model_app_label=self.model_app_label,
                 changes_field=field,
                 current_value=current,
                 new_value=change,
@@ -59,13 +83,21 @@ class BaseEntry(ABC):
 
 
 class InitEntry(BaseEntry):
-
+    """
+    Timeline entry for when a new model instance is added.
+    """
     def __init__(self, model):
         super(InitEntry, self).__init__(model)
         self.title = "{} created"
         self.type = "Init"
 
     def create(self, instance):
+        """
+        Method to create an new model instanace entry
+        """
+        if instance is None or not isinstance(instance, self.model):
+            raise ValueError("instance must not be None")
+
         fields = self._extract_fields()
         title = self.title.format(instance.module_code)
         md = ""
@@ -93,13 +125,18 @@ class InitEntry(BaseEntry):
 
 
 class UpdatedEntry(BaseEntry):
-
     def __init__(self, model):
         super(UpdatedEntry, self).__init__(model)
         self.title = "Changes to {}:\n\n"
         self.type = "Update"
 
     def create(self, instance):
+        """
+        Method to create an updated entry
+        """
+        if instance is None or not isinstance(instance, self.model):
+            raise ValueError("instance must not be None")
+
         fields = self._extract_fields()
         diff = instance.differences()
         title = self.title.format(instance.module_code)
@@ -114,15 +151,18 @@ class UpdatedEntry(BaseEntry):
                 orignal = values[0]
                 updated = values[1]
 
-                # since module_leader is a foreign key
-                # it returns the id when dictionary is provided
-                # so we have to explict covert it to be a User.
-                if field == 'module_leader':
-                    orignal = User.objects.get(id=values[0]).get_full_name()
-                    updated = User.objects.get(id=values[1]).get_full_name()
+                # check if field is a foreign key. This is done
+                # to allow for extraction of data from the object it expects.
+                field_type = self.model._meta.get_field(field)
+                if isinstance(field_type, ForeignKey):
+                    key_object = field_type.rel.to
+                    orignal = key_object.objects.get(pk=values[0])
+                    updated = key_object.objects.get(pk=values[1])
 
+                # create the markdown for it
                 md += "* {}: {} => {}\n".format(field_str, orignal, updated)
 
+            # create the entry
             entry = self._tl_entry.objects.create(
                 title=title,
                 changes=md,
