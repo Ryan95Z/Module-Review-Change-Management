@@ -70,7 +70,7 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
         self.assertEquals(module.module_code, data['module_code'])
         self.assertEquals(module.module_leader, self.user)
 
-        n_changes = have_changes('CM3301')
+        n_changes = have_changes('CM3301', module)
         self.assertEquals(n_changes, 2)
 
     def test_invalid_post_with_some_empty_data(self):
