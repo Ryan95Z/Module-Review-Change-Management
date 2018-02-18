@@ -56,13 +56,22 @@
 										{% endif %}
 										</form>
 									</div>
-									
 									<div class="timeline-cancel">
 										<form action="{% url 'revert_entry' module_code entry.id %}" method="POST">
 											{% csrf_token %}
 											<button class="btn btn-danger btn-sm" type="submit">Cancel</button>
 										</form>
 									</div>
+									{% endif %}
+									
+									{% if entry.status != "Draft" %}
+										<div class="timeline-meta">
+											{% if entry.approved_by is None %}
+												<span>Approved By: System</span>
+											{% else %}
+												<span>Approved By: {{ entry.approved_by.username }}</span>
+											{% endif %}
+										</div>
 									{% endif %}
 								</div>
 							</div>

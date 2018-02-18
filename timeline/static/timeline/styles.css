@@ -141,6 +141,10 @@
 	display: inline-block;
 }
 
+.timeline ul > .timeline-item .timeline-entry .timeline-actions .timeline-meta > span {
+	font-size: 12px;
+}
+
 /* Form to update timeline entry styles */
 .markdown-notice{
 	width: 100%;

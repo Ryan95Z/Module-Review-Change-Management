@@ -117,6 +117,7 @@ class TimelineUpdateStatus(TimelinePostViews):
             entry.status = 'Confirmed'
         else:
             pass
+        entry.approved_by = request.user
         entry.save()
         return redirect(self._get_url(**kwargs))
 
@@ -137,9 +138,11 @@ class TimelineRevertStage(TimelinePostViews):
 
         entry = get_object_or_404(TimelineEntry, pk=entry_pk)
         if entry.status == 'Draft':
+            # delete entry as no longer needed
             revert_changes(entry_pk)
             entry.delete()
         elif entry.status == 'Staged':
+            # move the status back to 'Draft'
             entry.status = 'Draft'
             entry.save()
         else:
