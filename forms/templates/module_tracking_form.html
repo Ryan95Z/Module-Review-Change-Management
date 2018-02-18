@@ -65,6 +65,10 @@
                     timetabling, workload modelling and the School's KIS return, so it is essential that it is correct. One
                     credit point equates to 10 learning hours. <br><br>
 
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label col-form-label-sm"><b>Teaching Method</b></label>
+                        <label class="col-sm-2 col-form-label col-form-label-sm"><b>Indicative Hours</b></label>
+                    </div>
                     {% for field in teaching_hours_form %}
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label col-form-label-sm">{{field.label}}</label>
@@ -84,7 +88,14 @@
                 </div>
                 <div id="ts-collapse" class="collapse show" aria-labelledby="ts-heading">
                 <div class="card-body">
-                    {{ support_form.as_p }}
+                    {% for field in support_form %}
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label col-form-label-sm">{{field.label}}</label>
+                        <div class="col-sm-6 ">
+                            {{ field }}
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
                 </div>
             </div>
@@ -99,8 +110,42 @@
                     Please provide data for all exams and assignments below (see guidance note 4). Total weighting
                     must equal 100%. Durations for coursework assessments should be realistic estimates of the time
                     required to complete the assessment.  <br><br>
-
-                    {{ assessment_form.as_p }}
+                    <div class="form-group row">
+                        <label class="col-sm-1 col-form-label col-form-label-sm">{{assessment_form.assessment_title.label}}</label>
+                        <div class="col ">
+                            {{ assessment_form.assessment_title|add_css_class:"form-control"}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-1 col-form-label col-form-label-sm">{{assessment_form.assessment_type.label}}</label>
+                        <div class="col">
+                            {{ assessment_form.assessment_type|add_css_class:"form-control"}}
+                        </div>
+                        <label class="col-sm-auto col-form-label col-form-label-sm">{{assessment_form.assessment_weight.label}}</label>
+                        <div class="col-sm-1">
+                            {{ assessment_form.assessment_weight|add_css_class:"form-control"}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-auto col-form-label col-form-label-sm">{{assessment_form.assessment_duration.label}}</label>
+                        <div class="col-sm-1">
+                            {{ assessment_form.assessment_duration|add_css_class:"form-control"}}
+                        </div>
+                        <label class="col-sm-auto col-form-label col-form-label-sm">{{assessment_form.assessment_hand_out.label}}</label>
+                        <div class="col-sm-auto">
+                            {{ assessment_form.assessment_hand_out|add_css_class:"form-control"}}
+                        </div>
+                        <label class="col-sm-auto col-form-label col-form-label-sm">{{assessment_form.assessment_hand_in.label}}</label>
+                        <div class="col-sm-auto">
+                            {{ assessment_form.assessment_hand_in|add_css_class:"form-control"}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label col-form-label-sm">{{assessment_form.learning_outcomes_covered.label}}</label>
+                        <div class="col">
+                            {{ assessment_form.learning_outcomes_covered|add_css_class:"form-control"}}
+                        </div>
+                    </div>
                 </div>
                 </div>
             </div>
@@ -116,7 +161,20 @@
                     applications or version numbers where it is strictly necessary - for example, “text editor” is
                     sufficient detail if any text editor will do, or “Python” if either of 2.* or 3.* are ok.  <br><br>
 
-                    {{ software_form.as_p }}
+                    <div class="form-group row">
+                        <label class="col-sm-auto col-form-label col-form-label-sm">{{software_form.software_name.label}}</label>
+                        <div class="col-sm-auto ">
+                            {{ software_form.software_name|add_css_class:"form-control"}}
+                        </div>
+                        <label class="col-sm-auto col-form-label col-form-label-sm">{{software_form.software_version.label}}</label>
+                        <div class="col-sm-1 ">
+                            {{ software_form.software_version|add_css_class:"form-control"}}
+                        </div>
+                        <label class="col-sm-auto col-form-label col-form-label-sm">{{software_form.software_packages.label}}</label>
+                        <div class="col-sm-auto ">
+                            {{ software_form.software_packages|add_css_class:"form-control"}}
+                        </div>
+                    </div>                    
                 </div>
                 </div>
             </div>
