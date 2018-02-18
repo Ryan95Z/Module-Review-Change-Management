@@ -1,0 +1,15 @@
+from django.conf.urls import url
+from django.contrib.auth.decorators import login_required
+from forms.views import *
+
+"""
+forms.urls.admin
+==================
+Contains all of the urls related to the forms features which are for admins
+"""
+
+urlpatterns = [
+    # form editing
+    url(r'^forms/tracking_form/$', login_required(
+        AdminModuleDescriptionFormStructure.as_view()), name='module_description_form_structure'),
+]
