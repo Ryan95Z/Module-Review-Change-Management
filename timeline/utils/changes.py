@@ -24,7 +24,7 @@ def process_changes(entry_pk):
     Processes the changes for an entry on the timeline.
     """
     if int(entry_pk) < 1:
-        raise ValueError("entry pk needs to be freater than zero")
+        raise ValueError("entry pk needs to be greater than zero")
 
     changes = TableChange.objects.filter(related_entry=entry_pk)
     for change in changes:
@@ -32,7 +32,7 @@ def process_changes(entry_pk):
             app_label=change.model_app_label,
             model_name=change.changes_for_model
         )
-
+        
         item = model.objects.get(pk=change.model_id)
 
         # field name
@@ -60,7 +60,7 @@ def process_changes(entry_pk):
 
         # remove the change entry
         change.delete()
-    return True
+    return model
 
 
 def revert_changes(entry_pk):
@@ -68,7 +68,7 @@ def revert_changes(entry_pk):
     Function to remove changes for a entry in the timeline
     """
     if int(entry_pk) < 1:
-        raise ValueError("entry pk needs to be freater than zero")
+        raise ValueError("entry pk needs to be greater than zero")
 
     changes = TableChange.objects.filter(related_entry=entry_pk)
 
