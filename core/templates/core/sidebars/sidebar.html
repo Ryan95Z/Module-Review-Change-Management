@@ -1,5 +1,7 @@
 <ul>
 	<li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+	
+	{% if user.is_admin %}
 	<li class="dropdown" id="users">Users <i class="fa fa-caret-down fa-1" aria-hidden="true"></i></li>
 	<li class="sidebar-drop-down">
 		<ul aria-labelledby="users">
@@ -9,4 +11,9 @@
 		</ul>
 	</li>
 	<li><a href="{% url 'all_modules' %}">Modules</a></li>
+	{% endif %}
+
+	{% if user.is_module_leader %}
+	<li><a href="{% url 'module_leader_modules' %}">Your Modules</a></li>
+	{% endif %}
 </ul>

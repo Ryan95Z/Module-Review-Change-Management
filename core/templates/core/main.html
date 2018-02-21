@@ -33,11 +33,7 @@
         <div class="sidebar">
           <div class="sidebar-inner">
             {% block sidebar %}
-              {% if user.is_admin %}
-                {% include "core/sidebars/admin_sidebar.html" %}
-              {% elif user.is_module_leader %}
-                {% include "core/sidebars/module_leader_sidebar.html" %}
-              {% endif %}
+                {% include "core/sidebars/sidebar.html" %}
             {% endblock %}
           </div>
         </div>
