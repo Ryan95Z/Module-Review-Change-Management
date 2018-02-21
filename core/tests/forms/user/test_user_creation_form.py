@@ -1,5 +1,6 @@
 from django.test import TestCase
 from core.forms import UserCreationForm
+from core.models import User
 
 
 class UserCreationFormTest(TestCase):
@@ -24,7 +25,7 @@ class UserCreationFormTest(TestCase):
             'first_name': fname,
             'last_name': lname,
             'email': email,
-            'is_module_leader': False,
+            'is_module_leader': True,
             'is_office_admin': False,
             'is_year_tutor': False,
             'is_module_reviewer': False,
@@ -40,7 +41,7 @@ class UserCreationFormTest(TestCase):
         self.assertEquals(form.cleaned_data['first_name'], fname)
         self.assertEquals(form.cleaned_data['last_name'], lname)
         self.assertEquals(form.cleaned_data['email'], email)
-        self.assertFalse(form.cleaned_data['is_module_leader'])
+        self.assertTrue(form.cleaned_data['is_module_leader'])
         self.assertFalse(form.cleaned_data['is_office_admin'])
         self.assertFalse(form.cleaned_data['is_year_tutor'])
         self.assertFalse(form.cleaned_data['is_module_reviewer'])
@@ -48,6 +49,16 @@ class UserCreationFormTest(TestCase):
 
         # check for no errors
         self.assertEquals(form.errors, {})
+
+        # save and check everything is working
+        form.save(commit=True)
+        user = User.objects.get(username=username)
+        self.assertEquals(user.username, username)
+        self.assertEquals(user.first_name, fname)
+        self.assertEquals(user.last_name, lname)
+        self.assertEquals(user.email, email)
+        self.assertTrue(user.is_module_leader)
+        self.assertFalse(user.is_admin)
 
     def test_invalid_creation_form_empty_data(self):
         """
