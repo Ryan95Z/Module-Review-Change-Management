@@ -1,0 +1,93 @@
+{% extends 'core/main.html' %}
+{% load timeline_tags %}
+{% load static %}
+
+
+{% block title %}
+	{{ module_code }} Timeline
+{% endblock %}
+
+{% block styles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'timeline/styles.css' %}">
+{% endblock %}
+
+{% block main %}
+	<h1 class="timeline-title">
+		Timeline of changes for {{ module_code }}
+	</h1>
+	{% if object_list|length < 1 %}
+		<p>No timeline is present for this module</p>
+	{% else %}
+		<section class="timeline">
+			
+			{% if page_obj.has_previous %}
+				<div class="timeline-pageination">
+					<a href="?page={{ page_obj.previous_page_number }}">
+						<i class="fa fa-chevron-up " aria-hidden="true"></i>
+					</a>
+				</div>
+			{% endif %}
+			
+			<ul>
+				{% for entry in object_list %}
+					<li class="timeline-item">
+						<div class="timeline-entry entry-{{ entry.entry_type|lower }}">
+							<div class="timeline-header">
+								<h5>
+									<i>{{ entry.title }}</i> <time>{{ entry.created|date:"SHORT_DATE_FORMAT" }}</time>
+								</h5>
+							</div>
+							<div class="entry-{{ entry.status|lower }}">
+								<div class="timeline-content">
+									{% autoescape off %}
+									{{ entry.changes|covert_markdown }}
+									{% endautoescape %}
+								</div>
+								<div class="timeline-actions">
+									{% if entry.status != 'Confirmed' %}
+									<div class="timeline-approve">
+										<form action="{% url 'approve_entry' module_code entry.id %}" method="POST">
+										{% csrf_token %}
+										{% if entry.status == 'Draft' %}
+											<button type="submit" class="btn btn-sm btn-warning">Approve</button>
+											
+										{% elif entry.status == 'Staged' %}
+											<button type="submit" class="btn btn-sm btn-success">Approve</button>
+										{% endif %}
+										</form>
+									</div>
+									<div class="timeline-cancel">
+										<form action="{% url 'revert_entry' module_code entry.id %}" method="POST">
+											{% csrf_token %}
+											<button class="btn btn-danger btn-sm" type="submit">Cancel</button>
+										</form>
+									</div>
+									{% endif %}
+									
+									{% if entry.status != "Draft" %}
+										<div class="timeline-meta">
+											{% if entry.approved_by is None %}
+												<span>Approved By: System</span>
+											{% else %}
+												<span>Approved By: {{ entry.approved_by.username }}</span>
+											{% endif %}
+										</div>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</li>
+				{% endfor %}
+			</ul>
+			
+			{% if page_obj.has_next %}
+				<div class="timeline-pageination">
+					<a href="?page={{ page_obj.next_page_number }}">
+						<i class="fa fa-chevron-down" aria-hidden="true"></i>
+					</a>
+				</div>
+			{% endif %}
+
+		</section>
+	{% endif %}
+{% endblock %}

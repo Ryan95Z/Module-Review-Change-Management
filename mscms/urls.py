@@ -24,9 +24,13 @@ urlpatterns = [
     url(r'^$', login_required(DashboardView.as_view()), name='dashboard'),
     url(r'^admin/', include('core.urls.admin')),
     url(r'^user/', include('core.urls.user')),
-    
+    url(r'^modules', include('core.urls.module_leader')),
+
     # admin panel route
     url(r'^admin/login/$', LoginView.as_view()),
     url(r'^admin/logout/$', LogoutView.as_view()),
     url(r'^admin/', admin.site.urls),
+
+    # timeline urls
+    url(r'timeline/', include('timeline.urls.timeline')),
 ]

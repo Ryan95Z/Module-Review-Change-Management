@@ -9,18 +9,28 @@
 		<div class="col-md-12">
 			<div class="row header-row">
 				<div class="col-md-9">
-					<h1>Modules <span class="h-sub-action"><a class="btn btn-primary" href="{% url 'new_module' %}">New Module</a></span></h1>
+					<h1>Modules <span class="h-sub-action">
+						{% if not user.is_module_leader %}
+							<a class="btn btn-primary" href="{% url 'new_module' %}">New Module</a>
+						{% endif %}
+					</span></h1>
 				</div>
 				<div class="col-md-3">
+					{% if not user.is_module_leader %}
 					<form class="form-inline my-2 my-lg-0">
 						{{ search_form.search }}
       					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
    	 				</form>
+   	 				{% endif %}
 				</div>
 			</div>	
 
 			{% if object_list|length < 1 %}
-				<p class="p-msg">There is currently no year tutors</p>
+				{% if user.is_module_leader %}
+					<p class="p-msg">You currently do not have any modules assigned.</p>
+				{% else %}	
+					<p class="p-msg">There is currently no modules in the system.</p>
+				{% endif %}
 			{% else %}
 				<table class="table table-bordered table-dark">
 					<thead>
@@ -29,8 +39,13 @@
 							<th scope="col">Name</th>
 							<th scope="col">Credits</th>
 							<th scope="col">Semester</th>
+							
+							{% if not user.is_module_leader %}
 							<th scope="col">Module Leader</th>
 							<th scope="col">Update Module</th>
+							{% endif %}
+							
+							<th scope="col">Timeline</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -40,8 +55,13 @@
 							<td>{{ module.module_name }}</td>
 							<td>{{ module.module_credits }} Credits</td>
 							<td>{{ module.semester }}</td>
+							
+							{% if not user.is_module_leader %}
 							<td>{{ module.module_leader_name }}</td>
 							<td><a class="btn btn-primary btn-sm" href="{% url 'update_module' module.module_code %}">Update {{ module.module_code }}</a></td>
+							{% endif %}
+							
+							<td><a class="btn btn-info btn-sm" href="{% url 'module_timeline' module.module_code %}">See Timeline</a></td>
 						</tr>
 					{% endfor %}
 					</tbody>

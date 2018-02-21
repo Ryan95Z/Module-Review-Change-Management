@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse
 from core.tests.views.admin_views.admin_test_case import AdminViewTestCase
 from core.models import Module, ModuleManager
+from timeline.utils.changes import have_changes
 
 
 class TestAdminModuleUpdateView(AdminViewTestCase):
@@ -14,7 +15,7 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
         self.module = manager.create_module(
                 'CM3301',
                 'Software Engineering Project',
-                40, 'L3', 'Year 3',
+                40, 'L3',
                 'Autumn Semester',
                 'English',
                 self.user
@@ -46,14 +47,15 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
 
     def test_valid_post_update_view(self):
         """
-        Test case for valid post request
+        Test case for valid post request. Since introducting
+        the timeline, it will freeze the changes, until they have been
+        confirmed for processing.
         """
+        expected_name = 'Software Engineering Project'
         data = {
-            'module_code': 'CM3302',
-            'module_name': 'Software Engineering Project',
+            'module_name': 'Software Engineering',
             'module_credits': 40,
             'module_level': 'L3',
-            'module_year': 'Year 3',
             'semester': 'Double Semester',
             'delivery_language': 'English',
             'module_leader': self.user.id
@@ -61,22 +63,26 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
 
         self.run_valid_post_view(self.url, data)
 
-        # test that the module has been updated
-        module = Module.objects.get(module_code='CM3302')
-        self.assertEquals(module.module_code, data['module_code'])
-        self.assertEquals(module.semester, data['semester']),
+        # test that the module has not been updated and
+        # that changes do exist.
+
+        module = Module.objects.get(module_code='CM3301')
+
+        # check that old title remains
+        self.assertEquals(module.module_name, expected_name)
         self.assertEquals(module.module_leader, self.user)
+
+        n_changes = have_changes('CM3301', module)
+        self.assertEquals(len(n_changes), 2)
 
     def test_invalid_post_with_some_empty_data(self):
         """
         Test case for empty data in post request
         """
         data = {
-            'module_code': '',
             'module_name': '',
             'module_credits': 40,
             'module_level': '',
-            'module_year': 'Year 3',
             'semester': 'Double Semester',
             'delivery_language': 'English',
             'module_leader': self.user.id
@@ -88,12 +94,10 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
         form_errors = context['form'].errors.as_data()
 
         # get the errors based on the empty values
-        code_err = form_errors['module_code'][0].__str__()
         name_err = form_errors['module_name'][0].__str__()
         level_err = form_errors['module_level'][0].__str__()
 
         # test we got the expected validation error
-        self.assertEquals(code_err, expected_validation_err)
         self.assertEquals(name_err, expected_validation_err)
         self.assertEquals(level_err, expected_validation_err)
 
@@ -108,7 +112,6 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
             'module_name': 'Software Engineering Project',
             'module_credits': 2000,
             'module_level': 'L3',
-            'module_year': 'Year 3',
             'semester': 'Double Semester',
             'delivery_language': 'English',
             'module_leader': self.user.id
@@ -120,7 +123,6 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
             'module_name': 'Software Engineering Project',
             'module_credits': 0,
             'module_level': 'L3',
-            'module_year': 'Year 3',
             'semester': 'Double Semester',
             'delivery_language': 'English',
             'module_leader': self.user.id
@@ -132,7 +134,6 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
             'module_name': 'Software Engineering Project',
             'module_credits': -20,
             'module_level': 'L3',
-            'module_year': 'Year 3',
             'semester': 'Double Semester',
             'delivery_language': 'English',
             'module_leader': self.user.id

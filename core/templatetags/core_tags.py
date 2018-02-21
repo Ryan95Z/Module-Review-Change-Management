@@ -3,13 +3,24 @@ from django import template
 register = template.Library()
 
 
-@register.filter(is_safe=True)
+@register.filter()
 def add_css_class(field, css_class: str):
     """
     Adds CSS class to form field
     """
     return field.as_widget(attrs={
-        "class": "".join((field.css_classes(), css_class))
+        "class": "".join((field.css_classes(), css_class)),
+    })
+
+
+@register.filter()
+def readonly_add_css_class(field, css_class: str):
+    """
+    Add CSS class to form and make it readonly
+    """
+    return field.as_widget(attrs={
+        "class": "".join((field.css_classes(), css_class)),
+        "readonly": True
     })
 
 

@@ -6,6 +6,7 @@ from django.db.models import Q
 from core.views.mixins import AdminTestMixin
 from core.models import Module
 from core.forms import SearchForm
+from timeline.utils.changes import have_changes
 
 
 class AdminModuleListView(AdminTestMixin, ListView):
@@ -41,7 +42,7 @@ class AdminModuleListView(AdminTestMixin, ListView):
 class AdminModuleCreateView(AdminTestMixin, CreateView):
     model = Module
     fields = ['module_code', 'module_name', 'module_credits', 'module_level',
-              'module_year', 'semester', 'delivery_language', 'module_leader']
+              'semester', 'delivery_language', 'module_leader']
 
     def get_context_data(self, **kwargs):
         context = super(AdminModuleCreateView, self).get_context_data(**kwargs)
@@ -55,14 +56,15 @@ class AdminModuleCreateView(AdminTestMixin, CreateView):
 
 class AdminModuleUpdateView(AdminTestMixin, UpdateView):
     model = Module
-    fields = ['module_code', 'module_name', 'module_credits', 'module_level',
-              'module_year', 'semester', 'delivery_language', 'module_leader']
+    fields = ['module_name', 'module_credits', 'module_level',
+              'semester', 'delivery_language', 'module_leader']
 
     def get_context_data(self, **kwargs):
         kwargs = {'pk': self.object.module_code}
         context = super(AdminModuleUpdateView, self).get_context_data(**kwargs)
         context['form_url'] = reverse('update_module', kwargs=kwargs)
         context['form_type'] = 'Update'
+        context['changes'] = have_changes(self.object.module_code, self.object)
         return context
 
     def get_success_url(self):

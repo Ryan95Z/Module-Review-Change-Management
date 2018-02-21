@@ -1,0 +1,30 @@
+{% extends 'core/main.html' %}
+{% load core_tags %}
+{% load static %}
+
+{% block styles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'timeline/styles.css' %}">
+{% endblock %}
+
+{% block title %}
+	Updating Entry
+{% endblock %}
+
+{% block main %}
+	<h1>Updating entry - {{ title }}</h1><hr>
+	<form action="{% url 'entry_edit' module_code pk %}" method="POST">
+		{% csrf_token %}
+		{% for f in form %}
+			<div class="form-group">
+				<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+				{{ f|add_css_class:"form-control" }}
+				{{ f.errors }}
+			</div>
+		{% endfor %}
+		<div class="markdown-notice">
+			<p>Markdown is supported</p>
+		</div>
+		<button type="submit" class="btn btn-success">Submit</button>
+		<a href="{% url 'module_timeline' module_code %}" class="btn btn-danger">Cancel</a>
+	</form>
+{% endblock %}

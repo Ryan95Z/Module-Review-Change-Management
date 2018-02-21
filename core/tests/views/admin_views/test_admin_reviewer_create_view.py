@@ -27,7 +27,6 @@ class ReviewerCreateViewTests(AdminViewTestCase):
             module_name = "Test Module",
             module_credits = "10",
             module_level = "1",
-            module_year = "1",
             semester = "Autumn Semester",
             delivery_language = "English",
             module_leader = self.module_leader
