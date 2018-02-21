@@ -81,7 +81,7 @@ class TimelinePostViews(View):
         Get method to return user to the timeline,
         if they attempt to access the view.
         """
-        return redirect(redirect(self._get_url(**kwargs)))
+        return redirect(self._get_url(**kwargs))
 
     def _get_url(self, **kwargs):
         """
