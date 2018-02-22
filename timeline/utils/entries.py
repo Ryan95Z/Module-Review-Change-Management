@@ -60,6 +60,9 @@ class BaseEntry(ABC):
         return fields
 
     def _get_module_code(self, instance):
+        """
+        Method to extract module code from the model
+        """
         module_code = None
         if isinstance(instance, Module):
             module_code = instance.pk
@@ -68,6 +71,9 @@ class BaseEntry(ABC):
         return module_code
 
     def _object_id(self, instance):
+        """
+        Method to get the primary key from model instance
+        """
         return getattr(instance, instance._meta.pk.name)
 
     def _process_changes(self, changes, entry, instance):
@@ -146,7 +152,7 @@ class InitEntry(BaseEntry):
 class UpdatedEntry(BaseEntry):
     def __init__(self, model):
         super(UpdatedEntry, self).__init__(model)
-        self.title = "Changes to {}:\n\n"
+        self.title = "Changes to {}\n\n"
         self.type = "Update"
 
     def create(self, instance):
