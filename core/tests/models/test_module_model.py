@@ -32,7 +32,6 @@ class TestModuleManager(TestCase):
         name = "Software Engineering Project"
         credits = 40
         level = "l3"
-        year = "Year 3"
         semester = "Double Semester"
         lang = "English"
 
@@ -44,7 +43,6 @@ class TestModuleManager(TestCase):
             module_name=name,
             module_credits=credits,
             module_level=level,
-            module_year=year,
             semester=semester,
             delivery_language=lang,
             module_leader=self.user
@@ -70,7 +68,6 @@ class TestModuleManager(TestCase):
         name = "Software Engineering Project"
         credits = 40
         level = "l3"
-        year = "Year 3"
         semester = "Double Semester"
         lang = "English"
 
@@ -82,7 +79,6 @@ class TestModuleManager(TestCase):
                 module_name=name,
                 module_credits=credits,
                 module_level=level,
-                module_year=year,
                 semester=semester,
                 delivery_language=lang,
                 module_leader=None
@@ -98,7 +94,6 @@ class TestModuleManager(TestCase):
         code = "CM3301"
         name = "Software Engineering Project"
         level = "l3"
-        year = "Year 3"
         semester = "Double Semester"
         lang = "English"
 
@@ -114,7 +109,6 @@ class TestModuleManager(TestCase):
                     module_name=name,
                     module_credits=credit,
                     module_level=level,
-                    module_year=year,
                     semester=semester,
                     delivery_language=lang,
                     module_leader=self.user
@@ -144,7 +138,6 @@ class TestModule(TestCase):
         name = "Software Engineering Project"
         credits = 40
         level = "l3"
-        year = "Year 3"
         semester = "Double Semester"
         lang = "English"
 
@@ -153,7 +146,6 @@ class TestModule(TestCase):
             module_name=name,
             module_credits=credits,
             module_level=level,
-            module_year=year,
             semester=semester,
             delivery_language=lang,
             module_leader=self.user
@@ -185,7 +177,6 @@ class TestModule(TestCase):
         code = "CM3301"
         name = "Software Engineering Project"
         level = "l3"
-        year = "Year 3"
         semester = "Double Semester"
         lang = "English"
 
@@ -201,7 +192,6 @@ class TestModule(TestCase):
                 module_name=name,
                 module_credits=credits,
                 module_level=level,
-                module_year=year,
                 semester=semester,
                 delivery_language=lang,
                 module_leader=self.user
@@ -217,8 +207,6 @@ class TestModule(TestCase):
                 module_code=code,
                 module_name=name,
                 module_credits=credits,
-                module_level=level,
-                module_year=year,
                 semester=semester,
                 delivery_language=lang,
                 module_leader=self.user
@@ -233,8 +221,6 @@ class TestModule(TestCase):
                 module_code=code,
                 module_name=name,
                 module_credits=credits,
-                module_level=level,
-                module_year=year,
                 semester=semester,
                 delivery_language=lang,
                 module_leader=self.user
@@ -249,7 +235,6 @@ class TestModule(TestCase):
         name = "Software Engineering Project"
         credits = 40
         level = "l3"
-        year = "Year 3"
         semester = "Double Semester"
         lang = "English"
 
@@ -258,8 +243,6 @@ class TestModule(TestCase):
             module_code=code,
             module_name=name,
             module_credits=credits,
-            module_level=level,
-            module_year=year,
             semester=semester,
             delivery_language=lang,
             module_leader=self.user
@@ -273,8 +256,6 @@ class TestModule(TestCase):
                 module_code=code,
                 module_name=name,
                 module_credits=credits,
-                module_level=level,
-                module_year=year,
                 semester=semester,
                 delivery_language=lang,
                 module_leader=self.user

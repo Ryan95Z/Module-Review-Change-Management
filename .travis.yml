@@ -1,0 +1,20 @@
+notifications:
+  email:
+    on_success: never
+    on_failure: always
+
+language: python
+python:
+  - "3.4"
+  - "3.5"
+  - "3.6"
+
+install:
+  - pip install -r requirements.txt
+
+before_script:
+  - cp -v ./mscms/email_settings-example.py ./mscms/email_settings.py
+  - python manage.py migrate
+
+script:
+  - python manage.py test

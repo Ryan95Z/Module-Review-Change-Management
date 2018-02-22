@@ -43,7 +43,6 @@ class TestAdminModuleCreateView(AdminViewTestCase):
             'module_name': 'Software Engineering Project',
             'module_credits': 40,
             'module_level': 'L3',
-            'module_year': 'Year 3',
             'semester': 'Autumn Semester',
             'delivery_language': 'English',
             'module_leader': self.user.id
@@ -66,7 +65,6 @@ class TestAdminModuleCreateView(AdminViewTestCase):
             'module_name': 'Software Engineering Project',
             'module_credits': '10 Credits',
             'module_level': 'L3',
-            'module_year': 'Year 3',
             'semester': 'Autumn Semester',
             'delivery_language': 'English',
             'module_leader': self.user.id

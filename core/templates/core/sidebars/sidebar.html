@@ -1,10 +1,11 @@
 <ul>
 	<li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+	
+	{% if user.is_admin %}
 	<li class="dropdown" id="users">Users <i class="fa fa-caret-down fa-1" aria-hidden="true"></i></li>
 	<li class="sidebar-drop-down">
 		<ul aria-labelledby="users">
 			<li><a href="{% url 'all_users' %}">All Users</a></li>
-			<li><a href="#">Module Leaders</a></li>
 			<li><a href="{% url 'all_tutors' %}">Programme Tutors</a></li>
 			<li><a href="{% url 'all_reviewers' %}">Module Reviewers</a></li>
 		</ul>
@@ -17,4 +18,9 @@
 			<li><a href="#">Module Tracking Form</a></li>
 		</ul>
 	</li>
+	{% endif %}
+
+	{% if user.is_module_leader %}
+	<li><a href="{% url 'module_leader_modules' %}">Your Modules</a></li>
+	{% endif %}
 </ul>

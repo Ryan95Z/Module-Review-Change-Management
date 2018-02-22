@@ -50,13 +50,48 @@ class UserDetailsForm(forms.ModelForm):
         fields = ('username', 'first_name', 'last_name', 'email')
 
 
-class UserCreationForm(UserDetailsForm, UserPermissionsForm):
+class UserCreationForm(forms.ModelForm):
     """
-    Inherited form from UserDetailsForm. Used to create new users
-    from the UI and will generate a password that is then emailed.
+    Form that is used to create new users.
     """
+    # Note: Originally this was a combination of the two forms.
+    # It turns out there is an issue with multiple inheritance
+    # with forms. To resolve it is fairly complicated, so for the time
+    # I have created a form that just contains every attribute.
+
+    checkbox_attr = {'class': 'form-check-input'}
+
+    attrs = {'class': 'form-control'}
+    username = forms.CharField(required=True, widget=TextInput(attrs=attrs))
+    first_name = forms.CharField(required=True, widget=TextInput(attrs=attrs))
+    last_name = forms.CharField(required=True, widget=TextInput(attrs=attrs))
+    email = forms.EmailField(required=True, widget=TextInput(attrs=attrs))
+
+    # permissions
+    is_module_leader = forms.BooleanField(required=False, widget=CheckboxInput(
+        attrs=checkbox_attr))
+
+    is_office_admin = forms.BooleanField(required=False, widget=CheckboxInput(
+        attrs=checkbox_attr))
+
+    is_year_tutor = forms.BooleanField(required=False, widget=CheckboxInput(
+        attrs=checkbox_attr))
+
+    is_module_reviewer = forms.BooleanField(
+        required=False, widget=CheckboxInput(attrs=checkbox_attr))
+
+    is_admin = forms.BooleanField(required=False, widget=CheckboxInput(
+        attrs=checkbox_attr))
+
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email',
+                  'is_module_leader', 'is_office_admin', 'is_year_tutor',
+                  'is_module_reviewer', 'is_admin')
+
     def save(self, commit=True):
         user = super(UserCreationForm, self).save(commit=False)
+
         password = User.objects.make_random_password()
         user.set_password(password)
 
