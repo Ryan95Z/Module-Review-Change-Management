@@ -63,7 +63,7 @@
 										</form>
 									</div>
 									{% endif %}
-									
+									<a href="{% url 'discussion' module_code entry.pk %}">Hello</a>
 									{% if entry.status != "Draft" %}
 										<div class="timeline-meta">
 											{% if entry.approved_by is None %}

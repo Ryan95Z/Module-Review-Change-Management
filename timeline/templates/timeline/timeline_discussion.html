@@ -1,0 +1,20 @@
+{% extends 'core/main.html' %}
+{% load mptt_tags %}
+
+{% block main %}
+
+
+<ul>
+    {% recursetree data %}
+        <li>
+            {{ node.comment }}
+            {% if not node.is_leaf_node %}
+                <ul class="replies">
+                    {{ children }}
+                </ul>
+            {% endif %}
+        </li>
+    {% endrecursetree %}
+</ul>
+
+{% endblock %}

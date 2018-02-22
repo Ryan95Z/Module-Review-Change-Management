@@ -19,4 +19,9 @@ urlpatterns = [
     # view to remove the changes that are being staged in the timeline
     url(r'(?P<module_pk>[A-Za-z0-9]+)/revert/(?P<pk>[0-9]+)/$',
         login_required(TimelineRevertStage.as_view()), name="revert_entry"),
+
+
+    # Discussion
+    url(r'(?P<module_pk>[A-Za-z0-9]+)/discussion/(?P<pk>[0-9]+)/$',
+        login_required(DiscussionView.as_view()), name="discussion"),
 ]
