@@ -44,7 +44,7 @@ class ModuleAssessment(models.Model):
     assessment_duration = models.PositiveSmallIntegerField(verbose_name="Duration (hours)")
     assessment_hand_out = models.CharField(choices=HAND_OUT_IN_OPTIONS, max_length=15, verbose_name="Hand out week")
     assessment_hand_in = models.CharField(choices=HAND_OUT_IN_OPTIONS, max_length=15, verbose_name="Hand in week")
-    assessment_semester = models.CharField(choices=SEMESTER_OPTIONS, max_length=15, verbose_name="Semester")
+    assessment_semester = models.CharField(blank=True, choices=SEMESTER_OPTIONS, max_length=15, verbose_name="Semester")
     learning_outcomes_covered = models.CharField(max_length=500, verbose_name="Learning Outcomes Covered")
     module_code = models.ForeignKey(Module, on_delete=models.CASCADE)
 
