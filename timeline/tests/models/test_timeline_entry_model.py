@@ -112,18 +112,18 @@ class TestTimelineEntry(BaseTimelineModelTestCase):
         entry_id = entry.id
 
         # delete the module
-        # self.module.delete()
+        self.module.delete()
 
-        # # check that entry has been removed
-        # with self.assertRaises(self.model.DoesNotExist):
-        #     self.model.objects.get(id=entry_id)
+        # check that entry has been removed
+        with self.assertRaises(self.model.DoesNotExist):
+            self.model.objects.get(id=entry_id)
 
-        # # check that there are no entries
-        # n_entries = len(self.model.objects.filter(
-        #     module_code=self.module.module_code
-        # ))
+        # check that there are no entries
+        n_entries = len(self.model.objects.filter(
+            module_code=self.module.module_code
+        ))
 
-        # self.assertEquals(n_entries, 0)
+        self.assertEquals(n_entries, 0)
 
     def test_model_no_approver(self):
         """
