@@ -32,45 +32,6 @@ class TimelineListView(ListView):
         return context
 
 
-class TimelineUpdateView(UpdateView):
-    """
-    View to enable manual changes if user needs to
-    update the entry for some reason.
-    """
-    model = TimelineEntry
-    fields = ['changes']
-
-    def dispatch(self, request, *args, **kwargs):
-        """
-        Override of dispatch method to prevent
-        an entry that is not saved as a draft to be
-        edited if the user attempts a manual override
-        via url manipulation.
-        """
-        entry = self.get_object()
-        kwargs = {'module_pk': entry.module_code()}
-
-        # if status is not draft,
-        # then redirect back to timeline
-        if entry.status != 'Draft':
-            return redirect(reverse('module_timeline', kwargs=kwargs))
-
-        # continue with request if valid
-        return super(
-            TimelineUpdateView, self).dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(TimelineUpdateView, self).get_context_data(**kwargs)
-        context['title'] = self.object.title
-        context['pk'] = self.object.pk
-        context['module_code'] = self.object.module_code()
-        return context
-
-    def get_success_url(self):
-        kwargs = {'module_pk': self.object.module_code()}
-        return reverse('module_timeline', kwargs=kwargs)
-
-
 class TimelinePostViews(View):
     """
     Base View for making post requests to the
