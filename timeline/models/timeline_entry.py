@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from core.models import User, Module
 
 ENTRY_STATUS = (
@@ -24,6 +26,8 @@ class TimelineEntry(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
 
+    module_code = models.CharField(max_length=10)
+
     status = models.CharField(
         max_length=9,
         choices=ENTRY_STATUS,
@@ -36,25 +40,15 @@ class TimelineEntry(models.Model):
         default="Generic"
     )
 
-    module = models.ForeignKey(Module, on_delete=models.CASCADE)
+    # attributes for generic relation
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.CharField(max_length=10)
+    content_object = GenericForeignKey('content_type', 'object_id')
+
     approved_by = models.ForeignKey(User, blank=True, null=True)
 
     def __str__(self):
         return "{}@{}".format(self.title, self.created)
-
-    def module_code(self):
-        """
-        Method to get the module code
-        associated with entry.
-        """
-        return self.module.module_code
-
-    def module_name(self):
-        """
-        Method to get the module name
-        associated with the entry.
-        """
-        return self.module.module_name
 
     def approver_username(self):
         """

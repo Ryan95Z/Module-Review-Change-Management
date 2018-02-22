@@ -22,7 +22,7 @@ class TimelineListView(ListView):
 
     def get_queryset(self):
         module_id = self.kwargs['module_pk']
-        return self.model.objects.filter(module=module_id)
+        return self.model.objects.filter(module_code=module_id)
 
     def get_context_data(self, *args, **kwargs):
         context = super(

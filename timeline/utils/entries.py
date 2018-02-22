@@ -51,8 +51,24 @@ class BaseEntry(ABC):
         """
         fields = [field.name for field in self.model._meta.get_fields()]
         # remove created from fields as not needed for timline.
-        fields.remove('created')
+        try:
+            fields.remove('created')
+            fields.remove('id')
+            fields.remove('module')
+        except:
+            pass
         return fields
+
+    def _get_module_code(self, instance):
+        module_code = None
+        if isinstance(instance, Module):
+            module_code = instance.pk
+        else:
+            module_code = getattr(instance, "module").pk
+        return module_code
+
+    def _object_id(self, instance):
+        return getattr(instance, instance._meta.pk.name)
 
     def _process_changes(self, changes, entry, instance):
         """
@@ -99,7 +115,7 @@ class InitEntry(BaseEntry):
             raise ValueError("instance must not be None")
 
         fields = self._extract_fields()
-        title = self.title.format(instance.module_code)
+        title = self.title.format(instance.__str__())
         md = ""
         for field in fields:
             try:
@@ -108,11 +124,14 @@ class InitEntry(BaseEntry):
                 md += "* {}: {}\n".format(field_string, value)
             except AttributeError:
                 pass
+
         entry = self._tl_entry.objects.create(
             title=title,
             changes=md,
             status="Confirmed",
-            module=instance,
+            module_code=self._get_module_code(instance),
+            object_id=self._object_id(instance),
+            content_object=instance,
             entry_type=self.type
         )
         return entry
@@ -139,7 +158,7 @@ class UpdatedEntry(BaseEntry):
 
         fields = self._extract_fields()
         diff = instance.differences()
-        title = self.title.format(instance.module_code)
+        title = self.title.format(instance.__str__())
 
         entry = None
         md = ""
@@ -166,7 +185,9 @@ class UpdatedEntry(BaseEntry):
             entry = self._tl_entry.objects.create(
                 title=title,
                 changes=md,
-                module=instance,
+                module_code=self._get_module_code(instance),
+                object_id=self._object_id(instance),
+                content_object=instance,
                 entry_type=self.type
             )
 
@@ -179,8 +200,3 @@ class UpdatedEntry(BaseEntry):
         Factory implementation to create object
         """
         return self.__class__(self.model)
-
-
-# register the classes to the factory
-EntryFactory.register(InitEntry, "init", Module)
-EntryFactory.register(UpdatedEntry, "update", Module)

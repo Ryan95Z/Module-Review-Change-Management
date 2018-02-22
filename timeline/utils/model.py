@@ -12,9 +12,7 @@ class ModelDifferance(models.Model):
 
     def __init__(self, *args, **kwargs):
         super(ModelDifferance, self).__init__(*args, **kwargs)
-        self.base = {}
-        if len(self.module_code) > 0:
-            self.base = model_to_dict(self)
+        self.base = model_to_dict(self)
 
     def differences(self):
         """
@@ -44,6 +42,9 @@ class ModelDifferance(models.Model):
         return bool(self.differences())
 
     def save(self, *args, **kwargs):
+        INIT = "init" + self.__class__.__name__
+        UPDATE = "update" + self.__class__.__name__
+
         """
         Override standard save method of any model.
         Enables an entry to be made on the timeline
@@ -53,19 +54,19 @@ class ModelDifferance(models.Model):
         # optional kwargs argument that will force the changes
         # to not be placed on the timeline.
         override_update = kwargs.pop('override_update', False)
-        save_changes = True
         if not self.created:
             # create an init entry
-            EntryFactory.makeEntry("init", self)
-        else:
-            if not override_update:
-                # create an update entry
-                EntryFactory.makeEntry("update", self)
-                save_changes = not bool(self.hasDifferences())
-
-        if save_changes:
-            # save the changes to database
             super(ModelDifferance, self).save(*args, **kwargs)
+            EntryFactory.makeEntry(INIT, self)
+            return
+
+        if not override_update:
+            # create an update entry
+            EntryFactory.makeEntry(UPDATE, self)
+            return
+
+        # save the changes to database
+        super(ModelDifferance, self).save(*args, **kwargs)
 
     class Meta:
         abstract = True
