@@ -12,4 +12,6 @@ urlpatterns = [
     # form editing
     url(r'^forms/tracking_form/$', login_required(
         AdminModuleDescriptionFormStructure.as_view()), name='module_description_form_structure'),
+    url(r'^forms/module_description/modify/$', login_required(
+        AdminModuleDescriptionFormModify.as_view()), name='change_module_description_structure')
 ]

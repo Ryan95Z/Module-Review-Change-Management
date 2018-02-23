@@ -1,0 +1,71 @@
+{% extends 'core/main.html' %}
+{% load core_tags %}
+
+{% block title %}
+    {{ object.pk }}
+{% endblock %}
+
+{% block main %}
+
+<div class="row">
+<ul class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'change_module_description_structure' %}">Update Form Structure</a>
+    </li>
+</ul>
+</div>
+
+{{ field_formset.management_form }}
+<div >
+    <table class="table">
+        <thead>
+            <th scope="col">Order</th>
+            <th scope="col">Label</th>
+            <th scope="col">Type</th>
+            <th scope="col">Choices</th>
+            <th scope="col">Default</th>
+            <th scope="col">Delete</th>
+        </thead>
+        <tbody id="form_set">
+            {% for form in field_formset.forms %}
+            <tr>
+                <td>#</td>
+                <td>{{ form.entity_label|add_css_class:"form-control form-control-sm" }}</td>
+                <td>{{ form.entity_type|add_css_class:"form-control form-control-sm"}}</td>
+                <td>{{ form.entity_choices|add_css_class:"form-control form-control-sm"}}</td>
+                <td>{{ form.entity_default|add_css_class:"form-control form-control-sm"}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<input type="button" class="btn btn-primary btn-sm"value="Add More" id="add_row">
+<table style="display:none">
+    <tbody id="empty_form">
+    <tr>
+        <td>#</td>
+        <td>{{ field_formset.empty_form.entity_label|add_css_class:"form-control form-control-sm" }}</td>
+        <td>{{ field_formset.empty_form.entity_type|add_css_class:"form-control form-control-sm"}}</td>
+        <td>{{ field_formset.empty_form.entity_choices|add_css_class:"form-control form-control-sm"}}</td>
+        <td>{{ field_formset.empty_form.entity_default|add_css_class:"form-control form-control-sm"}}</td>
+    </tr>
+    </tbody>
+</table>
+{% endblock %}
+{% block scripts %}
+<script>
+    $('#add_row').click(function() {
+        var form_id = $('#id_form-TOTAL_FORMS').val();
+        var form_order = $('#id_form-TOTAL_FORMS').val();
+        $('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_id));
+        $('#id_form-TOTAL_FORMS').val(parseInt(form_id) + 1);
+        $('#id_form-' + form_id + '-ORDER').val(parseInt(form_order))
+    });
+    $('#delete_row').click(function() {
+        
+    });
+</script>
+{% endblock %}
+
+
+
