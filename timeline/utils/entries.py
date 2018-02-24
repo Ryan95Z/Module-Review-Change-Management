@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from django.db.models import ForeignKey
-from core.models import Module, User
 from timeline.models import TimelineEntry, TableChange
+from timeline.models.integrate import BaseTimelineNode
+from timeline.models.integrate.entry import TLEntry
 from timeline.utils.factory import EntryFactory
-from timeline.utils.model import ModelDifferance
 
 
 class BaseEntry(ABC):
@@ -11,9 +11,9 @@ class BaseEntry(ABC):
     Base class for entry types
     """
     def __init__(self, model):
-        # check that model inherits ModelDifferance
-        if not issubclass(model, ModelDifferance):
-            ValueError("model needs to inherit from ModelDifferance")
+        # check that model inherits BaseTimelineNode
+        if not issubclass(model, BaseTimelineNode):
+            ValueError("model needs to inherit from BaseTimelineNode")
 
         # public variables
         self.model = model
@@ -64,10 +64,12 @@ class BaseEntry(ABC):
         Method to extract module code from the model
         """
         module_code = None
-        if isinstance(instance, Module):
+        cls = instance.__class__
+        if issubclass(cls, TLEntry):
             module_code = instance.pk
+            module_code = instance.module_code()
         else:
-            module_code = getattr(instance, "module").pk
+            module_code = instance.pk
         return module_code
 
     def _object_id(self, instance):

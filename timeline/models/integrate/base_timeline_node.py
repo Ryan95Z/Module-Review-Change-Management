@@ -3,7 +3,7 @@ from django.forms.models import model_to_dict
 from timeline.utils.factory import EntryFactory
 
 
-class ModelDifferance(models.Model):
+class BaseTimelineNode(models.Model):
     """
     Class to allow changes that are made to a model
     to be tracked.
@@ -11,7 +11,7 @@ class ModelDifferance(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __init__(self, *args, **kwargs):
-        super(ModelDifferance, self).__init__(*args, **kwargs)
+        super(BaseTimelineNode, self).__init__(*args, **kwargs)
         self.base = model_to_dict(self)
 
     def differences(self):
@@ -56,7 +56,7 @@ class ModelDifferance(models.Model):
         override_update = kwargs.pop('override_update', False)
         if not self.created:
             # create an init entry
-            super(ModelDifferance, self).save(*args, **kwargs)
+            super(BaseTimelineNode, self).save(*args, **kwargs)
             EntryFactory.makeEntry(INIT, self)
             return
 
@@ -66,7 +66,7 @@ class ModelDifferance(models.Model):
             return
 
         # save the changes to database
-        super(ModelDifferance, self).save(*args, **kwargs)
+        super(BaseTimelineNode, self).save(*args, **kwargs)
 
     class Meta:
         abstract = True

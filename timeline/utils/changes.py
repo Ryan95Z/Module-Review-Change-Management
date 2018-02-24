@@ -32,7 +32,7 @@ def process_changes(entry_pk):
             app_label=change.model_app_label,
             model_name=change.changes_for_model
         )
-        
+
         item = model.objects.get(pk=change.model_id)
 
         # field name

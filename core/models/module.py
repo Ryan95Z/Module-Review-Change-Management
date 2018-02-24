@@ -4,7 +4,7 @@ from django.utils.timezone import now
 from django.core.validators import MaxValueValidator, MinValueValidator
 from core.models import User
 
-from timeline.utils.model import ModelDifferance
+from timeline.models.integrate import BaseTimelineNode
 
 DELIVERY_LANGUAGES = (
     ('Welsh', 'Welsh'),
@@ -54,7 +54,7 @@ class ModuleManager(models.Manager):
         return model
 
 
-class Module(ModelDifferance):
+class Module(BaseTimelineNode):
     """
     Model for representing a module
     """
