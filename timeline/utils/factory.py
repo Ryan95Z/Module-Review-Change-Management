@@ -1,4 +1,3 @@
-
 class EntryFactory(object):
     """
     Factory class to create entries for the
@@ -17,6 +16,8 @@ class EntryFactory(object):
         alis - alis string that is used to create objects
         model - the model that needs to be provided with the object
         """
+        if cls is None or model is None:
+            raise ValueError("cls and model cannot be None")
 
         # create the object
         instance = cls(model)
@@ -41,5 +42,8 @@ class EntryFactory(object):
         """
         Static method to create entries for the timeline.
         """
+        if instance is None:
+            raise ValueError("instance cannot be None")
+
         e = EntryFactory.get(alis)
-        e.create(instance)
+        return e.create(instance)

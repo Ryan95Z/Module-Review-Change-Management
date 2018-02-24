@@ -3,7 +3,6 @@ from django.db.models import ForeignKey
 from timeline.models import TimelineEntry, TableChange
 from timeline.models.integrate import BaseTimelineNode
 from timeline.models.integrate.entry import TLEntry
-from timeline.utils.factory import EntryFactory
 
 
 class BaseEntry(ABC):
