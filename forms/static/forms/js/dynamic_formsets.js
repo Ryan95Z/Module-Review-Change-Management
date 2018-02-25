@@ -26,6 +26,25 @@ function deleteFormRow(deleteButton) {
     deleteButton.closest(".form_row").remove()
     recalculateIndexes('form')
 }
+function shiftUp(upButton) {
+    var currentIndex = $("#form_set .move-up").index(upButton)
+    if(currentIndex < 2) {
+        $('#form_set').prepend(upButton.closest(".form_row"));
+    } else {
+        $(upButton.closest(".form_row")).insertAfter(".form_row:eq("+ (currentIndex -2) + ")")
+    }
+    recalculateIndexes('form')
+}
+function shiftdown(downButton) {
+    var currentIndex = $("#form_set .move-down").index(downButton)
+    var totalForms = $('#id_form-TOTAL_FORMS').val();
+    if(currentIndex >= totalForms - 1) {
+        $('#form_set').append(downButton.closest(".form_row"));
+    } else {
+        $(downButton.closest(".form_row")).insertAfter(".form_row:eq("+ (currentIndex + 1) + ")")
+    }
+    recalculateIndexes('form')
+}
 $('#add_row').click(function() {
     var form_id = $('#id_form-TOTAL_FORMS').val();
     var form_order = $('#id_form-TOTAL_FORMS').val();
@@ -35,7 +54,16 @@ $('#add_row').click(function() {
     recalculateOrder();
     
 });
+
 $('table').on('click', '.delete-row', function() {
     deleteFormRow($(this))
+    recalculateOrder()
+})
+$('table').on('click', '.move-up', function() {
+    shiftUp($(this))
+    recalculateOrder()
+})
+$('table').on('click', '.move-down', function() {
+    shiftdown($(this))
     recalculateOrder()
 })
