@@ -6,11 +6,12 @@ from core.models import Module
 from forms.forms import FieldEntityForm
 
 class AdminModuleDescriptionFormStructure(View):
-
-    
+    def __init__(self):
+        self.template = 'module_description_form_control.html'
+        self.field_formset_object = formset_factory(FieldEntityForm, can_delete=True)
     def get(self, request, **kwargs):
-
-        return render(request, 'module_description_form_control.html')
+        field_formset = self.field_formset_object(request.GET or None)
+        return render(request, 'module_description_form_control.html', {'field_formset': field_formset})
 
 class AdminModuleDescriptionFormModify(View):
     """
@@ -18,7 +19,7 @@ class AdminModuleDescriptionFormModify(View):
     """
     def __init__(self):
         self.template = 'module_description_form_control.html'
-        self.field_formset_object = formset_factory(FieldEntityForm, can_delete=True, can_order=True)
+        self.field_formset_object = formset_factory(FieldEntityForm)
 
     def get(self, request, **kwargs):
         field_formset = self.field_formset_object(request.GET or None)
@@ -35,6 +36,3 @@ class AdminModuleDescriptionFormModify(View):
             'formset_length': len(field_formset)
         })
         
-            
-            
-            

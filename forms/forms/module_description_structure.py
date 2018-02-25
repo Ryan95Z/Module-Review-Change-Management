@@ -5,7 +5,6 @@ class FieldEntityForm(forms.ModelForm):
     """
     Form used to describe a single entity in the module description form structure
     """
-
     class Meta:
         model = FormFieldEntity
-        exclude = ('entity_id', 'entity_order',)
+        exclude = ('entity_id',)

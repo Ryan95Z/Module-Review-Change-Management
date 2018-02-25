@@ -28,12 +28,14 @@
         </thead>
         <tbody id="form_set">
             {% for form in field_formset.forms %}
-            <tr>
+            <tr class="form_row">
                 <td>#</td>
                 <td>{{ form.entity_label|add_css_class:"form-control form-control-sm" }}</td>
                 <td>{{ form.entity_type|add_css_class:"form-control form-control-sm"}}</td>
                 <td>{{ form.entity_choices|add_css_class:"form-control form-control-sm"}}</td>
                 <td>{{ form.entity_default|add_css_class:"form-control form-control-sm"}}</td>
+                <td><input type="button" class="btn btn-danger btn-sm" value="X" id="delete-row"></td>
+                <input type="hidden" name="form-{{ forloop.counter0 }}-entity_order" id="{{form.entity_order.id_for_label}}" value="{{ forloop.counter0 }}">
             </tr>
             {% endfor %}
         </tbody>
@@ -42,30 +44,53 @@
 <input type="button" class="btn btn-primary btn-sm"value="Add More" id="add_row">
 <table style="display:none">
     <tbody id="empty_form">
-    <tr>
+    <tr class="form_row">
         <td>#</td>
         <td>{{ field_formset.empty_form.entity_label|add_css_class:"form-control form-control-sm" }}</td>
         <td>{{ field_formset.empty_form.entity_type|add_css_class:"form-control form-control-sm"}}</td>
         <td>{{ field_formset.empty_form.entity_choices|add_css_class:"form-control form-control-sm"}}</td>
         <td>{{ field_formset.empty_form.entity_default|add_css_class:"form-control form-control-sm"}}</td>
+        <td><input type="button" class="btn btn-danger btn-sm" value="X" id="delete-row"></td>
+        <input type="hidden" name="form-__prefix__-entity_order" id="{{field_formset.empty_form.entity_order.id_for_label}}" value="0">
     </tr>
     </tbody>
 </table>
+
+<h2 id="test">test</h2>
+
 {% endblock %}
 {% block scripts %}
 <script>
+    function updateIndex(element, prefix, newIndex) {
+        var regex = new RegExp('(' + prefix + '-\\d+)');
+        var replacement = prefix + "-" + newIndex;
+        if(element.id) element.id = element.id.replace(regex, replacement)
+        if(element.name) element.name = element.name.replace(regex, replacement)
+    }
+    function recalculateIndexes(prefix) {
+        var formRows = $('.form_row');
+        for(var i=0, rowCount=formRows.length; i<rowCount; i++) {
+            $(formRows.get(i)).find(':input').each(function() {
+                updateIndex(this, prefix, i)
+            })
+        }
+    }
+    function deleteFormRow(deleteButton) {
+        var total_forms = $('#id_form-TOTAL_FORMS').val();
+        $('#id_form-TOTAL_FORMS').val(total_forms - 1);
+        deleteButton.closest(".form_row").remove()
+        recalculateIndexes('form')
+    }
     $('#add_row').click(function() {
         var form_id = $('#id_form-TOTAL_FORMS').val();
         var form_order = $('#id_form-TOTAL_FORMS').val();
         $('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_id));
         $('#id_form-TOTAL_FORMS').val(parseInt(form_id) + 1);
-        $('#id_form-' + form_id + '-ORDER').val(parseInt(form_order))
-    });
-    $('#delete_row').click(function() {
+        $('#id_form-'+form_id+'-entity_order').val(form_order);
         
     });
+    $('table').on('click', '[id^="delete-row"]', function() {
+        deleteFormRow($(this))
+    })
 </script>
 {% endblock %}
-
-
-
