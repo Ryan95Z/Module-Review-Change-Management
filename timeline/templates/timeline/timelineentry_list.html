@@ -70,6 +70,7 @@
 											{% else %}
 												<span>Approved By: {{ entry.approved_by.username }}</span>
 											{% endif %}
+											<a href="{% url 'discussion' module_code entry.pk %}">Test</a>
 										</div>
 									{% endif %}
 								</div>

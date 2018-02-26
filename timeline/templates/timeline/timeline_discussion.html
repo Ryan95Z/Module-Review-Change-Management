@@ -1,20 +1,86 @@
 {% extends 'core/main.html' %}
 {% load mptt_tags %}
+{% load humanize %}
+{% load timeline_tags %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'timeline/styles.css' %}">
+{% endblock %}
 
 {% block main %}
 
+<div class="row">
+    <div class="col-md-12">
+        <div class="timeline-entry-local entry-update">
+            <div class="timeline-header">
+                <h5>
+                    <i>{{ entry.title }}</i> 
+                    <time>{{ entry.created|date:"SHORT_DATE_FORMAT" }}</time>
+                </h5>
+            </div>
+            <div class="entry-{{ entry.status|lower }}">
+                <div class="timeline-content">
+                    {% autoescape off %}
+                        {{ entry.changes|covert_markdown }}
+                    {% endautoescape %}                          
+                </div>
+                <div class="timeline-actions">
+                    <div class="timeline-meta">
+                        <span>Approved By: Ryan</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="discussion-container">
+            <ul class="discussion">
+            {% recursetree discussion %}
+                <li class="discussion-item  lv-{{ node.level }}">
+                    <div class="discussion-item-content">
+                        <div class="discussion-header">
+                            <b>{{ node.author_username }}</b>
+                            wrote a comment:
+                            <time>{{ node.created|naturaltime }}</time>
+                        </div>
+                        <div class="discussion-comment">
+                            {{ node.comment }}
+                        </div>
+                        <div class="discussion-actions">
+                            <a href="#" class="reply-action" data-for="{{ node.created|date:'U' }}">Reply</a>
+                        </div>
+                    </div>
+                    <li class="discussion-item  lv-{{ node.level }}">
+                        <form action="{% url 'discussion' module_code entry_id %}" method="POST" class="reply" id="{{ node.created|date:'U' }}">
+                            {% csrf_token %}
+                            <div id="reply-textarea" class="form-group">
+                               {{ form.comment }} 
+                            </div>
 
-<ul>
-    {% recursetree data %}
-        <li>
-            {{ node.comment }}
-            {% if not node.is_leaf_node %}
-                <ul class="replies">
-                    {{ children }}
-                </ul>
-            {% endif %}
-        </li>
-    {% endrecursetree %}
-</ul>
+                            {% if node.level > 1 %}
+                                <input type="hidden" name="parent" value="{{ node.parent.id }}">
+                            {% else %}
+                                <input type="hidden" name="parent" value="{{ node.id }}">
+                            {% endif %}
+                            <button class="btn btn-success btn-sm">Reply</button>
+                        </form>
+                    </li>
+                    {% if not node.is_leaf_node %}
+                        <ul class="discussion replies">
+                            {{ children }}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endrecursetree %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
+{% block extra_scripts %}
+    <script type="text/javascript" src="{% static 'timeline/js/discussions.js' %}"></script>
 {% endblock %}
