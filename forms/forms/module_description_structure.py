@@ -7,4 +7,4 @@ class FieldEntityForm(forms.ModelForm):
     """
     class Meta:
         model = FormFieldEntity
-        exclude = ('entity_id',)
+        exclude = ('entity_id','module_description_version', 'entity_max_length')

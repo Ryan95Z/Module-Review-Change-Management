@@ -1,5 +1,7 @@
 from django.db import models
 
+from forms.models.module_description import ModuleDescriptionFormVersion
+
 class FormFieldEntity(models.Model):
     """
     Represents an entity within a dynamic form
@@ -19,8 +21,11 @@ class FormFieldEntity(models.Model):
     entity_default = models.CharField(blank=True, max_length=100, verbose_name="Default")
     entity_description = models.CharField(blank=True, max_length=1000, verbose_name="Description")
     entity_placeholder = models.CharField(blank=True, max_length=100, verbose_name="Placeholder")
-    entity_max_length = models.PositiveSmallIntegerField(default=100, verbose_name="Max Length")
-    #version_hash = models.OneToOneField(FormHash)
+    entity_max_length = models.PositiveSmallIntegerField(default=500, verbose_name="Max Length")
+    module_description_version = models.ForeignKey(ModuleDescriptionFormVersion)
 
     class Meta:
         ordering = ['entity_order']
+
+    def __str__(self):
+        return "FormFieldEntity: {} ({})".format(self.entity_label, self.entity_type)

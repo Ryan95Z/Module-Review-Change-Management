@@ -1,14 +1,15 @@
 from django.views import View
-from django.shortcuts import render
-from django.forms import formset_factory
+from django.shortcuts import render, redirect
+from django.forms import modelformset_factory, formset_factory
 
 from core.models import Module
+from forms.models import ModuleDescriptionFormVersion, FormFieldEntity
 from forms.forms import FieldEntityForm
 
 class AdminModuleDescriptionFormStructure(View):
     def __init__(self):
         self.template = 'module_description_form_control.html'
-        self.field_formset_object = formset_factory(FieldEntityForm, can_delete=True)
+        self.field_formset_object = modelformset_factory(FormFieldEntity, form=FieldEntityForm, exclude=('entity_max_length',))
     def get(self, request, **kwargs):
         field_formset = self.field_formset_object(request.GET or None)
         return render(request, 'module_description_form_control.html', {'field_formset': field_formset})
@@ -26,12 +27,20 @@ class AdminModuleDescriptionFormModify(View):
         return render(request, self.template, {'field_formset': field_formset})
 
     def post(self, request, **kwargs):
-        field_formset = self.field_formset_object(request.POST or None)
+        field_formset = self.field_formset_object(request.POST)
+        
         if field_formset.is_valid():
+            md_version = ModuleDescriptionFormVersion.objects.create_new_version()
+            
             for form in field_formset:
-                form.save(commit=False)
-            return redirect('view_module_tracking_form') # temp redirect
-        return render(request, self.template_name, {
+                entity = form.save(commit=False)
+                entity.module_description_version = md_version
+                entity.save()
+
+            return redirect('module_description_form_structure') # temp redirect
+
+        print(field_formset.errors)
+        return render(request, self.template, {
             'field_formset': field_formset,
             'formset_length': len(field_formset)
         })
