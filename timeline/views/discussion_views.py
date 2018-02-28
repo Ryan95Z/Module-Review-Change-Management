@@ -33,17 +33,21 @@ class DiscussionView(View):
     def post(self, request, *args, **kwargs):
         comment = request.POST.get('comment', '')
         form = DiscussionForm({'comment': comment})
+        discussion = {}
         if form.is_valid():
-            parent_id = request.POST.get('parent', None)
-            parent = Discussion.objects.get(pk=parent_id)
-            module_code = kwargs['module_pk']
-            entry_id = kwargs['pk']
-            entry = TimelineEntry.objects.get(pk=entry_id)
+            # add the author and comments
+            discussion['comment'] = form.cleaned_data['comment']
+            discussion['author'] = request.user
 
-            Discussion.objects.create(
-                comment=form.cleaned_data['comment'],
-                entry=entry,
-                author=request.user,
-                parent=parent,
-            )
+            # get the timeline entry
+            entry_id = kwargs['pk']
+            discussion['entry'] = TimelineEntry.objects.get(pk=entry_id)
+
+            # get the parent if one has been provided
+            parent_id = request.POST.get('parent', None)
+            if parent_id is not None:
+                discussion['parent'] = Discussion.objects.get(pk=parent_id)
+
+            # create the discussion
+            Discussion.objects.create(**discussion)
         return redirect(self.__redirect_url(**kwargs))
