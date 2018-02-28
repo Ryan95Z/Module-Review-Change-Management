@@ -70,7 +70,13 @@
 											{% else %}
 												<span>Approved By: {{ entry.approved_by.username }}</span>
 											{% endif %}
-											<a href="{% url 'discussion' module_code entry.pk %}">Test</a>
+											
+											<span class="timeline-comments">
+												<a href="{% url 'discussion' module_code entry.pk %}">
+													<i class="fa fa-comments" aria-hidden="true"></i>
+													{{ entry.id|entry_comments }}
+												</a>
+											</span>
 										</div>
 									{% endif %}
 								</div>

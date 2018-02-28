@@ -12,6 +12,12 @@
 
 <div class="row">
     <div class="col-md-12">
+
+        <a href="{% url 'module_timeline' module_code %}">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            Back to Timeline
+        </a>
+
         <div class="timeline-entry-local entry-update">
             <div class="timeline-header">
                 <h5>
@@ -34,47 +40,53 @@
         </div>
     </div>
 </div>
+<br>
+<hr>
 
 <div class="row">
     <div class="col-md-12">
         <div class="discussion-container">
             <ul class="discussion-root">
-            {% recursetree discussion %}
-                <li class="discussion-comment">
-                    <div class="comment-header">
-                        <span class="comment-user"><a href="#">{{ node.author_username }}</a></span>
-                        <span class="comment-time"> {{ node.created|naturaltime }}</span>
-                    </div>
-                    <div class="comment-content">
-                        {% autoescape off %}
-                        {{ node.comment|covert_markdown }}
-                        {% endautoescape %}
-                    </div>
-                    <div class="comment-options">
-                        <button class="reply" data-for="{{ node.created|date:'U' }}"><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>
-                    </div>
-                </li>
-                <li id="{{ node.created|date:'U' }}" class="discussion-comment discussion-reply-form">
-                     <form action="{% url 'discussion' module_code entry_id %}" method="POST" id="{{ node.created|date:'U' }}">
-                            {% csrf_token %}
-                            {{ form.comment }} 
+            {% if discussion.count > 0 %}
+                {% recursetree discussion %}
+                    <li class="discussion-comment">
+                        <div class="comment-header">
+                            <span class="comment-user"><a href="#">{{ node.author_username }}</a></span>
+                            <span class="comment-time"> {{ node.created|naturaltime }}</span>
+                        </div>
+                        <div class="comment-content">
+                            {% autoescape off %}
+                            {{ node.comment|covert_markdown }}
+                            {% endautoescape %}
+                        </div>
+                        <div class="comment-options">
+                            <button class="reply" data-for="{{ node.created|date:'U' }}"><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>
+                        </div>
+                    </li>
+                    <li id="{{ node.created|date:'U' }}" class="discussion-comment discussion-reply-form">
+                         <form action="{% url 'discussion' module_code entry_id %}" method="POST" id="{{ node.created|date:'U' }}">
+                                {% csrf_token %}
+                                {{ form.comment }} 
 
-                            {% if node.level > 1 %}
-                                <input type="hidden" name="parent" value="{{ node.parent.id }}">
-                            {% else %}
-                                <input type="hidden" name="parent" value="{{ node.id }}">
-                            {% endif %}
-                            <button type="submit" class="btn btn-success btn-sm">Reply</button>
-                        </form>
-                </li>
+                                {% if node.level > 1 %}
+                                    <input type="hidden" name="parent" value="{{ node.parent.id }}">
+                                {% else %}
+                                    <input type="hidden" name="parent" value="{{ node.id }}">
+                                {% endif %}
+                                <button type="submit" class="btn btn-success btn-sm btn-reply">Reply</button>
+                            </form>
+                    </li>
 
-                {% if not node.is_leaf_node %}
-                    <ul>
-                        {{ children }}
-                    </ul>
-                {% endif %} 
-            {% endrecursetree %}
-            </ul>
+                    {% if not node.is_leaf_node %}
+                        <ul>
+                            {{ children }}
+                        </ul>
+                    {% endif %} 
+                {% endrecursetree %}
+                </ul>
+            {% else %}
+                <p id="no-comments-msg">There is no active discussion for this entry. You can start one now!</p>
+            {% endif %}
         </div>
         <div class="comment-form">
             <form action="{% url 'discussion' module_code entry_id %}" method="POST">
@@ -83,7 +95,7 @@
                     {{ form.comment.label_tag }}
                     {{ form.comment }} 
                 </div>
-                <button type="submit" class="btn btn-success">Submit</button>
+                <button id="post-comment" type="submit" class="btn btn-success">Post</button>
             </form>
         </div>
     </div>
