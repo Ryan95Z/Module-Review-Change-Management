@@ -47,12 +47,15 @@ class TestProcessChanges(ModuleTestCase):
         """
         Test case for checking that invalid pks are not processed
         """
+        # extreme negative numbers
         with self.assertRaises(ValueError):
             process_changes(-1000)
 
+        # zero value
         with self.assertRaises(ValueError):
             process_changes(0)
 
+        # None
         with self.assertRaises(ValueError):
             process_changes(None)
 
@@ -60,6 +63,5 @@ class TestProcessChanges(ModuleTestCase):
         """
         Test case for a valid pk with no changes to process.
         """
-
         completed = process_changes(100)
         self.assertTrue(completed)

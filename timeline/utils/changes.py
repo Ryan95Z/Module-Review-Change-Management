@@ -70,13 +70,16 @@ def revert_changes(entry_pk):
     """
     Function to remove changes for a entry in the timeline
     """
+    if entry_pk is None:
+        raise ValueError("entry pk cannot be None")
+
     if int(entry_pk) < 1:
         raise ValueError("entry pk needs to be greater than zero")
 
     changes = TableChange.objects.filter(related_entry=entry_pk)
 
     # check for changes. If there are, the delete each one.
-    if len(changes) > 0:
+    if changes.count() > 0:
         for change in changes:
             change.delete()
         return True
