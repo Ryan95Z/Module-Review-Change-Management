@@ -10,9 +10,12 @@ class BaseEntry(ABC):
     Base class for entry types
     """
     def __init__(self, model):
+        if model is None:
+            raise ValueError("model cannot be None.")
+
         # check that model inherits BaseTimelineNode
         if not issubclass(model, BaseTimelineNode):
-            ValueError("model needs to inherit from BaseTimelineNode")
+            raise ValueError("model needs to inherit from BaseTimelineNode")
 
         # public variables
         self.model = model

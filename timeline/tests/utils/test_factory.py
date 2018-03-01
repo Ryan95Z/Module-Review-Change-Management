@@ -1,4 +1,3 @@
-from django.test import TestCase
 from timeline.utils.factory import EntryFactory
 from timeline.utils.entries import InitEntry
 from core.models import Module

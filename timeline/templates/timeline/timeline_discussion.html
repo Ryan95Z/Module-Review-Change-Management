@@ -59,23 +59,23 @@
                             {{ node.comment|covert_markdown }}
                             {% endautoescape %}
                         </div>
+                        {% if node.level < 2 %}
                         <div class="comment-options">
                             <button class="reply" data-for="{{ node.created|date:'U' }}"><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>
                         </div>
+                        {% endif %}
                     </li>
-                    <li id="{{ node.created|date:'U' }}" class="discussion-comment discussion-reply-form">
-                         <form action="{% url 'discussion' module_code entry_id %}" method="POST" id="{{ node.created|date:'U' }}">
-                                {% csrf_token %}
-                                {{ form.comment }} 
 
-                                {% if node.level > 1 %}
-                                    <input type="hidden" name="parent" value="{{ node.parent.id }}">
-                                {% else %}
-                                    <input type="hidden" name="parent" value="{{ node.id }}">
-                                {% endif %}
-                                <button type="submit" class="btn btn-success btn-sm btn-reply">Reply</button>
-                            </form>
+                    {% if node.level < 2 %}
+                    <li id="{{ node.created|date:'U' }}" class="discussion-comment discussion-reply-form">
+                        <form action="{% url 'discussion' module_code entry_id %}" method="POST" id="{{ node.created|date:'U' }}">
+                            {% csrf_token %}
+                            {{ form.comment }} 
+                            <input type="hidden" name="parent" value="{{ node.id }}">
+                            <button type="submit" class="btn btn-success btn-sm btn-reply">Reply</button>
+                        </form>
                     </li>
+                    {% endif %}
 
                     {% if not node.is_leaf_node %}
                         <ul>
