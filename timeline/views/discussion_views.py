@@ -98,17 +98,3 @@ class DiscussionView(AjaxableResponseMixin, View):
             # create the discussion
             return Discussion.objects.create(**discussion)
         return None
-
-
-# class Test(View):
-#     def get(self, request, *args, **kwargs):
-#         return JsonResponse({'d': 'd'})
-
-#     def post(self, request, *args, **kwargs):
-#         comment = request.POST.get('comment', '')
-#         data = {
-#             'author': request.user.username,
-#             'time': 'now',
-#             'content': '<p>Hello World</p>'
-#         }
-#         return JsonResponse(data)

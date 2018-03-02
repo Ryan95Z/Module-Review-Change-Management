@@ -68,18 +68,13 @@
                         {% if node.level < 2 %}
                         <div class="comment-options">
                             <button class="reply" data-for="{{ node.created|date:'U' }}"><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>
-
-               <!--              <button class="see-more">
-                                <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                See Responses
-                            </button> -->
                         </div>
                         {% endif %}
                     </li>
 
                     {% if node.level < 2 %}
                     <li id="{{ node.created|date:'U' }}" class="discussion-comment discussion-reply-form">
-                        <form action="{% url 'discussion' module_code entry_id %}" method="POST" id="{{ node.created|date:'U' }}">
+                        <form action="{% url 'discussion' module_code entry_id %}" method="POST" id="{{ node.created|date:'U' }}" data-level="{{ node.level }}">
                             {% csrf_token %}
                             {{ form.comment }} 
                             <input type="hidden" name="parent" value="{{ node.id }}">

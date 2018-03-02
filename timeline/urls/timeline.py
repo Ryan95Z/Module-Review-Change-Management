@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
-from timeline.views import *
+from timeline.views import (TimelineListView, TimelineUpdateStatus,
+                            TimelineRevertStage, DiscussionView)
 
 urlpatterns = [
     # view timeline for a particular module
