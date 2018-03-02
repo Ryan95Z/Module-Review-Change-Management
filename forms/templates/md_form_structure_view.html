@@ -1,0 +1,34 @@
+{% extends 'core/main.html' %}
+{% load core_tags %}
+{% load static %}
+
+{% block title %}
+    Form Structure
+{% endblock %}
+
+{% block main %}
+
+<div class="row">
+<ul class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'change_module_description_structure' %}">Update Form Structure</a>
+    </li>
+</ul>
+</div>
+
+<h2>Module Description Form Structure</h2>
+<h6>version id: {{ form_version.pk }}</h6>
+<h6>creation date: {{ form_version.creation_date }}</h6>
+<hr>
+
+{% for field in form_fields %}
+<div class="card">
+<div class="card-block">
+    <h4 class="card-title">{{ field.entity_label }}</h4>
+    <h6 class="card-subtitle mb-2 text-muted">(Type: {{ field.entity_type }}, Max Length: {{field.entity_max_length}})</h6>
+    <p class="card-text"></p>
+</div>
+</div>
+{% endfor %}
+
+{% endblock %}

@@ -10,6 +10,9 @@ class ModuleDescriptionFormVersionManager(models.Manager):
         version = self.create(creation_date=timezone.now())
         return version
 
+    def get_most_recent(self):
+        return ModuleDescriptionFormVersion.objects.latest('creation_date')
+
 class ModuleDescriptionFormVersion(models.Model):
     """
     Represents the hash of a number of form field entities

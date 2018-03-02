@@ -2,6 +2,17 @@ from django.db import models
 
 from forms.models.module_description import ModuleDescriptionFormVersion
 
+class FormFieldEntityManager(models.Manager):
+    """
+    Manager for the form field entity model
+    """
+    def get_most_recent_form(self):
+        newest_version = ModuleDescriptionFormVersion.objects.get_most_recent()
+        newest_version_fields = self.filter(
+            module_description_version=newest_version
+        ).order_by('entity_order').values()
+        return newest_version_fields
+
 class FormFieldEntity(models.Model):
     """
     Represents an entity within a dynamic form
@@ -23,6 +34,8 @@ class FormFieldEntity(models.Model):
     entity_placeholder = models.CharField(blank=True, max_length=100, verbose_name="Placeholder")
     entity_max_length = models.PositiveSmallIntegerField(default=500, verbose_name="Max Length")
     module_description_version = models.ForeignKey(ModuleDescriptionFormVersion)
+
+    objects = FormFieldEntityManager()
 
     class Meta:
         ordering = ['entity_order']

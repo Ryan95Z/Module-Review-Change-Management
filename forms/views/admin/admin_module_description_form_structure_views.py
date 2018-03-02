@@ -7,17 +7,15 @@ from forms.models import ModuleDescriptionFormVersion, FormFieldEntity
 from forms.forms import FieldEntityForm
 
 class AdminModuleDescriptionFormStructure(View):
-    def __init__(self):
-        self.template = 'module_description_form_control.html'
-        self.field_formset_object = formset_factory(FieldEntityForm)
-    def get(self, request, **kwargs):
-        newest_version = ModuleDescriptionFormVersion.objects.latest('creation_date')
-        newest_version_fields = FormFieldEntity.objects.filter(
-            module_description_version=newest_version
-        ).order_by('entity_order').values()
 
-        field_formset = self.field_formset_object(request.GET or None, initial=newest_version_fields)
-        return render(request, 'module_description_form_control.html', {'field_formset': field_formset})
+    def get(self, request, **kwargs):
+        newest_version = ModuleDescriptionFormVersion.objects.get_most_recent()
+        newest_version_fields = FormFieldEntity.objects.get_most_recent_form()
+        context = {
+            'form_version': newest_version,
+            'form_fields': newest_version_fields
+        }
+        return render(request, 'md_form_structure_view.html', context)
 
 class AdminModuleDescriptionFormModify(View):
     """
@@ -28,10 +26,7 @@ class AdminModuleDescriptionFormModify(View):
         self.field_formset_object = formset_factory(FieldEntityForm)
 
     def get(self, request, **kwargs):
-        newest_version = ModuleDescriptionFormVersion.objects.latest('creation_date')
-        newest_version_fields = FormFieldEntity.objects.filter(
-            module_description_version=newest_version
-        ).order_by('entity_order').values()
+        newest_version_fields = FormFieldEntity.objects.get_most_recent_form()
         field_formset = self.field_formset_object(request.GET or None, initial=newest_version_fields)
         return render(request, self.template, {'field_formset': field_formset})
 
