@@ -13,6 +13,12 @@ class FormFieldEntityManager(models.Manager):
         ).order_by('entity_order').values()
         return newest_version_fields
 
+    def get_form(self, version):
+        chosen_version_fields = self.filter(
+            module_description_version=version
+        ).order_by('entity_order').values()
+        return chosen_version_fields
+
 class FormFieldEntity(models.Model):
     """
     Represents an entity within a dynamic form

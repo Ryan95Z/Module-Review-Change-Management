@@ -7,18 +7,9 @@
 {% endblock %}
 
 {% block main %}
-
-<div class="row">
-<ul class="nav nav-pills">
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'change_module_description_structure' %}">Update Form Structure</a>
-    </li>
-</ul>
-</div>
-
 <h2>Module Description Form Structure</h2>
-<h6>version id: {{ form_version.pk }}</h6>
-<h6>creation date: {{ form_version.creation_date }}</h6>
+<b>v{{ form_version.pk }}:</b> last updated <b>{{ form_version.creation_date }}</b>
+<a href="#" class="badge badge-light" data-toggle="modal" data-target="#olderVersionsModal">older versions</a>
 <hr>
 
 {% for field in form_fields %}
@@ -30,5 +21,31 @@
 </div>
 </div>
 {% endfor %}
+
+<div class="modal fade" id="olderVersionsModal" tabindex="-1" role="dialog" aria-labelledby="olderVersionsModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="olderVersionsModalLabel">Please choose an older version</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body p-0">
+        <ul class="list-group list-group-flush">
+            {% for version in all_versions %}
+            <a href="{% url 'old_module_description_form_structure' version.pk %}" class="list-group-item py-1 {% if version.pk == form_version.pk %} active {% endif %}" >
+                v{{ version.module_description_version }}:  {{ version.creation_date }}
+            </a>
+            {% endfor %}
+        </ul>
+        
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+    </div>
+</div>
+</div>
 
 {% endblock %}

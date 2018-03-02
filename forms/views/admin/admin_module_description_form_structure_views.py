@@ -11,11 +11,28 @@ class AdminModuleDescriptionFormStructure(View):
     def get(self, request, **kwargs):
         newest_version = ModuleDescriptionFormVersion.objects.get_most_recent()
         newest_version_fields = FormFieldEntity.objects.get_most_recent_form()
+        all_versions = ModuleDescriptionFormVersion.objects.get_version_list()
         context = {
             'form_version': newest_version,
-            'form_fields': newest_version_fields
+            'form_fields': newest_version_fields,
+            'all_versions': all_versions
         }
         return render(request, 'md_form_structure_view.html', context)
+
+class AdminModuleDescriptionFormStructureOld(View):
+
+    def get(self, request, **kwargs):
+        version_pk = self.kwargs['pk']
+        chosen_version = ModuleDescriptionFormVersion.objects.get(pk=version_pk)
+        chosen_version_fields = FormFieldEntity.objects.get_form(chosen_version)
+        all_versions = ModuleDescriptionFormVersion.objects.get_version_list()
+        context = {
+            'form_version': chosen_version,
+            'form_fields': chosen_version_fields,
+            'all_versions': all_versions
+        }
+        return render(request, 'md_form_structure_view.html', context)
+
 
 class AdminModuleDescriptionFormModify(View):
     """

@@ -13,6 +13,9 @@ class ModuleDescriptionFormVersionManager(models.Manager):
     def get_most_recent(self):
         return ModuleDescriptionFormVersion.objects.latest('creation_date')
 
+    def get_version_list(self):
+        return ModuleDescriptionFormVersion.objects.all().order_by('-creation_date')
+
 class ModuleDescriptionFormVersion(models.Model):
     """
     Represents the hash of a number of form field entities
