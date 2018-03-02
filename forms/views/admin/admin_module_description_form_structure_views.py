@@ -9,9 +9,14 @@ from forms.forms import FieldEntityForm
 class AdminModuleDescriptionFormStructure(View):
     def __init__(self):
         self.template = 'module_description_form_control.html'
-        self.field_formset_object = modelformset_factory(FormFieldEntity, form=FieldEntityForm, exclude=('entity_max_length',))
+        self.field_formset_object = formset_factory(FieldEntityForm)
     def get(self, request, **kwargs):
-        field_formset = self.field_formset_object(request.GET or None)
+        newest_version = ModuleDescriptionFormVersion.objects.latest('creation_date')
+        newest_version_fields = FormFieldEntity.objects.filter(
+            module_description_version=newest_version
+        ).order_by('entity_order').values()
+
+        field_formset = self.field_formset_object(request.GET or None, initial=newest_version_fields)
         return render(request, 'module_description_form_control.html', {'field_formset': field_formset})
 
 class AdminModuleDescriptionFormModify(View):
@@ -23,7 +28,11 @@ class AdminModuleDescriptionFormModify(View):
         self.field_formset_object = formset_factory(FieldEntityForm)
 
     def get(self, request, **kwargs):
-        field_formset = self.field_formset_object(request.GET or None)
+        newest_version = ModuleDescriptionFormVersion.objects.latest('creation_date')
+        newest_version_fields = FormFieldEntity.objects.filter(
+            module_description_version=newest_version
+        ).order_by('entity_order').values()
+        field_formset = self.field_formset_object(request.GET or None, initial=newest_version_fields)
         return render(request, self.template, {'field_formset': field_formset})
 
     def post(self, request, **kwargs):
