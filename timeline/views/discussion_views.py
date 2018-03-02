@@ -1,16 +1,42 @@
+from markdown import markdown
+from abc import ABC, abstractmethod
 from django.urls import reverse
 from django.views.generic import View
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
+from django.utils.dateformat import format
 
 from timeline.models import TimelineEntry, Discussion
 from timeline.forms import DiscussionForm
 
 
-class DiscussionView(View):
+class AjaxableResponseMixin(ABC, object):
+    def dispatch(self, request, *args, **kwargs):
+        if request.method.lower() == 'get' and request.is_ajax():
+            handle = self.http_method_not_allowed(request, *args, **kwargs)
+        elif request.method.lower() == 'post' and request.is_ajax():
+            handle = self.ajax_post(request, *args, **kwargs)
+        else:
+            handle = super(
+                AjaxableResponseMixin, self).dispatch(request, *args, **kwargs)
+        return handle
+
+    @abstractmethod
+    def ajax_post(self, request, *args, **kwargs):
+        pass
+
+
+class DiscussionView(AjaxableResponseMixin, View):
+    """
+    View to get and post the active discussion
+    for a entry in the timeline.
+    """
     template = "timeline/timeline_discussion.html"
 
     def get(self, request, *args, **kwargs):
+        """
+        GET Method for accessing the view
+        """
         entry_id = kwargs.get('pk')
         module_code = kwargs.get('module_pk')
         entry = TimelineEntry.objects.get(pk=entry_id)
@@ -27,10 +53,31 @@ class DiscussionView(View):
         }
         return render(request, self.template, data)
 
+    def post(self, request, *args, **kwargs):
+        """
+        POST Method for adding new comments to the discussion
+        """
+        self.__process_new_discussion(request, *args, **kwargs)
+        return redirect(self.__redirect_url(**kwargs))
+
+    def ajax_post(self, request, *args, **kwargs):
+        discussion = self.__process_new_discussion(request, *args, **kwargs)
+        data = {
+            'author': request.user.username,
+            'time': 'just now',
+            'id': discussion.pk,
+            'content': markdown(discussion.comment),
+            'timestamp': format(discussion.created, u'U'),
+        }
+        return JsonResponse(data)
+
     def __redirect_url(self, **kwargs):
+        """
+        Private method to get the response url
+        """
         return reverse('discussion', kwargs=kwargs)
 
-    def post(self, request, *args, **kwargs):
+    def __process_new_discussion(self, request, *args, **kwargs):
         comment = request.POST.get('comment', '')
         form = DiscussionForm({'comment': comment})
         discussion = {}
@@ -49,5 +96,19 @@ class DiscussionView(View):
                 discussion['parent'] = Discussion.objects.get(pk=parent_id)
 
             # create the discussion
-            Discussion.objects.create(**discussion)
-        return redirect(self.__redirect_url(**kwargs))
+            return Discussion.objects.create(**discussion)
+        return None
+
+
+# class Test(View):
+#     def get(self, request, *args, **kwargs):
+#         return JsonResponse({'d': 'd'})
+
+#     def post(self, request, *args, **kwargs):
+#         comment = request.POST.get('comment', '')
+#         data = {
+#             'author': request.user.username,
+#             'time': 'now',
+#             'content': '<p>Hello World</p>'
+#         }
+#         return JsonResponse(data)

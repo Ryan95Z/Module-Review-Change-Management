@@ -20,7 +20,7 @@ class Discussion(MPTTModel):
     )
 
     class MPTTMeta:
-        order_insertion_by = ['-created']
+        order_insertion_by = ['created']
 
     def __str__(self):
         return "{} - {}".format(self.created, self.author)

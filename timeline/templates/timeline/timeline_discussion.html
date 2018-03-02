@@ -4,6 +4,10 @@
 {% load timeline_tags %}
 {% load static %}
 
+{% block title %}
+    Discussion
+{% endblock %}
+
 {% block styles %}
     <link rel="stylesheet" type="text/css" href="{% static 'timeline/styles.css' %}">
 {% endblock %}
@@ -49,9 +53,11 @@
             <ul class="discussion-root">
             {% if discussion.count > 0 %}
                 {% recursetree discussion %}
-                    <li class="discussion-comment">
+                    <li class="discussion-comment user-comment">
                         <div class="comment-header">
-                            <span class="comment-user"><a href="#">{{ node.author_username }}</a></span>
+                            <span class="comment-user">
+                                <a href="#">{{ node.author_username }}</a>
+                            </span>
                             <span class="comment-time"> {{ node.created|naturaltime }}</span>
                         </div>
                         <div class="comment-content">
@@ -62,6 +68,11 @@
                         {% if node.level < 2 %}
                         <div class="comment-options">
                             <button class="reply" data-for="{{ node.created|date:'U' }}"><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>
+
+               <!--              <button class="see-more">
+                                <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                See Responses
+                            </button> -->
                         </div>
                         {% endif %}
                     </li>
@@ -78,7 +89,7 @@
                     {% endif %}
 
                     {% if not node.is_leaf_node %}
-                        <ul>
+                        <ul class="discussion-responses">
                             {{ children }}
                         </ul>
                     {% endif %} 
@@ -103,5 +114,6 @@
 {% endblock %}
 
 {% block extra_scripts %}
+    <script type="text/javascript" src="{% static 'timeline/js/csrf_ajax.js' %}"></script>
     <script type="text/javascript" src="{% static 'timeline/js/discussions.js' %}"></script>
 {% endblock %}
