@@ -18,7 +18,12 @@
             <th class="text-center px-0" scope="col">Required</th>
             <th class="text-center px-0" scope="col">Label</th>
             <th class="text-center px-0" scope="col">Type</th>
-            <th class="text-center px-0" scope="col">Choices</th>
+            <th class="text-center px-0" scope="col">
+                Choices
+                <a href="#" data-toggle="modal" data-target="#choicesHelpModal" style="color: black">
+                    <i class="fa fa-question-circle"></i>
+                </a>
+            </th>
             <th class="text-center px-0" scope="col">Max Length</th>
             <th class="text-center px-0" scope="col">Delete</th>
         </thead>
@@ -54,6 +59,8 @@
 <input type="button" class="btn btn-primary btn-sm" value="Add More" id="add_row">
 <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>
+
+<!-- Empty form which is used to generate new rows in the form -->
 <table style="display:none">
     <tbody id="empty_form">
     <tr class="form_row">
@@ -73,7 +80,30 @@
     </tbody>
 </table>
 
+<!-- Choices help text modal -->
+<div class="modal fade" id="choicesHelpModal" tabindex="-1" role="dialog" aria-labelledby="choicesHelpModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="choicesHelpModalLabel">Choices Field</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>The choices field only applies to 'Select Box' and 'Check Box' questions, therefore
+                    it is only active when either of these two types are chosen.
+                </p>
+                <p>Choices must be entered in a comma seperated format in order for them to be stored
+                    correctly. The form will produce an error if you fail to do this. (not yet)
+                </p>
+                <p>Example: <code>Oranges, Apples, Pears</code></p>
+            </div>
+        </div>
+        </div>
+
 {% endblock %}
+
 {% block scripts %}
 <script type="text/javascript" src="{% static 'forms/js/dynamic_formsets.js' %}"></script>
 <script type="text/javascript"> 
