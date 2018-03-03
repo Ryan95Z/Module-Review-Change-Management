@@ -40,7 +40,7 @@
                 </td>
                 <td class="text-center px-1" style="width: 50px">{{ form.entity_required}}</td>
                 <td class="px-1">{{ form.entity_label|add_css_class:"form-control form-control-sm" }}</td>
-                <td class="px-1" style="width: 130px">{{ form.entity_type|add_css_class:"form-control form-control-sm"}}</td>
+                <td class="px-1 type-field" style="width: 130px">{{ form.entity_type|add_css_class:"form-control form-control-sm"}}</td>
                 <td class="px-1" >{{ form.entity_choices|add_css_class:"form-control form-control-sm"}}</td>
                 <td class="px-1" style="width: 80px">{{ form.entity_max_length|add_css_class:"form-control form-control-sm"}}</td>
                 <td class="text-center px-1" style="width: 50px"><button class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
@@ -64,7 +64,7 @@
         </td>
         <td class="text-center px-1">{{ field_formset.empty_form.entity_required}}</td>
         <td class="px-1">{{ field_formset.empty_form.entity_label|add_css_class:"form-control form-control-sm" }}</td>
-        <td class="px-1">{{ field_formset.empty_form.entity_type|add_css_class:"form-control form-control-sm"}}</td>
+        <td class="px-1 type-field">{{ field_formset.empty_form.entity_type|add_css_class:"form-control form-control-sm"}}</td>
         <td class="px-1">{{ field_formset.empty_form.entity_choices|add_css_class:"form-control form-control-sm"}}</td>
         <td class="px-1">{{ field_formset.empty_form.entity_max_length|add_css_class:"form-control form-control-sm"}}</td>
         <td class="text-center px-1"><button class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
@@ -76,4 +76,27 @@
 {% endblock %}
 {% block scripts %}
 <script type="text/javascript" src="{% static 'forms/js/dynamic_formsets.js' %}"></script>
+<script type="text/javascript"> 
+
+    function evaluateChoiceField(typeField) {
+        var select_id = typeField.attr("id")
+        var row_id = select_id.substring(0, select_id.length - "-entity_type".length)
+        if(typeField.val() == 'multi-choice' || typeField.val() == 'check-boxes') {
+            $("#"+row_id+"-entity_choices").attr("disabled", false)
+        } else {
+            $("#"+row_id+"-entity_choices").val("")
+            $("#"+row_id+"-entity_choices").attr("disabled", true)
+        }
+    }
+
+    $('table').on('change load', 'select', function() {
+        evaluateChoiceField($(this))
+    })
+
+    $(document).ready(function(){
+        $(".type-field select").each(function() {
+            evaluateChoiceField($(this))
+        })
+    })
+</script>
 {% endblock %}
