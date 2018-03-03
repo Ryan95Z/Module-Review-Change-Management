@@ -25,7 +25,7 @@
         <tbody id="form_set">
             {% for form in field_formset.forms %}
             <tr class="form_row">
-                <td class="px-1">
+                <td class="px-1" style="width: 90px">
                     <span class="row-order">{{ forloop.counter }}</span>
                     {% if forloop.counter0 == 0 %}
                     <button type="button" disabled class="btn btn-link p-0 move-up"><i class="fa fa-chevron-up"></i></button>
@@ -38,12 +38,12 @@
                     <button type="button" class="btn btn-link p-0 move-down"><i class="fa fa-chevron-down"></i></button>
                     {% endif %}
                 </td>
-                <td class="text-center px-1">{{ form.entity_required}}</td>
+                <td class="text-center px-1" style="width: 50px">{{ form.entity_required}}</td>
                 <td class="px-1">{{ form.entity_label|add_css_class:"form-control form-control-sm" }}</td>
-                <td class="px-1">{{ form.entity_type|add_css_class:"form-control form-control-sm"}}</td>
-                <td class="px-1">{{ form.entity_choices|add_css_class:"form-control form-control-sm"}}</td>
-                <td class="px-1">{{ form.entity_max_length|add_css_class:"form-control form-control-sm"}}</td>
-                <td class="text-center px-1"><button class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
+                <td class="px-1" style="width: 130px">{{ form.entity_type|add_css_class:"form-control form-control-sm"}}</td>
+                <td class="px-1" >{{ form.entity_choices|add_css_class:"form-control form-control-sm"}}</td>
+                <td class="px-1" style="width: 80px">{{ form.entity_max_length|add_css_class:"form-control form-control-sm"}}</td>
+                <td class="text-center px-1" style="width: 50px"><button class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
                 <input type="hidden" name="form-{{ forloop.counter0 }}-entity_order" id="{{form.entity_order.id_for_label}}" value="{{ forloop.counter0 }}">
             </tr>
             {% endfor %}
