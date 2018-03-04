@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from django.db.models import ForeignKey
+from django.db.models import ForeignKey, ManyToManyField
 from timeline.models import TimelineEntry, TableChange
 from timeline.models.integrate import BaseTimelineNode
 from timeline.models.integrate.entry import TLEntry
@@ -128,6 +128,17 @@ class InitEntry(BaseEntry):
         title = self.title.format(instance.title())
         md = ""
         for field in fields:
+
+            field_type = self.model._meta.get_field(field)
+            if isinstance(field_type, ManyToManyField):
+                # Prevents ManyToMany relationships being display in
+                # the timeline. This has occured due to the way
+                # the save operations are performed by a ManyToManyField.
+                # It works by having an internal manager that saves changes
+                # within the field object and is not connected to any
+                # public methods that can find these changes.
+                continue
+
             try:
                 value = getattr(instance, field)
                 field_string = field.replace("_", " ")
