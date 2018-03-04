@@ -56,7 +56,7 @@
                     <li class="discussion-comment user-comment">
                         <div class="comment-header">
                             <span class="comment-user">
-                                <a href="#">{{ node.author_username }}</a>
+                                <a href="{% url 'user_profile' node.author.id %}">{{ node.author_username }}</a>
                             </span>
                             <span class="comment-time"> {{ node.created|naturaltime }}</span>
                         </div>

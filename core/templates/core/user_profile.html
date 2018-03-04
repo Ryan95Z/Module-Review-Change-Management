@@ -1,0 +1,17 @@
+{% extends 'core/main.html' %}
+
+{% block title %}
+	{{ object.username }}'s profile
+{% endblock %}
+
+{% block main %}
+	
+	<h1>Profile: {{ object.username }}</h1>
+
+	<ul>
+		<li>Username: {{ object.username }}</li>
+		<li>Name: {{ object.get_full_name }}</li>
+		<li>Email: {{ object.email }}</li>
+	</ul>
+
+{% endblock %}
