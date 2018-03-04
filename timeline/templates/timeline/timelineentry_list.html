@@ -63,22 +63,24 @@
 										</form>
 									</div>
 									{% endif %}
-									{% if entry.status != "Draft" %}
-										<div class="timeline-meta">
+
+									<div class="timeline-meta">
+										{% if entry.status != "Draft" %}
 											{% if entry.approved_by is None %}
 												<span>Approved By: System</span>
 											{% else %}
 												<span>Approved By: {{ entry.approved_by.username }}</span>
 											{% endif %}
-											
-											<span class="timeline-comments">
-												<a href="{% url 'discussion' module_code entry.pk %}">
-													<i class="fa fa-comments" aria-hidden="true"></i>
-													{{ entry.id|entry_comments }}
-												</a>
-											</span>
-										</div>
-									{% endif %}
+											{% else %}
+												<span>Not approved</span>
+										{% endif %}
+										<span class="timeline-comments">
+											<a href="{% url 'discussion' module_code entry.pk %}">
+												<i class="fa fa-comments" aria-hidden="true"></i>
+												{{ entry.id|entry_comments }}
+											</a>
+										</span>
+									</div>
 								</div>
 							</div>
 						</div>

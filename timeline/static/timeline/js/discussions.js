@@ -59,12 +59,16 @@ jQuery(function($) {
                     $.ajaxSettings.beforeSend(xhr, settings);
                 },
                 success: function(data){
+                    var output = null;
+                    var comment_msg = $('#no-comments-msg');
                     textarea.val('');
                     data['csrf'] = csrf_token;
                     data['action_url'] = action_url;
                     data['level'] = 0;
-                    console.log(data);
-                    var output = process_html(html, data);
+                    output = process_html(html, data);
+                    if(comment_msg.length > 0) {
+                        comment_msg.remove();
+                    }
                     root_ul.append(output);
                 }
             });         
@@ -124,6 +128,7 @@ jQuery(function($) {
                     data['csrf'] = csrf_token;
                     data['action_url'] = action_url;
                     data['level'] = node_level++;
+
                     if (need_ul) {
                         output = process_html(ul_html, {'li': li_html});
                         output = process_html(output, data)
