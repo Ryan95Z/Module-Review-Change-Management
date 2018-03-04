@@ -14,6 +14,13 @@ class BaseTimelineNode(models.Model):
         super(BaseTimelineNode, self).__init__(*args, **kwargs)
         self.base = model_to_dict(self)
 
+    def title(self):
+        """
+        Returns the title that will be displayed
+        on the timeline.
+        """
+        return self.__class__.__name__
+
     def differences(self):
         """
         Returns dict of changes that have been made to an

@@ -28,7 +28,7 @@ class TestInitEntry(ModuleTestCase):
         timeline_entry = init_entry.create(self.module)
         self.assertEquals(
             timeline_entry.title,
-            init_entry.title.format(self.module.__str__())
+            init_entry.title.format(self.module.title())
         )
 
         self.assertEquals(timeline_entry.status, "Confirmed")

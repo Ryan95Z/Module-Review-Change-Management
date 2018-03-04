@@ -125,7 +125,7 @@ class InitEntry(BaseEntry):
             raise ValueError("instance must not be None")
 
         fields = self._extract_fields()
-        title = self.title.format(instance.__str__())
+        title = self.title.format(instance.title())
         md = ""
         for field in fields:
             try:
@@ -166,9 +166,8 @@ class UpdatedEntry(BaseEntry):
         if instance is None or not isinstance(instance, self.model):
             raise ValueError("instance must not be None")
 
-        fields = self._extract_fields()
         diff = instance.differences()
-        title = self.title.format(instance.__str__())
+        title = self.title.format(instance.title())
 
         entry = None
         md = ""

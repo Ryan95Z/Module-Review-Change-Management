@@ -1,8 +1,6 @@
 from timeline.utils.factory import EntryFactory
 from timeline.utils.entries import InitEntry, UpdatedEntry
 from timeline.models.integrate.entry import TLEntry
-from django.dispatch import receiver
-from django.db.models.signals import pre_delete
 
 
 def timeline_register(cls):

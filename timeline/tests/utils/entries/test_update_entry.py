@@ -31,7 +31,7 @@ class TestUpdatedEntry(ModuleTestCase):
         timeline_entry = updated_entry.create(self.module)
         self.assertEquals(
             timeline_entry.title,
-            updated_entry.title.format(self.module.__str__())
+            updated_entry.title.format(self.module.title())
         )
 
         self.assertEquals(timeline_entry.status, "Draft")
