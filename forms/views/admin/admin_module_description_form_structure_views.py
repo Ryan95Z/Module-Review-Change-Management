@@ -10,14 +10,18 @@ from forms.forms import FieldEntityForm
 class AdminModuleDescriptionFormStructure(View):
 
     def get(self, request, **kwargs):
-        newest_version = ModuleDescriptionFormVersion.objects.get_most_recent()
-        newest_version_fields = FormFieldEntity.objects.get_most_recent_form()
-        all_versions = ModuleDescriptionFormVersion.objects.get_version_list()
-        context = {
-            'form_version': newest_version,
-            'form_fields': newest_version_fields,
-            'all_versions': all_versions
-        }
+        try:
+            newest_version = ModuleDescriptionFormVersion.objects.get_most_recent()
+            newest_version_fields = FormFieldEntity.objects.get_most_recent_form()
+            all_versions = ModuleDescriptionFormVersion.objects.get_version_list()
+            context = {
+                'form_exists': True,
+                'form_version': newest_version,
+                'form_fields': newest_version_fields,
+                'all_versions': all_versions
+            }
+        except ObjectDoesNotExist:
+            context = {'form_exists': False}
         return render(request, 'md_form_structure_view.html', context)
 
 class AdminModuleDescriptionFormStructureOld(View):
@@ -41,7 +45,7 @@ class AdminModuleDescriptionFormModify(View):
     """
     def __init__(self):
         self.template = 'module_description_form_control.html'
-        self.field_formset_object = formset_factory(FieldEntityForm, extra=0)
+        self.field_formset_object = formset_factory(FieldEntityForm, extra=1)
 
     def get(self, request, **kwargs):
         try:

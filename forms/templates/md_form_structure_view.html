@@ -8,6 +8,12 @@
 
 {% block main %}
 <h2>Module Description Form Structure</h2>
+
+{% if not form_exists %}
+    There doesn't seem to be an existing module description form in the database. 
+    <a href="{% url 'change_module_description_structure' %}">Create one.</a>
+{% else %}
+
 <b>v{{ form_version.pk }}:</b> created <b>{{ form_version.creation_date }}</b>
 <a href="#" class="badge badge-light" data-toggle="modal" data-target="#olderVersionsModal">older versions</a>
 <br><a href="{% url 'change_module_description_structure' %}" class="btn btn-primary btn-sm">Update Form Structure</a>
@@ -51,4 +57,5 @@
 </div>
 </div>
 
+{% endif %}
 {% endblock %}
