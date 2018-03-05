@@ -1,0 +1,18 @@
+<div class="card">
+    <div class="card-header">
+        Your Module(s)
+    </div>
+    <ul class="list-group list-group-flush">
+    {% if my_modules%}
+        {% for module in my_modules %}
+            <li class="list-group-item" style="height: 35px; padding: 5px 15px;">
+                <a href="{% url 'view_module_description' pk=module.module_code %}">
+                    {{ module.module_name }}
+                </a>
+            </li>
+        {% endfor %}
+    {% else %}
+        <li class="list-group-item">You aren't assigned to any modules</li>
+    {% endif %}
+    </ul>
+</div>

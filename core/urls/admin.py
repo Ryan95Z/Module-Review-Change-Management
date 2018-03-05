@@ -8,6 +8,7 @@ urls.admin
 Contains all of the urls that are only for the admins. Includes
 * Users
 * Year Tutors
+* Reviewers
 * Modules
 
 """

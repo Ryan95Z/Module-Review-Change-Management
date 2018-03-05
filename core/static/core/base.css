@@ -80,13 +80,13 @@ h1 > .h-sub-action{
   padding-right: 0px;
 }
 
-.sidebar-inner ul{
+#sidebar-col .sidebar-inner ul{
   list-style: none;
   padding: 0;
 }
 
-.sidebar-inner ul li a,
-.dropdown{
+#sidebar-col .sidebar-inner ul li a,
+#sidebar-col .dropdown{
 	cursor: pointer;
   text-decoration: none;
   display: block;
@@ -97,16 +97,16 @@ h1 > .h-sub-action{
   border-bottom: 1px solid #333333;
 }
 
-.sidebar-inner ul li a:hover, 
-.dropdown:hover{
+#sidebar-col .sidebar-inner ul li a:hover, 
+#sidebar-col .dropdown:hover{
   background-color: #333333;
 }
 
-.sidebar-drop-down ul{
+#sidebar-col .sidebar-drop-down ul{
 	background-color: #000;
 	display: none;
 }
 
-.p-msg{
+#sidebar-col .p-msg{
 	font-size: 20px;
 }

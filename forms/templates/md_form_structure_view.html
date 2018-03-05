@@ -1,0 +1,61 @@
+{% extends 'core/main.html' %}
+{% load core_tags %}
+{% load static %}
+
+{% block title %}
+    Form Structure
+{% endblock %}
+
+{% block main %}
+<h2>Module Description Form Structure</h2>
+
+{% if not form_exists %}
+    There doesn't seem to be an existing module description form in the database. 
+    <a href="{% url 'change_module_description_structure' %}">Create one.</a>
+{% else %}
+
+<b>v{{ form_version.pk }}:</b> created <b>{{ form_version.creation_date }}</b>
+<a href="#" class="badge badge-light" data-toggle="modal" data-target="#olderVersionsModal">older versions</a>
+<br><a href="{% url 'change_module_description_structure' %}" class="btn btn-primary btn-sm">Update Form Structure</a>
+<hr>
+
+{% for field in form_fields %}
+<div class="card">
+<div class="card-block">
+    <h4 class="card-title">{{ field.entity_label }}</h4>
+    <h6 class="card-subtitle mb-2 text-muted">
+        (Type: {{ field.entity_type }}, Max Length: {{field.entity_max_length}}, Required: {{field.entity_required}})
+    </h6>
+    <p class="card-text"></p>
+</div>
+</div>
+{% endfor %}
+
+<div class="modal fade" id="olderVersionsModal" tabindex="-1" role="dialog" aria-labelledby="olderVersionsModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="olderVersionsModalLabel">Please choose an older version</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body p-0">
+        <ul class="list-group list-group-flush">
+            {% for version in all_versions %}
+            <a href="{% url 'old_module_description_form_structure' version.pk %}" class="list-group-item py-1 {% if version.pk == form_version.pk %} active {% endif %}" >
+                v{{ version.module_description_version }}:  {{ version.creation_date }}
+            </a>
+            {% endfor %}
+        </ul>
+        
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+    </div>
+</div>
+</div>
+
+{% endif %}
+{% endblock %}

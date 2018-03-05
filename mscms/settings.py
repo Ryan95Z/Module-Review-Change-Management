@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'core',
+    'forms',
     'timeline',
     'django.contrib.admin',
     'django.contrib.auth',

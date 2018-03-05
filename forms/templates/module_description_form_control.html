@@ -1,0 +1,141 @@
+{% extends 'core/main.html' %}
+{% load core_tags %}
+{% load static %}
+
+{% block title %}
+    {{ object.pk }}
+{% endblock %}
+
+{% block main %}
+
+<form method="post">
+{% csrf_token %}
+{{ field_formset.management_form }}
+<div >
+    <table class="table">
+        <thead>
+            <th class="text-center px-0" scope="col">Order</th>
+            <th class="text-center px-0" scope="col">Required</th>
+            <th class="text-center px-0" scope="col">Label</th>
+            <th class="text-center px-0" scope="col">Type</th>
+            <th class="text-center px-0" scope="col">
+                Choices
+                <a href="#" data-toggle="modal" data-target="#choicesHelpModal" style="color: black">
+                    <i class="fa fa-question-circle"></i>
+                </a>
+            </th>
+            <th class="text-center px-0" scope="col">Max Length</th>
+            <th class="text-center px-0" scope="col">Delete</th>
+        </thead>
+        <tbody id="form_set">
+            {% for form in field_formset.forms %}
+            <tr class="form_row">
+                <td class="px-1" style="width: 90px">
+                    <span class="row-order">{{ forloop.counter }}</span>
+                    {% if forloop.counter0 == 0 %}
+                    <button type="button" disabled class="btn btn-link p-0 move-up"><i class="fa fa-chevron-up"></i></button>
+                    {% else %}
+                    <button type="button" class="btn btn-link p-0 move-up"><i class="fa fa-chevron-up"></i></button>
+                    {% endif %}
+                    {% if forloop.counter >= field_formset.forms|length %}
+                    <button type="button" disabled class="btn btn-link p-0 move-down"><i class="fa fa-chevron-down"></i></button>
+                    {% else %}
+                    <button type="button" class="btn btn-link p-0 move-down"><i class="fa fa-chevron-down"></i></button>
+                    {% endif %}
+                </td>
+                <td class="text-center px-1" style="width: 50px">{{ form.entity_required}}</td>
+                <td class="px-1">{{ form.entity_label|add_css_class:"form-control form-control-sm" }}</td>
+                <td class="px-1 type-field" style="width: 130px">{{ form.entity_type|add_css_class:"form-control form-control-sm"}}</td>
+                <td class="px-1" >{{ form.entity_choices|add_css_class:"form-control form-control-sm"}}</td>
+                <td class="px-1" style="width: 80px">{{ form.entity_max_length|add_css_class:"form-control form-control-sm"}}</td>
+                <td class="text-center px-1" style="width: 50px"><button class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
+                <input type="hidden" name="form-{{ forloop.counter0 }}-entity_order" id="{{form.entity_order.id_for_label}}" value="{{ forloop.counter0 }}">
+            </tr>
+            <tr>
+                {{ form.non_field_errors }}
+                <td class="px-1"></td>
+                <td class="px-1">{{ form.entity_required.errors}}</td>
+                <td class="px-1">{{ form.entity_label.errors }}</td>
+                <td class="px-1">{{ form.entity_type.errors }}</td>
+                <td class="px-1">{{ form.entity_choices.errors }}</td>
+                <td class="px-1">{{ form.entity_max_length.errors }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<a  class="btn btn-danger btn-sm" role="button" href="{% url 'module_description_form_structure' %}">Cancel</a>
+<input type="button" class="btn btn-primary btn-sm" value="Add Row" id="add_row">
+<button type="submit" class="btn btn-primary btn-sm">Submit</button>
+</form>
+
+<!-- Empty form which is used to generate new rows in the form -->
+<table style="display:none">
+    <tbody id="empty_form">
+    <tr class="form_row">
+        <td class="px-1">
+            <span class="row-order"></span>
+            <button type="button" class="btn btn-link p-0 move-up"><i class="fa fa-chevron-up"></i></button>
+            <button type="button" class="btn btn-link p-0 move-down"><i class="fa fa-chevron-down"></i></button>
+        </td>
+        <td class="text-center px-1">{{ field_formset.empty_form.entity_required}}</td>
+        <td class="px-1">{{ field_formset.empty_form.entity_label|add_css_class:"form-control form-control-sm" }}</td>
+        <td class="px-1 type-field">{{ field_formset.empty_form.entity_type|add_css_class:"form-control form-control-sm"}}</td>
+        <td class="px-1">{{ field_formset.empty_form.entity_choices|add_css_class:"form-control form-control-sm"}}</td>
+        <td class="px-1">{{ field_formset.empty_form.entity_max_length|add_css_class:"form-control form-control-sm"}}</td>
+        <td class="text-center px-1"><button class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
+        <input type="hidden" name="form-__prefix__-entity_order" id="{{field_formset.empty_form.entity_order.id_for_label}}" value="0">
+    </tr>
+    </tbody>
+</table>
+
+<!-- Choices help text modal -->
+<div class="modal fade" id="choicesHelpModal" tabindex="-1" role="dialog" aria-labelledby="choicesHelpModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="choicesHelpModalLabel">Choices Field</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>The choices field only applies to 'Select Box' and 'Check Box' questions, therefore
+                    it is only active when either of these two types are chosen.
+                </p>
+                <p>Choices must be entered in a comma seperated format in order for them to be stored
+                    correctly. The form will produce an error if you fail to do this. (not yet)
+                </p>
+                <p>Example: <code>Oranges, Apples, Pears</code></p>
+            </div>
+        </div>
+        </div>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'forms/js/dynamic_formsets.js' %}"></script>
+<script type="text/javascript"> 
+
+    function evaluateChoiceField(typeField) {
+        var select_id = typeField.attr("id")
+        var row_id = select_id.substring(0, select_id.length - "-entity_type".length)
+        if(typeField.val() == 'multi-choice' || typeField.val() == 'check-boxes') {
+            $("#"+row_id+"-entity_choices").attr("disabled", false)
+        } else {
+            $("#"+row_id+"-entity_choices").val("")
+            $("#"+row_id+"-entity_choices").attr("disabled", true)
+        }
+    }
+
+    $('table').on('change load', 'select', function() {
+        evaluateChoiceField($(this))
+    })
+
+    $(document).ready(function(){
+        $(".type-field select").each(function() {
+            evaluateChoiceField($(this))
+        })
+    })
+</script>
+{% endblock %}
