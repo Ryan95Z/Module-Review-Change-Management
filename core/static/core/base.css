@@ -1,6 +1,7 @@
 html, body{
-	background-color: #d9e0e7;
+	background-color: #f2f2f2;
 	height: 100%;
+	font-family: Poppins-Regular, sans-serif;
 }
 
 body{
@@ -15,6 +16,7 @@ body{
 
 .navbar{
 	border-bottom: 3px solid #4d4d4d;
+	background-color: #1b283d;
 }
 
 .container-fluid{
@@ -48,25 +50,7 @@ h1 > .h-sub-action{
 	margin-left: 20px;
 }
 
-/* login styles */
-
-#login-form{
-	box-shadow: 0px 0px 23px 4px #666666;
-	background-color: #fff;
-	padding: 25px 20px;
-	margin: 0 auto;
-	position: relative;
-	width: 100%;
-}
-
-#login-form button{
-	width: 100%;
-	padding: 10px 10px;
-	font-size: 20px;
-}
-
-/* end of login styles */
-
+/* what is this for ? */
 .btn-half{
 	margin-top: 2em;
 	width: 100%;
@@ -75,7 +59,7 @@ h1 > .h-sub-action{
 /* Sidebar styles */
 #sidebar-col{
   height: 100%;
-  background-color: #4d4d4d;
+  background-color: #b2b2b2;
   position: fixed;
   padding-right: 0px;
 }
@@ -97,16 +81,207 @@ h1 > .h-sub-action{
   border-bottom: 1px solid #333333;
 }
 
-.sidebar-inner ul li a:hover, 
+.sidebar-inner ul li a:hover,
 .dropdown:hover{
-  background-color: #333333;
+  background-color: #1b283d;
 }
 
 .sidebar-drop-down ul{
-	background-color: #000;
+	background-color: #565454;
 	display: none;
 }
 
 .p-msg{
 	font-size: 20px;
+}
+
+/*Here will be the login page style: Note--> they are all classs & doesn't affect any other pages*/
+
+* {
+	margin: 0px;
+	padding: 0px;
+	box-sizing: border-box;
+}
+
+/*---------------------------------------------*/
+button {
+	outline: none !important;
+	border: none;
+	background: transparent;
+}
+button:hover {
+	cursor: pointer;
+}
+
+/*//////////////////////////////////////////////////////////////////
+[message]*/
+.txt1 {
+  font-family: Poppins-Medium;
+	font-weight: bold;
+  font-size: 13px;
+  color: #666666;
+  line-height: 1.5;
+}
+/*//////////////////////////////////////////////////////////////////
+[ login page ]*/
+
+.limiter {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.container-login100 {
+  width: 100%;
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  background: #f2f2f2;
+
+}
+
+.wrap-login100 {
+	color: white;
+  width: 390px;
+  background: #1b283d;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 55px 55px 45px 55px;
+	opacity: 0.9;
+  box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+  -o-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+  -ms-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+}
+.wrap-login100:hover {
+	opacity: 1;
+}
+
+
+/*------------------------------------------------------------------
+[ login Form ]*/
+
+.login100-form {
+  width: 100%;
+
+}
+
+.login100-form-title {
+  display: block;
+  font-family: Poppins-Bold;
+  font-size: 30px;
+  color: white;
+  line-height: 1.2;
+  text-align: center;
+}
+.login100-form-title i {
+  font-size: 60px;
+}
+
+/*------------------------------------------------------------------
+[ log in Input ]*/
+
+.wrap-input100 {
+  width: 100%;
+  position: relative;
+  border-bottom: 2px solid #adadad;
+  margin-bottom: 37px;
+}
+
+.input100 {
+  font-family: Poppins-Regular;
+  font-size: 15px;
+  color: #555555;
+  line-height: 1.2;
+
+  display: block;
+  width: 100%;
+  height: 45px;
+  background: transparent;
+  padding: 0 5px;
+}
+
+/*------------------------------------------------------------------
+[ login form Button ]*/
+.container-login100-form-btn {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-top: 13px;
+}
+
+.wrap-login100-form-btn {
+  width: 100%;
+  display: block;
+  position: relative;
+  z-index: 1;
+  border-radius: 25px;
+  overflow: hidden;
+  margin: 0 auto;
+
+}
+
+.login100-form-bgbtn {
+  position: absolute;
+  z-index: -1;
+  width: 300%;
+  height: 100%;
+  background: #a64bf4;
+  background: -webkit-linear-gradient(right, #f9f9f9, #918B94, #f9f9f9, #918B94);
+  background: -o-linear-gradient(right, #f9f9f9, #918B94, #f9f9f9, #918B94);
+  background: -moz-linear-gradient(right, #f9f9f9, #918B94, #f9f9f9, #918B94);
+  background: linear-gradient(right, #f9f9f9, #918B94, #f9f9f9, #918B94);
+  top: 0;
+  left: -100%;
+
+  -webkit-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  transition: all 0.4s;
+}
+
+.login100-form-btn {
+
+  font-family: Poppins-Medium;
+	font-weight: bold;
+  font-size: 15px;
+  color: black;
+  line-height: 1.2;
+  text-transform: uppercase;
+
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  width: 100%;
+  height: 50px;
+}
+
+.wrap-login100-form-btn:hover .login100-form-bgbtn {
+  left: 0;
+}
+
+
+
+/*------------------------------------------------------------------
+[ Responsive login page ]*/
+@media (max-width: 576px) {
+  .wrap-login100 {
+    padding: 77px 15px 33px 15px;
+  }
 }
