@@ -27,15 +27,19 @@ class AdminModuleDescriptionFormStructure(View):
 class AdminModuleDescriptionFormStructureOld(View):
 
     def get(self, request, **kwargs):
-        version_pk = self.kwargs['pk']
-        chosen_version = ModuleDescriptionFormVersion.objects.get(pk=version_pk)
-        chosen_version_fields = FormFieldEntity.objects.get_form(chosen_version)
-        all_versions = ModuleDescriptionFormVersion.objects.get_version_list()
-        context = {
-            'form_version': chosen_version,
-            'form_fields': chosen_version_fields,
-            'all_versions': all_versions
-        }
+        try:
+            version_pk = self.kwargs['pk']
+            chosen_version = ModuleDescriptionFormVersion.objects.get(pk=version_pk)
+            chosen_version_fields = FormFieldEntity.objects.get_form(chosen_version)
+            all_versions = ModuleDescriptionFormVersion.objects.get_version_list()
+            context = {
+                'form_exists': True,
+                'form_version': chosen_version,
+                'form_fields': chosen_version_fields,
+                'all_versions': all_versions
+            }
+        except ObjectDoesNotExist:
+            context = {'form_exists': False}
         return render(request, 'md_form_structure_view.html', context)
 
 
