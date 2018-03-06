@@ -76,6 +76,7 @@ class DiscussionView(AjaxableResponseMixin, View):
             'timestamp': format(discussion.created, u'U'),
             'edit_url': reverse('edit_comment', kwargs=kwargs),
             'delete_url': reverse('delete_comment', kwargs=kwargs),
+            'author_url': reverse('user_profile', kwargs={'pk': request.user.id}),
         }
         return JsonResponse(data)
 

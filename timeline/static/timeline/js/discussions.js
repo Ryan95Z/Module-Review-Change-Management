@@ -35,7 +35,7 @@ jQuery(function($) {
 
             var html = '<li class="discussion-comment user-comment">';
             html += '<div class="comment-header"><span class="comment-user">';
-            html += '<a href="#">{:author}</a></span><span class="comment-time">{:time}</span></div>';
+            html += '<a href="{:author_url}">{:author}</a></span><span class="comment-time">{:time}</span></div>';
             html += '<div class="comment-content">{:content}</div></div>';
             html += '<div class="comment-options">';
             html += '<button class="reply"  data-for={:timestamp}><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>';
@@ -94,11 +94,11 @@ jQuery(function($) {
             var ul_html = '<ul class="discussion-responses">{:li}<ul>';
             var li_html = '<li class="discussion-comment user-comment">';
             li_html += '<div class="comment-header"><span class="comment-user">';
-            li_html += '<a href="#">{:author}</a></span><span class="comment-time">{:time}</span></div>';
+            li_html += '<a href="{:author_url}">{:author}</a></span><span class="comment-time">{:time}</span></div>';
             li_html += '<div class="comment-content">{:content}</div></div>';
-            
+            li_html += '<div class="comment-options">';
+
             if (node_level < 1) {
-                li_html += '<div class="comment-options">';
                 li_html += '<button class="reply" data-for={:timestamp}><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>';
                 li_html += '<a href="{:edit_url}" class="comment-action"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</a>'
                 li_html += '<a href="{:delete_url}" class="comment-action comment-delete"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>'
@@ -111,7 +111,9 @@ jQuery(function($) {
                 li_html += '<button type="submit" class="btn btn-success btn-sm btn-reply">Reply</button>';
                 li_html += '</form></li>';
             } else {
-                li_html += '</li>';
+                li_html += '<a href="{:edit_url}" class="comment-action"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</a>'
+                li_html += '<a href="{:delete_url}" class="comment-action comment-delete"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>'
+                li_html += '</div></li>';
             }
             
             
@@ -153,7 +155,8 @@ jQuery(function($) {
             var para_html = '<p id="no-comments-msg">There is no active discussion for this entry. You can start one now!</p>';
             var root_ul = $('ul.discussion-root');
             var discussion_container = $('div.discussion-container');
-            
+            var child_ul = li_reply_form.next();
+
             $.ajax({
                 type: 'POST',
                 url: action_url,
@@ -168,9 +171,18 @@ jQuery(function($) {
                     if (root_ul.children().length < 1) {
                         discussion_container.append(para_html);
                     }
+
+                    if (child_ul.hasClass('discussion-responses')) {
+                        child_ul.remove();
+                    }
                 },
             });
         });
+
+        $('body').on('click', 'a.comment-edit', function(event){
+            event.preventDefault();
+        });
+
     });
 
     function process_html(html, data) {

@@ -65,17 +65,18 @@
                             {{ node.comment|covert_markdown }}
                             {% endautoescape %}
                         </div>
-                        {% if node.level < 2 %}
+                        
                         <div class="comment-options">
+                        {% if node.level < 2 %}
                             <button class="reply" data-for="{{ node.created|date:'U' }}"><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>
-
-                            {% if request.user == node.author %}
-                                <a href="{% url 'edit_comment' module_code entry_id node.id %}" class="comment-action"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</a>
-
-                                <a href="{% url 'delete_comment' module_code entry_id node.id %}" class="comment-action comment-delete"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>
-                            {% endif %}
-                        </div>
                         {% endif %}
+
+                        {% if request.user == node.author %}
+                            <a href="{% url 'edit_comment' module_code entry_id node.id %}" class="comment-action comment-edit"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</a>
+
+                            <a href="{% url 'delete_comment' module_code entry_id node.id %}" class="comment-action comment-delete"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>
+                        {% endif %}
+                        </div>
                     </li>
 
                     {% if node.level < 2 %}
