@@ -144,6 +144,23 @@ jQuery(function($) {
                 }
             });
         });
+
+        $('body').on('click', 'a.comment-delete', function(event) {
+            event.preventDefault();
+            var url = $(this).attr('href');
+            var li = $(this).parent().parent();
+            $.ajax({
+                url: url,
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function(xhr, settings) {
+                    $.ajaxSettings.beforeSend(xhr, settings);
+                },
+                success: function(data) {
+                    console.log(data);
+                }
+            });
+        });
     });
 
     function process_html(html, data) {
