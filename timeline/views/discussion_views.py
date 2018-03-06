@@ -63,12 +63,19 @@ class DiscussionView(AjaxableResponseMixin, View):
 
     def ajax_post(self, request, *args, **kwargs):
         discussion = self.__process_new_discussion(request, *args, **kwargs)
+        kwargs = {
+            'module_pk': self.kwargs['module_pk'],
+            'entry_pk': self.kwargs['pk'],
+            'pk': discussion.id,
+        }
         data = {
             'author': request.user.username,
             'time': 'just now',
             'id': discussion.pk,
             'content': markdown(discussion.comment),
             'timestamp': format(discussion.created, u'U'),
+            'edit_url': reverse('edit_comment', kwargs=kwargs),
+            'delete_url': reverse('delete_comment', kwargs=kwargs),
         }
         return JsonResponse(data)
 
@@ -101,13 +108,10 @@ class DiscussionView(AjaxableResponseMixin, View):
         return None
 
 
-class DiscussionUpdateView(UpdateView):
-    model = Discussion
-    fields = ['comment']
-
+class DiscussionGenericView(object):
     def get_context_data(self, *args, **kwargs):
         context = super(
-            DiscussionUpdateView, self).get_context_data(*args, **kwargs)
+            DiscussionGenericView, self).get_context_data(*args, **kwargs)
         context['module_code'] = self.kwargs['module_pk']
         context['entry_id'] = self.kwargs['entry_pk']
         context['discussion_id'] = self.kwargs['pk']
@@ -121,12 +125,10 @@ class DiscussionUpdateView(UpdateView):
         return reverse('discussion', kwargs=kwargs)
 
 
-class DiscussionDeleteView(DeleteView):
+class DiscussionUpdateView(DiscussionGenericView, UpdateView):
     model = Discussion
+    fields = ['comment']
 
-    def get_success_url(self):
-        kwargs = {
-            'module_pk': self.kwargs['module_pk'],
-            'pk': self.kwargs['entry_pk']
-        }
-        return reverse('discussion', kwargs=kwargs)
+
+class DiscussionDeleteView(DiscussionGenericView, DeleteView):
+    model = Discussion

@@ -72,7 +72,7 @@
                             {% if request.user == node.author %}
                                 <a href="{% url 'edit_comment' module_code entry_id node.id %}" class="comment-action"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</a>
 
-                                <a href="#" class="comment-action comment-delete"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>
+                                <a href="{% url 'delete_comment' module_code entry_id node.id %}" class="comment-action comment-delete"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>
                             {% endif %}
                         </div>
                         {% endif %}

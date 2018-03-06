@@ -39,6 +39,8 @@ jQuery(function($) {
             html += '<div class="comment-content">{:content}</div></div>';
             html += '<div class="comment-options">';
             html += '<button class="reply"  data-for={:timestamp}><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>';
+            html += '<a href="{:edit_url}" class="comment-action"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</a>'
+            html += '<a href="{:delete_url}" class="comment-action comment-delete"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>'
             html += '</div></li>';
             html += '<li id="{:timestamp}" class="discussion-comment discussion-reply-form">';
             html += '<form action="{:action_url}" method="POST" id="{:timestamp}" data-level="{:level}">';
@@ -98,6 +100,8 @@ jQuery(function($) {
             if (node_level < 1) {
                 li_html += '<div class="comment-options">';
                 li_html += '<button class="reply" data-for={:timestamp}><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>';
+                li_html += '<a href="{:edit_url}" class="comment-action"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</a>'
+                li_html += '<a href="{:delete_url}" class="comment-action comment-delete"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>'
                 li_html += '</div></li>';
                 li_html += '<li id="{:timestamp}" class="discussion-comment discussion-reply-form">';
                 li_html += '<form action="{:action_url}" method="POST" id="{:timestamp}">';
