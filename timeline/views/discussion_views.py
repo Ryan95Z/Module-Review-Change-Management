@@ -130,5 +130,12 @@ class DiscussionUpdateView(DiscussionGenericView, UpdateView):
     fields = ['comment']
 
 
+
 class DiscussionDeleteView(DiscussionGenericView, DeleteView):
     model = Discussion
+
+    def post(self, request, *args, **kwargs):
+        response = super(DiscussionDeleteView, self).post(request, *args, **kwargs)
+        if request.is_ajax():
+            return JsonResponse({'success': True})
+        return response

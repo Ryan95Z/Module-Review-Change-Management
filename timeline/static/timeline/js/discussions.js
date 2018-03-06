@@ -147,18 +147,28 @@ jQuery(function($) {
 
         $('body').on('click', 'a.comment-delete', function(event) {
             event.preventDefault();
-            var url = $(this).attr('href');
+            var action_url = $(this).attr('href');
             var li = $(this).parent().parent();
+            var li_reply_form = li.next();
+            var para_html = '<p id="no-comments-msg">There is no active discussion for this entry. You can start one now!</p>';
+            var root_ul = $('ul.discussion-root');
+            var discussion_container = $('div.discussion-container');
+            
             $.ajax({
-                url: url,
                 type: 'POST',
-                dataType: 'json',
+                url: action_url,
+                data: {},
+                dataType: 'JSON',
                 beforeSend: function(xhr, settings) {
                     $.ajaxSettings.beforeSend(xhr, settings);
                 },
                 success: function(data) {
-                    console.log(data);
-                }
+                    li.remove();
+                    li_reply_form.remove();
+                    if (root_ul.children().length < 1) {
+                        discussion_container.append(para_html);
+                    }
+                },
             });
         });
     });

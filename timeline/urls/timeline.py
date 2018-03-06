@@ -24,10 +24,10 @@ urlpatterns = [
         login_required(DiscussionView.as_view()), name="discussion"),
 
     url(r'(?P<module_pk>[A-Za-z0-9]+)/discussion/(?P<entry_pk>[0-9]+)'\
-        '/edit/(?P<pk>[0-9]+)$', login_required(
+        '/edit/(?P<pk>[0-9]+)/$', login_required(
             DiscussionUpdateView.as_view()), name='edit_comment'),
 
     url(r'(?P<module_pk>[A-Za-z0-9]+)/discussion/(?P<entry_pk>[0-9]+)'\
-        '/delete/(?P<pk>[0-9]+)$', login_required(
+        '/delete/(?P<pk>[0-9]+)/$', login_required(
             DiscussionDeleteView.as_view()), name='delete_comment')
 ]
