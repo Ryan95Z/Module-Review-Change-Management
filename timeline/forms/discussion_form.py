@@ -1,6 +1,5 @@
 from django import forms
 from django.forms.widgets import Textarea
-from timeline.models import Discussion
 
 
 class DiscussionForm(forms.Form):

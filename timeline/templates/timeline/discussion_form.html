@@ -1,0 +1,32 @@
+{% extends 'core/main.html' %}
+{% load static %}
+{% load core_tags %}
+
+{% block title %}
+	Edit Comment
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'timeline/styles.css' %}">
+{% endblock %}
+
+
+{% block main %}
+
+	<div class="row">
+		<div class="col-md-12">
+			<a href="{% url 'discussion' module_code entry_id %}">
+				<i class="fa fa-arrow-left" aria-hidden="true"></i>
+				Back to Discussion
+			</a>
+			
+			<form action="{% url 'edit_comment' module_code entry_id discussion_id %}" method="POST">
+				{% csrf_token %}
+				{{ form.comment.label_tag }}
+				{{ form.comment|add_css_class:"form-control" }}
+				<br>
+				<button type="submit" class="btn btn-success btn-md">Edit</button>
+			</form>	
+		</div>
+	</div>
+{% endblock %}

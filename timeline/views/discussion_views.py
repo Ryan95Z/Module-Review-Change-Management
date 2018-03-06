@@ -2,6 +2,7 @@ from markdown import markdown
 from abc import ABC, abstractmethod
 from django.urls import reverse
 from django.views.generic import View
+from django.views.generic.edit import UpdateView, DeleteView
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.utils.dateformat import format
@@ -98,3 +99,34 @@ class DiscussionView(AjaxableResponseMixin, View):
             # create the discussion
             return Discussion.objects.create(**discussion)
         return None
+
+
+class DiscussionUpdateView(UpdateView):
+    model = Discussion
+    fields = ['comment']
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(
+            DiscussionUpdateView, self).get_context_data(*args, **kwargs)
+        context['module_code'] = self.kwargs['module_pk']
+        context['entry_id'] = self.kwargs['entry_pk']
+        context['discussion_id'] = self.kwargs['pk']
+        return context
+
+    def get_success_url(self):
+        kwargs = {
+            'module_pk': self.kwargs['module_pk'],
+            'pk': self.kwargs['entry_pk']
+        }
+        return reverse('discussion', kwargs=kwargs)
+
+
+class DiscussionDeleteView(DeleteView):
+    model = Discussion
+
+    def get_success_url(self):
+        kwargs = {
+            'module_pk': self.kwargs['module_pk'],
+            'pk': self.kwargs['entry_pk']
+        }
+        return reverse('discussion', kwargs=kwargs)

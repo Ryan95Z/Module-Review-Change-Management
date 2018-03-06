@@ -311,3 +311,20 @@
 	font-size: 20px;
 	margin-top: 50px;
 }
+
+.comment-action {
+	margin-left: 10px;
+}
+
+.comment-action > .fa {
+	margin-right: 2px;
+}
+
+.comment-delete {
+	color: #cc0000;
+}
+
+.comment-delete:hover,
+.comment-delete:focus {
+	color: #843534;
+}
