@@ -154,3 +154,19 @@ class DiscussionDeleteView(DiscussionGenericView, DeleteView):
         if request.is_ajax():
             return JsonResponse({'success': True})
         return response
+
+
+class ConvertMarkdownView(View):
+    def dispatch(self, request, *args, **kwargs):
+        if request.method.lower() == 'post' and request.is_ajax():
+            handle = self.post(request, *args, **kwargs)
+        else:
+            handle = self.http_method_not_allowed(request, *args, **kwargs)
+        return handle
+
+    def post(self, request, *args, **kwargs):
+        md = request.POST.get('markdown', '')
+        data = {
+            'markdown': markdown(md),
+        }
+        return JsonResponse(data)

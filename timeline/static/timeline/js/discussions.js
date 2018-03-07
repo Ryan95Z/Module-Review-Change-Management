@@ -208,15 +208,14 @@ jQuery(function($) {
             var anchor_span = __this.children('span');
             comment_content.removeClass('comment-content-edit');
             comment_content.attr('contenteditable','false');
-            console.log(html);
             html = html.replace(/((<br>))/g, '\n');
-            console.log(html);
             $.ajax({
                 type: 'POST',
                 url: action_url,
                 data: {
                     'comment': html,
                 },
+                dataType: 'JSON',
                 beforeSend: function(xhr, settings) {
                     $.ajaxSettings.beforeSend(xhr, settings);
                 },
@@ -226,6 +225,26 @@ jQuery(function($) {
                     anchor_span.text('Edit');
                     __this.addClass('comment-edit');
                     __this.removeClass('comment-done');
+                }
+            });
+        });
+
+        $('body').on('click', 'a.nav-preview', function(event){
+            var textarea = $('#reply-textarea').children('textarea');
+            var md = textarea.val();
+            var preview = $('#markdown-preview');
+            $.ajax({
+                type: 'POST',
+                url: '/timeline/api/markdown/',
+                data: {
+                    'markdown': md,
+                },
+                dataType: 'JSON',
+                beforeSend: function(xhr, settings) {
+                    $.ajaxSettings.beforeSend(xhr, settings);
+                },
+                success: function(data) {
+                    preview.html(data['markdown']);
                 }
             });
         });

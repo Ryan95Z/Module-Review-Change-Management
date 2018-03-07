@@ -101,7 +101,38 @@
                 <p id="no-comments-msg">There is no active discussion for this entry. You can start one now!</p>
             {% endif %}
         </div>
+
         <div class="comment-form">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="write-tab" data-toggle="tab" href="#write" role="tab" aria-controls="write" aria-selected="true">Write</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-preview" id="preview-tab" data-toggle="tab" href="#preview" role="tab" aria-controls="preview" aria-selected="true" data-container="prev">Preview</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="write" role="tabpanel" aria-labelledby="write-tab">
+                    <form action="{% url 'discussion' module_code entry_id %}" method="POST">
+                        {% csrf_token %}
+                        <div id="reply-textarea" class="form-group">
+                            {{ form.comment.label_tag }}
+                            {{ form.comment }} 
+                        </div>
+                        <button id="post-comment" type="submit" class="btn btn-success">Post</button>
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="preview" role="tabpanel" aria-labelledby="preview-tab">
+                    <span>Comment: </span>
+                    <div class="md-preview" id="markdown-preview">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!--         <div class="comment-form">
             <form action="{% url 'discussion' module_code entry_id %}" method="POST">
                 {% csrf_token %}
                 <div id="reply-textarea" class="form-group">
@@ -110,7 +141,7 @@
                 </div>
                 <button id="post-comment" type="submit" class="btn btn-success">Post</button>
             </form>
-        </div>
+        </div> -->
     </div>
 </div>
 {% endblock %}

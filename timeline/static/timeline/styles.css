@@ -260,10 +260,6 @@
 	background-color: #fff;
 }
 
-.discussion-container .discussion-comment > .comment-content li {
-	list-style-type: circle;
-}
-
 .discussion-container .discussion-comment > .comment-content-pre {
 	display: none;
 }
@@ -336,4 +332,17 @@
 .comment-delete:hover,
 .comment-delete:focus {
 	color: #843534;
+}
+
+.nav-tabs {
+	margin-bottom: 6px;
+	border-bottom: 1px solid #fff;
+}
+
+.md-preview{
+	height: 150px;
+	border: 1px solid #ced4da;
+	background-color: #fff;
+	padding: 5px;
+	margin-top: 6px;
 }
