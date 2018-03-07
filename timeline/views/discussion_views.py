@@ -63,20 +63,21 @@ class DiscussionView(AjaxableResponseMixin, View):
 
     def ajax_post(self, request, *args, **kwargs):
         discussion = self.__process_new_discussion(request, *args, **kwargs)
-        kwargs = {
+        action_kwargs = {
             'module_pk': self.kwargs['module_pk'],
             'entry_pk': self.kwargs['pk'],
             'pk': discussion.id,
         }
+        author_kwargs = {'pk': request.user.id}
         data = {
             'author': request.user.username,
             'time': 'just now',
             'id': discussion.pk,
             'content': markdown(discussion.comment),
             'timestamp': format(discussion.created, u'U'),
-            'edit_url': reverse('edit_comment', kwargs=kwargs),
-            'delete_url': reverse('delete_comment', kwargs=kwargs),
-            'author_url': reverse('user_profile', kwargs={'pk': request.user.id}),
+            'edit_url': reverse('edit_comment', kwargs=action_kwargs),
+            'delete_url': reverse('delete_comment', kwargs=action_kwargs),
+            'author_url': reverse('user_profile', kwargs=author_kwargs),
         }
         return JsonResponse(data)
 
@@ -130,13 +131,25 @@ class DiscussionUpdateView(DiscussionGenericView, UpdateView):
     model = Discussion
     fields = ['comment']
 
+    def post(self, request, *args, **kwargs):
+        response = super(
+            DiscussionUpdateView, self).post(request, *args, **kwargs)
+        if request.is_ajax():
+            comment = self.get_object().comment
+            data = {
+                'md': comment,
+                'html': markdown(comment),
+            }
+            return JsonResponse(data)
+        return response
 
 
 class DiscussionDeleteView(DiscussionGenericView, DeleteView):
     model = Discussion
 
     def post(self, request, *args, **kwargs):
-        response = super(DiscussionDeleteView, self).post(request, *args, **kwargs)
+        response = super(
+            DiscussionDeleteView, self).post(request, *args, **kwargs)
         if request.is_ajax():
             return JsonResponse({'success': True})
         return response

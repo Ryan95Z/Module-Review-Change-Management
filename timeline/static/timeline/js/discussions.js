@@ -181,6 +181,47 @@ jQuery(function($) {
 
         $('body').on('click', 'a.comment-edit', function(event){
             event.preventDefault();
+            var li = $(this).parent().parent();
+            var comment_content = li.children('.comment-content');
+            var md_comment_content = li.children('.comment-content-pre');
+            var old_html = comment_content.html();
+            var md = md_comment_content.html();
+            var btn = $(this).children('span');
+            comment_content.html(md);
+            comment_content.addClass('comment-content-edit');
+            comment_content.attr('contenteditable','true');
+            btn.text('Done');
+            $(this).removeClass('comment-edit');
+            $(this).addClass('comment-done');
+        });
+
+        $('body').on('click', 'a.comment-done', function(event){
+            event.preventDefault();
+            var li = $(this).parent().parent();
+            var action_url = $(this).attr('href');
+            var comment_content = li.children('.comment-content');
+            var md_comment_content = li.children('.comment-content-pre');
+            var btn = $(this).children('span');
+            var __this = $(this);
+            comment_content.removeClass('comment-content-edit');
+            comment_content.attr('contenteditable','false');
+            $.ajax({
+                type: 'POST',
+                url: action_url,
+                data: {
+                    'comment': comment_content.html(),
+                },
+                beforeSend: function(xhr, settings) {
+                    $.ajaxSettings.beforeSend(xhr, settings);
+                },
+                success: function(data) {
+                    comment_content.html(data['html']);
+                    md_comment_content.html(data['md']);
+                    btn.text('Edit');
+                    __this.addClass('comment-edit');
+                    __this.removeClass('comment-done');
+                }
+            });
         });
 
     });

@@ -255,8 +255,17 @@
 	left: 10px;
 }
 
+.discussion-container .discussion-comment > .comment-content-edit {
+	padding: 10px 10px;
+	background-color: #fff;
+}
+
 .discussion-container .discussion-comment > .comment-content li {
 	list-style-type: circle;
+}
+
+.discussion-container .discussion-comment > .comment-content-pre {
+	display: none;
 }
 
 /* styles for forms and buttons on discussion page */
