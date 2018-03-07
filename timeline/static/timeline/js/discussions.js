@@ -37,9 +37,10 @@ jQuery(function($) {
             html += '<div class="comment-header"><span class="comment-user">';
             html += '<a href="{:author_url}">{:author}</a></span><span class="comment-time">{:time}</span></div>';
             html += '<div class="comment-content">{:content}</div></div>';
+            html += '<div class="comment-content-pre">{:md}</div>'
             html += '<div class="comment-options">';
             html += '<button class="reply"  data-for={:timestamp}><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>';
-            html += '<a href="{:edit_url}" class="comment-action"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</a>'
+            html += '<a href="{:edit_url}" class="comment-action comment-edit"><i class="fa fa-pencil" aria-hidden="true"></i><span>Edit</span></a>'
             html += '<a href="{:delete_url}" class="comment-action comment-delete"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>'
             html += '</div></li>';
             html += '<li id="{:timestamp}" class="discussion-comment discussion-reply-form">';
@@ -96,11 +97,12 @@ jQuery(function($) {
             li_html += '<div class="comment-header"><span class="comment-user">';
             li_html += '<a href="{:author_url}">{:author}</a></span><span class="comment-time">{:time}</span></div>';
             li_html += '<div class="comment-content">{:content}</div></div>';
+            li_html += '<div class="comment-content-pre">{:md}</div>'
             li_html += '<div class="comment-options">';
 
             if (node_level < 1) {
                 li_html += '<button class="reply" data-for={:timestamp}><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>';
-                li_html += '<a href="{:edit_url}" class="comment-action"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</a>'
+                li_html += '<a href="{:edit_url}" class="comment-action comment-edit"><i class="fa fa-pencil" aria-hidden="true"></i><span>Edit</span></a>'
                 li_html += '<a href="{:delete_url}" class="comment-action comment-delete"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>'
                 li_html += '</div></li>';
                 li_html += '<li id="{:timestamp}" class="discussion-comment discussion-reply-form">';
@@ -111,7 +113,7 @@ jQuery(function($) {
                 li_html += '<button type="submit" class="btn btn-success btn-sm btn-reply">Reply</button>';
                 li_html += '</form></li>';
             } else {
-                li_html += '<a href="{:edit_url}" class="comment-action"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</a>'
+                li_html += '<a href="{:edit_url}" class="comment-action comment-edit"><i class="fa fa-pencil" aria-hidden="true"></i><span>Edit</span></a>'
                 li_html += '<a href="{:delete_url}" class="comment-action comment-delete"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>'
                 li_html += '</div></li>';
             }
@@ -181,35 +183,39 @@ jQuery(function($) {
 
         $('body').on('click', 'a.comment-edit', function(event){
             event.preventDefault();
-            var li = $(this).parent().parent();
+            var __this = $(this);
+            var li = __this.parent().parent();
             var comment_content = li.children('.comment-content');
             var md_comment_content = li.children('.comment-content-pre');
-            var old_html = comment_content.html();
             var md = md_comment_content.html();
-            var btn = $(this).children('span');
+            var anchor_span = __this.children('span');
             comment_content.html(md);
             comment_content.addClass('comment-content-edit');
             comment_content.attr('contenteditable','true');
-            btn.text('Done');
-            $(this).removeClass('comment-edit');
-            $(this).addClass('comment-done');
+            anchor_span.text('Done');
+            __this.removeClass('comment-edit');
+            __this.addClass('comment-done');
         });
 
         $('body').on('click', 'a.comment-done', function(event){
             event.preventDefault();
-            var li = $(this).parent().parent();
-            var action_url = $(this).attr('href');
+            var __this = $(this);
+            var li = __this.parent().parent();
+            var action_url = __this.attr('href');
             var comment_content = li.children('.comment-content');
             var md_comment_content = li.children('.comment-content-pre');
-            var btn = $(this).children('span');
-            var __this = $(this);
+            var html = comment_content.html();
+            var anchor_span = __this.children('span');
             comment_content.removeClass('comment-content-edit');
             comment_content.attr('contenteditable','false');
+            console.log(html);
+            html = html.replace(/((<br>))/g, '\n');
+            console.log(html);
             $.ajax({
                 type: 'POST',
                 url: action_url,
                 data: {
-                    'comment': comment_content.html(),
+                    'comment': html,
                 },
                 beforeSend: function(xhr, settings) {
                     $.ajaxSettings.beforeSend(xhr, settings);
@@ -217,7 +223,7 @@ jQuery(function($) {
                 success: function(data) {
                     comment_content.html(data['html']);
                     md_comment_content.html(data['md']);
-                    btn.text('Edit');
+                    anchor_span.text('Edit');
                     __this.addClass('comment-edit');
                     __this.removeClass('comment-done');
                 }

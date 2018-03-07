@@ -73,6 +73,7 @@ class DiscussionView(AjaxableResponseMixin, View):
             'author': request.user.username,
             'time': 'just now',
             'id': discussion.pk,
+            'md': discussion.comment,
             'content': markdown(discussion.comment),
             'timestamp': format(discussion.created, u'U'),
             'edit_url': reverse('edit_comment', kwargs=action_kwargs),
