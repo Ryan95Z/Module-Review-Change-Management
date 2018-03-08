@@ -106,16 +106,6 @@
                             </div>
                          </div>
                     </li>
-
-
-                  <!--   <li id="{{ node.created|date:'U' }}" class="discussion-comment discussion-reply-form">
-                        <form action="{% url 'discussion' module_code entry_id %}" method="POST" id="{{ node.created|date:'U' }}" data-level="{{ node.level }}">
-                            {% csrf_token %}
-                            {{ form.comment }} 
-                            <input type="hidden" name="parent" value="{{ node.id }}">
-                            <button type="submit" class="btn btn-success btn-sm btn-reply">Reply</button>
-                        </form>
-                    </li> -->
                     {% endif %}
 
                     {% if not node.is_leaf_node %}
@@ -159,17 +149,6 @@
                 </div>
             </div>
         </div>
-
-<!--         <div class="comment-form">
-            <form action="{% url 'discussion' module_code entry_id %}" method="POST">
-                {% csrf_token %}
-                <div id="reply-textarea" class="form-group">
-                    {{ form.comment.label_tag }}
-                    {{ form.comment }} 
-                </div>
-                <button id="post-comment" type="submit" class="btn btn-success">Post</button>
-            </form>
-        </div> -->
     </div>
 </div>
 {% endblock %}
