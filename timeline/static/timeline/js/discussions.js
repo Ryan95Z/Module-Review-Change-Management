@@ -81,12 +81,14 @@ jQuery(function($) {
         $('body').on('click', 'button.btn-reply', function(event){
             event.preventDefault();
             var form = $(this).parent().first();
+            var form_id = form.attr('id');
+            var timestamp_id = form_id.substr(5);
             var action_url = form.attr('action');
             var textarea = form.children('textarea');
             var comment = textarea.val().trim();
             var hidden = form.children('input[name="parent"]').val();
             var node_level = form.attr('data-level');
-            var parent_li = form.parent().first();
+            var parent_li = $('li#' + timestamp_id);
             var expected_ul = parent_li.next();
             var csrf_token = $('input[name="csrfmiddlewaretoken"]').first().val();
             var need_ul = !expected_ul.hasClass('discussion-responses');
@@ -132,7 +134,7 @@ jQuery(function($) {
                 },
                 success: function(data){
                     textarea.val('');
-                    form.parent().first().slideUp();
+                    parent_li.slideUp();
                     data['csrf'] = csrf_token;
                     data['action_url'] = action_url;
                     data['level'] = node_level++;
@@ -233,6 +235,30 @@ jQuery(function($) {
             var textarea = $('#reply-textarea').children('textarea');
             var md = textarea.val();
             var preview = $('#markdown-preview');
+            $.ajax({
+                type: 'POST',
+                url: '/timeline/api/markdown/',
+                data: {
+                    'markdown': md,
+                },
+                dataType: 'JSON',
+                beforeSend: function(xhr, settings) {
+                    $.ajaxSettings.beforeSend(xhr, settings);
+                },
+                success: function(data) {
+                    preview.html(data['markdown']);
+                }
+            });
+        });
+
+        $('body').on('click', 'a.nav-preview-replies', function(event){
+            var __this = $(this);
+            var preview_id = __this.attr('aria-controls');
+            var node_id = preview_id.substr(preview_id.length - 3);
+            var preview = $('#' + preview_id).children('div.md-preview');
+            var write = $('#write-'+node_id);
+            var textarea = write.children('form').children('textarea');
+            var md = textarea.val();
             $.ajax({
                 type: 'POST',
                 url: '/timeline/api/markdown/',

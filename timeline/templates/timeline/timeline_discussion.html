@@ -80,14 +80,42 @@
                     </li>
 
                     {% if node.level < 2 %}
-                    <li id="{{ node.created|date:'U' }}" class="discussion-comment discussion-reply-form">
+                     <li id="{{ node.created|date:'U' }}" class="discussion-comment discussion-reply-form">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="write-tab-{{ node.id }}" data-toggle="tab" href="#write-{{ node.id }}" role="tab" aria-controls="write-{{ node.id }}" aria-selected="true">Write</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link nav-preview-replies" id="preview-tab-{{ node.id }}" data-toggle="tab" href="#preview-{{ node.id }}" role="tab" aria-controls="preview-{{ node.id }}" aria-selected="true" data-container="prev">Preview</a>
+                            </li>
+                        </ul>
+
+                         <div class="tab-content">
+                            <div class="tab-pane fade show active" id="write-{{ node.id }}" role="tabpanel" aria-labelledby="write-tab">
+                                <form action="{% url 'discussion' module_code entry_id %}" method="POST" id="form-{{ node.created|date:'U' }}" data-level="{{ node.level }}">
+                                    {% csrf_token %}
+                                    {{ form.comment }} 
+                                    <input type="hidden" name="parent" value="{{ node.id }}">
+                                    <button type="submit" class="btn btn-success btn-sm btn-reply">Reply</button>
+                                </form>
+                            </div>
+                            <div class="tab-pane fade" id="preview-{{ node.id }}" role="tabpanel" aria-labelledby="preview-tab-{{ node.id }}">
+                                <div class="md-preview">
+                                
+                                </div>
+                            </div>
+                         </div>
+                    </li>
+
+
+                  <!--   <li id="{{ node.created|date:'U' }}" class="discussion-comment discussion-reply-form">
                         <form action="{% url 'discussion' module_code entry_id %}" method="POST" id="{{ node.created|date:'U' }}" data-level="{{ node.level }}">
                             {% csrf_token %}
                             {{ form.comment }} 
                             <input type="hidden" name="parent" value="{{ node.id }}">
                             <button type="submit" class="btn btn-success btn-sm btn-reply">Reply</button>
                         </form>
-                    </li>
+                    </li> -->
                     {% endif %}
 
                     {% if not node.is_leaf_node %}

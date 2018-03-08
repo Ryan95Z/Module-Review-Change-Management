@@ -342,6 +342,7 @@
 .md-preview{
 	height: 150px;
 	border: 1px solid #ced4da;
+	border-radius: .25rem;
 	background-color: #fff;
 	padding: 5px;
 	margin-top: 6px;
