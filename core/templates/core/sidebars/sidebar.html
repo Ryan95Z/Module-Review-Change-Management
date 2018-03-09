@@ -11,13 +11,6 @@
 		</ul>
 	</li>
 	<li><a href="{% url 'all_modules' %}">Modules</a></li>
-	<li class="dropdown" id="forms">Forms <i class="fa fa-caret-down fa-1" aria-hidden="true"></i></li>
-	<li class="sidebar-drop-down">
-		<ul aria-labelledby="forms">
-			<li><a href="{% url 'module_description_form_structure' %}">Module Description</a></li>
-			<li><a href="#">Module Tracking Form</a></li>
-		</ul>
-	</li>
 	{% endif %}
 
 	{% if user.is_module_leader %}
