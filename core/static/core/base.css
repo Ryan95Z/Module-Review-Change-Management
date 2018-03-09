@@ -88,7 +88,7 @@ h1 > .h-sub-action{
 
 .sidebar-drop-down ul{
 	background-color: #565454;
-	display: none;
+	/* display: none; */
 }
 
 .p-msg{
