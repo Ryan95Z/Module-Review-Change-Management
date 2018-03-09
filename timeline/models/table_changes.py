@@ -23,4 +23,4 @@ class TableChange(models.Model):
         Method to get the module code for the assigned
         changes.
         """
-        return self.related_entry.module_code()
+        return self.related_entry.module_code

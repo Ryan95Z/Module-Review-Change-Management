@@ -39,5 +39,3 @@ class TimelineUpdateStatusViewTest(TimelineViewTestCase):
         if not logged in.
         """
         self.run_get_view_not_logged_in(self.url)
-
-    
