@@ -1,0 +1,159 @@
+{% extends 'core/main.html' %}
+{% load mptt_tags %}
+{% load humanize %}
+{% load timeline_tags %}
+{% load static %}
+
+{% block title %}
+    Discussion
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'timeline/styles.css' %}">
+{% endblock %}
+
+{% block main %}
+
+<div class="row">
+    <div class="col-md-12">
+
+        <a href="{% url 'module_timeline' module_code %}">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            Back to Timeline
+        </a>
+
+        <div class="timeline-entry-local entry-update">
+            <div class="timeline-header">
+                <h5>
+                    <i>{{ entry.title }}</i> 
+                    <time>{{ entry.created|date:"SHORT_DATE_FORMAT" }}</time>
+                </h5>
+            </div>
+            <div class="entry-{{ entry.status|lower }}">
+                <div class="timeline-content">
+                    {% autoescape off %}
+                        {{ entry.changes|covert_markdown }}
+                    {% endautoescape %}                          
+                </div>
+                <div class="timeline-actions">
+                    <div class="timeline-meta">
+                        <span>Approved By: Ryan</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<hr>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="discussion-container">
+            <ul class="discussion-root">
+            {% if discussion.count > 0 %}
+                {% recursetree discussion %}
+                    <li class="discussion-comment user-comment" data-node="{{ node.id }}">
+                        <div class="comment-header">
+                            <span class="comment-user">
+                                <a href="{% url 'user_profile' node.author.id %}">{{ node.author_username }}</a>
+                            </span>
+                            <span class="comment-time"> {{ node.created|naturaltime }}</span>
+                        </div>
+                        <div class="comment-content">
+                            {% autoescape off %}
+                            {{ node.comment|covert_markdown }}
+                            {% endautoescape %}
+                        </div>
+                        <div class="comment-content-pre">{{ node.comment }}</div>
+                        <div class="comment-options">
+                        {% if node.level < 2 %}
+                            <button class="reply" data-for="{{ node.created|date:'U' }}"><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>
+                        {% endif %}
+
+                        {% if request.user == node.author %}
+                            <a href="{% url 'edit_comment' module_code entry_id node.id %}" class="comment-action comment-edit"><i class="fa fa-pencil" aria-hidden="true"></i><span>Edit</span></a>
+
+                            <a href="{% url 'delete_comment' module_code entry_id node.id %}" class="comment-action comment-delete"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>
+                        {% endif %}
+                        </div>
+                    </li>
+
+                    {% if node.level < 2 %}
+                     <li id="{{ node.created|date:'U' }}" class="discussion-comment discussion-reply-form">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="write-tab-{{ node.id }}" data-toggle="tab" href="#write-{{ node.id }}" role="tab" aria-controls="write-{{ node.id }}" aria-selected="true">Write</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link nav-preview-replies" id="preview-tab-{{ node.id }}" data-toggle="tab" href="#preview-{{ node.id }}" role="tab" aria-controls="preview-{{ node.id }}" aria-selected="true" data-container="prev">Preview</a>
+                            </li>
+                        </ul>
+
+                         <div class="tab-content">
+                            <div class="tab-pane fade show active" id="write-{{ node.id }}" role="tabpanel" aria-labelledby="write-tab">
+                                <form action="{% url 'discussion' module_code entry_id %}" method="POST" id="form-{{ node.created|date:'U' }}" data-level="{{ node.level }}">
+                                    {% csrf_token %}
+                                    {{ form.comment }} 
+                                    <input type="hidden" name="parent" value="{{ node.id }}">
+                                    <button type="submit" class="btn btn-success btn-sm btn-reply">Reply</button>
+                                </form>
+                            </div>
+                            <div class="tab-pane fade" id="preview-{{ node.id }}" role="tabpanel" aria-labelledby="preview-tab-{{ node.id }}">
+                                <div class="md-preview">
+                                
+                                </div>
+                            </div>
+                         </div>
+                    </li>
+                    {% endif %}
+
+                    {% if not node.is_leaf_node %}
+                        <ul class="discussion-responses">
+                            {{ children }}
+                        </ul>
+                    {% endif %} 
+                {% endrecursetree %}
+                </ul>
+            {% else %}
+                <p id="no-comments-msg">There is no active discussion for this entry. You can start one now!</p>
+            {% endif %}
+        </div>
+
+        <div class="comment-form">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="write-tab" data-toggle="tab" href="#write" role="tab" aria-controls="write" aria-selected="true">Write</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-preview" id="preview-tab" data-toggle="tab" href="#preview" role="tab" aria-controls="preview" aria-selected="true" data-container="prev">Preview</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="write" role="tabpanel" aria-labelledby="write-tab">
+                    <form action="{% url 'discussion' module_code entry_id %}" method="POST">
+                        {% csrf_token %}
+                        <div id="reply-textarea" class="form-group">
+                            {{ form.comment.label_tag }}
+                            {{ form.comment }} 
+                        </div>
+                        <button id="post-comment" type="submit" class="btn btn-success">Post</button>
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="preview" role="tabpanel" aria-labelledby="preview-tab">
+                    <span>Comment: </span>
+                    <div class="md-preview" id="markdown-preview">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script type="text/javascript" src="{% static 'timeline/js/csrf_ajax.js' %}"></script>
+    <script type="text/javascript" src="{% static 'timeline/js/discussions.js' %}"></script>
+{% endblock %}

@@ -15,10 +15,14 @@ urlpatterns = [
     url(r'^logout/', LogoutView.as_view(), name='logout'),
 
     # generic user profile urls
-    url(r'^profile/(?P<slug>[\w.@+-]+)/$',
+    url(r'^profile/settings/(?P<slug>[\w.@+-]+)/$',
         login_required(UserSettingsView.as_view()), name='user_settings'),
-    url(r'^profile/(?P<slug>[\w.@+-]+)/details/$',
+    url(r'^profile/settings/(?P<slug>[\w.@+-]+)/details/$',
         login_required(UserUpdateDetailsView.as_view()), name='user_details'),
-    url(r'^profile/(?P<slug>[\w.@+-]+)/password/$',
-        login_required(UserUpdatePasswordView.as_view()), name='user_password')
+
+    url(r'^profile/settings/(?P<slug>[\w.@+-]+)/password/$', login_required(
+        UserUpdatePasswordView.as_view()), name='user_password'),
+
+    url(r'^profile/(?P<pk>[0-9]+)/$', login_required(
+        UserProfileDetailView.as_view()), name='user_profile')
 ]

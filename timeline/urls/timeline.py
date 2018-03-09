@@ -1,22 +1,41 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib.auth.decorators import login_required
-from timeline.views import *
+from timeline.views import (TimelineListView, TimelineUpdateStatus,
+                            TimelineRevertStage, DiscussionView,
+                            DiscussionUpdateView, DiscussionDeleteView)
 
 urlpatterns = [
-    # view timeline for a particular module
+    url(r'api/', include('timeline.urls.api')),
+
+    ##############################
+    # Timeline URLs
+    ##############################
+    # url for viewing the timeline for a particular module
     url(r'^(?P<module_pk>[A-Za-z0-9]+)/$', login_required(
         TimelineListView.as_view()), name="module_timeline"),
 
-    # view to manually change the timeline changes
-    url(r'(?P<module_pk>[A-Za-z0-9]+)/update/(?P<pk>[0-9]+)/$',
-        login_required(TimelineUpdateView.as_view()), name="entry_edit"),
-
-    # view to cause changes to be made to the model that the
-    # timeline is assigned
+    # url for moving a timeline enrty up the workflow process
     url(r'(?P<module_pk>[A-Za-z0-9]+)/approve/(?P<pk>[0-9]+)/$',
         login_required(TimelineUpdateStatus.as_view()), name="approve_entry"),
 
-    # view to remove the changes that are being staged in the timeline
+    # url for moving a timeline entry down the workflow process
     url(r'(?P<module_pk>[A-Za-z0-9]+)/revert/(?P<pk>[0-9]+)/$',
         login_required(TimelineRevertStage.as_view()), name="revert_entry"),
+
+    ##############################
+    # Discussion URLs
+    ##############################
+    # url for viewing a discussion
+    url(r'(?P<module_pk>[A-Za-z0-9]+)/discussion/(?P<pk>[0-9]+)/$',
+        login_required(DiscussionView.as_view()), name="discussion"),
+
+    # url for editing an individual comment
+    url(r'(?P<module_pk>[A-Za-z0-9]+)/discussion/(?P<entry_pk>[0-9]+)'\
+        '/edit/(?P<pk>[0-9]+)/$', login_required(
+            DiscussionUpdateView.as_view()), name='edit_comment'),
+
+    # url for deleting a individual comment
+    url(r'(?P<module_pk>[A-Za-z0-9]+)/discussion/(?P<entry_pk>[0-9]+)'\
+        '/delete/(?P<pk>[0-9]+)/$', login_required(
+            DiscussionDeleteView.as_view()), name='delete_comment'),
 ]

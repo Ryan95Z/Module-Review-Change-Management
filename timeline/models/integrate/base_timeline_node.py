@@ -3,7 +3,7 @@ from django.forms.models import model_to_dict
 from timeline.utils.factory import EntryFactory
 
 
-class ModelDifferance(models.Model):
+class BaseTimelineNode(models.Model):
     """
     Class to allow changes that are made to a model
     to be tracked.
@@ -11,10 +11,15 @@ class ModelDifferance(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __init__(self, *args, **kwargs):
-        super(ModelDifferance, self).__init__(*args, **kwargs)
-        self.base = {}
-        if len(self.module_code) > 0:
-            self.base = model_to_dict(self)
+        super(BaseTimelineNode, self).__init__(*args, **kwargs)
+        self.base = model_to_dict(self)
+
+    def title(self):
+        """
+        Returns the title that will be displayed
+        on the timeline.
+        """
+        return self.__class__.__name__
 
     def differences(self):
         """
@@ -44,6 +49,9 @@ class ModelDifferance(models.Model):
         return bool(self.differences())
 
     def save(self, *args, **kwargs):
+        INIT = "init" + self.__class__.__name__
+        UPDATE = "update" + self.__class__.__name__
+
         """
         Override standard save method of any model.
         Enables an entry to be made on the timeline
@@ -53,19 +61,19 @@ class ModelDifferance(models.Model):
         # optional kwargs argument that will force the changes
         # to not be placed on the timeline.
         override_update = kwargs.pop('override_update', False)
-        save_changes = True
         if not self.created:
             # create an init entry
-            EntryFactory.makeEntry("init", self)
-        else:
-            if not override_update:
-                # create an update entry
-                EntryFactory.makeEntry("update", self)
-                save_changes = not bool(self.hasDifferences())
+            super(BaseTimelineNode, self).save(*args, **kwargs)
+            EntryFactory.makeEntry(INIT, self)
+            return
 
-        if save_changes:
-            # save the changes to database
-            super(ModelDifferance, self).save(*args, **kwargs)
+        if not override_update:
+            # create an update entry
+            EntryFactory.makeEntry(UPDATE, self)
+            return
+
+        # save the changes to database
+        super(BaseTimelineNode, self).save(*args, **kwargs)
 
     class Meta:
         abstract = True

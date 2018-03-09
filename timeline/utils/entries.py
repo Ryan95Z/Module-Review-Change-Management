@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
-from django.db.models import ForeignKey
-from core.models import Module, User
+from django.db.models import ForeignKey, ManyToManyField
 from timeline.models import TimelineEntry, TableChange
-from timeline.utils.factory import EntryFactory
-from timeline.utils.model import ModelDifferance
+from timeline.models.integrate import BaseTimelineNode
+from timeline.models.integrate.entry import TLEntry
 
 
 class BaseEntry(ABC):
@@ -11,9 +10,12 @@ class BaseEntry(ABC):
     Base class for entry types
     """
     def __init__(self, model):
-        # check that model inherits ModelDifferance
-        if not issubclass(model, ModelDifferance):
-            ValueError("model needs to inherit from ModelDifferance")
+        if model is None:
+            raise ValueError("model cannot be None.")
+
+        # check that model inherits BaseTimelineNode
+        if not issubclass(model, BaseTimelineNode):
+            raise ValueError("model needs to inherit from BaseTimelineNode")
 
         # public variables
         self.model = model
@@ -51,8 +53,32 @@ class BaseEntry(ABC):
         """
         fields = [field.name for field in self.model._meta.get_fields()]
         # remove created from fields as not needed for timline.
-        fields.remove('created')
+        try:
+            fields.remove('created')
+            fields.remove('id')
+            fields.remove('module')
+        except:
+            pass
         return fields
+
+    def _get_module_code(self, instance):
+        """
+        Method to extract module code from the model
+        """
+        module_code = None
+        cls = instance.__class__
+        if issubclass(cls, TLEntry):
+            module_code = instance.pk
+            module_code = instance.module_code()
+        else:
+            module_code = instance.pk
+        return module_code
+
+    def _object_id(self, instance):
+        """
+        Method to get the primary key from model instance
+        """
+        return getattr(instance, instance._meta.pk.name)
 
     def _process_changes(self, changes, entry, instance):
         """
@@ -99,20 +125,34 @@ class InitEntry(BaseEntry):
             raise ValueError("instance must not be None")
 
         fields = self._extract_fields()
-        title = self.title.format(instance.module_code)
+        title = self.title.format(instance.title())
         md = ""
         for field in fields:
+
+            field_type = self.model._meta.get_field(field)
+            if isinstance(field_type, ManyToManyField):
+                # Prevents ManyToMany relationships being display in
+                # the timeline. This has occured due to the way
+                # the save operations are performed by a ManyToManyField.
+                # It works by having an internal manager that saves changes
+                # within the field object and is not connected to any
+                # public methods that can find these changes.
+                continue
+
             try:
                 value = getattr(instance, field)
                 field_string = field.replace("_", " ")
                 md += "* {}: {}\n".format(field_string, value)
             except AttributeError:
                 pass
+
         entry = self._tl_entry.objects.create(
             title=title,
             changes=md,
             status="Confirmed",
-            module=instance,
+            module_code=self._get_module_code(instance),
+            object_id=self._object_id(instance),
+            content_object=instance,
             entry_type=self.type
         )
         return entry
@@ -127,7 +167,7 @@ class InitEntry(BaseEntry):
 class UpdatedEntry(BaseEntry):
     def __init__(self, model):
         super(UpdatedEntry, self).__init__(model)
-        self.title = "Changes to {}:\n\n"
+        self.title = "Changes to {}\n\n"
         self.type = "Update"
 
     def create(self, instance):
@@ -137,9 +177,8 @@ class UpdatedEntry(BaseEntry):
         if instance is None or not isinstance(instance, self.model):
             raise ValueError("instance must not be None")
 
-        fields = self._extract_fields()
         diff = instance.differences()
-        title = self.title.format(instance.module_code)
+        title = self.title.format(instance.title())
 
         entry = None
         md = ""
@@ -166,7 +205,9 @@ class UpdatedEntry(BaseEntry):
             entry = self._tl_entry.objects.create(
                 title=title,
                 changes=md,
-                module=instance,
+                module_code=self._get_module_code(instance),
+                object_id=self._object_id(instance),
+                content_object=instance,
                 entry_type=self.type
             )
 
@@ -179,8 +220,3 @@ class UpdatedEntry(BaseEntry):
         Factory implementation to create object
         """
         return self.__class__(self.model)
-
-
-# register the classes to the factory
-EntryFactory.register(InitEntry, "init", Module)
-EntryFactory.register(UpdatedEntry, "update", Module)
