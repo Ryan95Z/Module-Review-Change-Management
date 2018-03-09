@@ -381,11 +381,12 @@ jQuery(function($) {
             var preview_id = __this.attr('aria-controls');
 
             // trim the preview_id to just get the node id.
-            var node_id = preview_id.substr(preview_id.length - 3);
+            var node_id = preview_id.replace("preview-", "");
             var preview = $('#' + preview_id).children('div.md-preview');
             var write = $('#write-'+node_id);
             var textarea = write.children('form').children('textarea');
             
+
             // get the markdown from the user.
             var md = textarea.val();
 
@@ -401,6 +402,7 @@ jQuery(function($) {
                     $.ajaxSettings.beforeSend(xhr, settings);
                 },
                 success: function(data) {
+                    console.log(data);
                     // show the markdown in preview view
                     preview.html(data['markdown']);
                 }
