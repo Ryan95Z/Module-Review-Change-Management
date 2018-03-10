@@ -19,12 +19,50 @@
 				<a class="dropdown-item" href="{% url 'view_module_tracking_form' module.module_code %}">Tracking Form</a>
 			</div>
 		</li>
+		{% if not edit_form %}
 		<li class="nav-item">
-			<a class="nav-link" href="#">Update Module Description</a>
+			<a class="nav-link" href="{% url 'update_module_description' module.module_code %}" >Update Module Description</a>
 		</li>
+		{% else %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'view_module_description' module.module_code %}">Back</a>
+        </li>
+        {% endif %}
 	</ul>
 </div>
 
-{{ form.as_p }}
+<h2>Module Description Form {% if edit_form %} (Edit Mode) {% else %} (View Mode){% endif %}</h2><hr>
+<h6>Module Code: {{ module.module_code }} ({{ module.module_name }})</h6><hr>
 
+<form action="" method="POST" id="module-description">
+	{% csrf_token %}
+
+	<div class="card">
+		<div class="card-header" data-toggle="collapse" data-target="#desc-collapse" id="desc-heading" aria-expanded="true" aria-controls="desc-collapse" style="cursor:pointer">
+		<h6 class="mb-0">
+			Description
+		</h6>
+		</div>
+		<div id="desc-collapse" class="collapse show" aria-labelledby="desc-heading">
+		<div class="card-body">
+			{% for field in form %}
+			<div class="row">
+				<h6>{{ field.label }}</h6>
+				{{ field|add_css_class:"form-control form-control-sm"}}
+			</div>
+			<br>
+			{% endfor %}
+		</div>
+		</div>
+	</div>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+    {% if not edit_form %}
+    <script type="text/javascript">
+        $("#module-description :input").attr("disabled", true)
+    </script>
+    {% endif %}
 {% endblock %}
