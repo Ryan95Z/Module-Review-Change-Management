@@ -1,5 +1,5 @@
 from django import forms
-from forms.models.module_description import FormFieldEntity
+from forms.models.module_description import FormFieldEntity, ModuleDescriptionFormVersion
 
 class ModuleDescriptionForm(forms.Form):
     """
@@ -7,9 +7,10 @@ class ModuleDescriptionForm(forms.Form):
     """
     def __init__(self, *args, **kwargs):
         if 'md_version' in kwargs:
-            md_version = kwargs.pop('md_version')
+            self.md_version = kwargs.pop('md_version')
             self.form_entities = FormFieldEntity.objects.get_form(self.md_version)
         else:
+            self.md_version = ModuleDescriptionFormVersion.objects.get_most_recent().module_description_version
             self.form_entities = FormFieldEntity.objects.get_most_recent_form()
         super(ModuleDescriptionForm, self).__init__(*args, **kwargs)
 
@@ -36,6 +37,13 @@ class ModuleDescriptionForm(forms.Form):
                     widget=forms.CheckboxInput,
                     label=e.get('entity_label')
                 )
+
+        self.fields['form_version'].initial = self.md_version
+    
+    # Hidden field which can be used to determine which form version this is using
+    form_version = forms.IntegerField(
+        widget=forms.HiddenInput(),
+        required=True)
 
             
 

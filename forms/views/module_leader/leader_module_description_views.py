@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from core.models import Module
 from forms.forms import ModuleDescriptionForm
+from forms.models import ModuleDescription, ModuleDescriptionEntry, ModuleDescriptionFormVersion 
 
 class LeaderModuleDescriptionView(View):
     """
@@ -28,4 +29,12 @@ class LeaderModuleDescriptionView(View):
         }
         return render(request, 'module_description_view.html', context)
     
+    def post(self, request, **kwargs):
+        module_code = kwargs.get('pk')
+
+        form_version_id = request.POST['form_version_id']
+        form_version = ModuleDescriptionFormVersion.objects.get(pk=form_version_id)
+        module_description_form = ModuleDescriptionForm(request.POST, md_version=form_version_id)
+
+        md = ModuleDescription.objects.create_new(module_code, form_version)
 

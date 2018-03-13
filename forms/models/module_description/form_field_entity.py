@@ -13,7 +13,8 @@ class FormFieldEntityManager(models.Manager):
         ).order_by('entity_order').values()
         return newest_version_fields
 
-    def get_form(self, version):
+    def get_form(self, version_id):
+        version = ModuleDescriptionFormVersion.objects.get(pk=version_id)
         chosen_version_fields = self.filter(
             module_description_version=version
         ).order_by('entity_order').values()

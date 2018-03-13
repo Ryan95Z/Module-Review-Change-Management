@@ -37,6 +37,10 @@
 <form action="" method="POST" id="module-description">
 	{% csrf_token %}
 
+	{% for hidden in form.hidden_fields %}
+		{{ hidden }}
+	{% endfor %}
+
 	<div class="card">
 		<div class="card-header" data-toggle="collapse" data-target="#desc-collapse" id="desc-heading" aria-expanded="true" aria-controls="desc-collapse" style="cursor:pointer">
 		<h6 class="mb-0">
@@ -45,7 +49,7 @@
 		</div>
 		<div id="desc-collapse" class="collapse show" aria-labelledby="desc-heading">
 		<div class="card-body">
-			{% for field in form %}
+			{% for field in form.visible_fields %}
 			<div class="row">
 				<h6>{{ field.label }}</h6>
 				{{ field|add_css_class:"form-control form-control-sm"}}
@@ -55,6 +59,9 @@
 		</div>
 		</div>
 	</div>
+	{% if edit_form %}
+	<button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button><br>
+	{% endif %}
 </form>
 
 {% endblock %}
