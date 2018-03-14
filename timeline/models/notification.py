@@ -4,7 +4,16 @@ from core.models import User
 
 class NotificationManager(models.Manager):
     def get_unseen_notifications(self, username):
-        notifications = self.model.objects.filter(seen=False)
+        user = User.objects.get(username=username)
+        notifications = self.model.objects.filter(
+            recipient=user.pk,
+            seen=False
+        )
+        return notifications
+
+    def get_all_notifications(self, username):
+        user = User.objects.get(username=username)
+        notifications = self.model.objects.filter(recipient=user.pk)
         return notifications
 
 

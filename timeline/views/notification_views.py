@@ -1,16 +1,22 @@
 from timeline.models import Notification
 from django.views.generic import View
-from django.views.generic.list import ListView
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 
 
-class UnseenNotificationView(ListView):
+class UnseenNotificationView(View):
     model = Notification
+    template = "timeline/notification_list.html"
 
-    def get_queryset(self):
-        username = self.kwargs['username']
-        return self.model.objects.get_unseen_notifications(username)
+    def get(self, request, *args, **kwargs):
+        username = request.user.username
+        unseen = self.model.objects.get_unseen_notifications(username)
+        all_notifications = self.model.objects.get_all_notifications(username)
+        context = {
+            'unseen': unseen,
+            'all': all_notifications,
+        }
+        return render(request, self.template, context)
 
 
 class NotificationRedirectView(View):
@@ -35,7 +41,7 @@ class GetNotifications(View):
         return handle
 
     def post(self, request, *args, **kwargs):
-        username = request.POST.get('username', '')
+        username = request.POST.get('user', '')
         unseed = self.model.objects.get_unseen_notifications(username)
         data = {
             'has_notifications': unseed.count() > 0,

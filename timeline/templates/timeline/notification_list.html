@@ -32,7 +32,7 @@
     						<div class="tab-content" id="nav-tabContent">
       						<div class="tab-pane fade show active" id="list-unread" role="tabpanel" aria-labelledby="list-unread-list">
       							<ul class="list-group">
-      								{% for o in object_list %}
+      								{% for o in unseen %}
       									<li class="list-group-item">
       										<a href="{% url 'notification_redirect' o.id %}">{{ o.content }}</a>
       									</li>
@@ -40,7 +40,19 @@
       							</ul>
       						</div>
       						<div class="tab-pane fade" id="list-all" role="tabpanel" aria-labelledby="list-all-list">
-      							
+      							<ul class="list-group">
+      								{% for o in all %}
+      									{% if o.seen %}
+      										<li class="list-group-item list-group-item-dark">
+      											<a href="{{ o.link }}">{{ o.content }}</a>
+      										</li>
+      									{% else %}
+      										<li class="list-group-item">
+      											<a href="{% url 'notification_redirect' o.id %}">{{ o.content }}</a>
+      										</li>
+      									{% endif %}
+      								{% endfor %}
+      							</ul>
       						</div>
 					</div>
 				</div>

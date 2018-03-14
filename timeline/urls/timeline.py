@@ -9,6 +9,16 @@ urlpatterns = [
     url(r'api/', include('timeline.urls.api')),
 
     ##############################
+    # Notification URLs
+    ##############################
+    url(r'notifications/$', login_required(
+        UnseenNotificationView.as_view()), name='all_notification'),
+
+    url(r'(?P<pk>[0-9]+)/redirect/$', login_required(
+        NotificationRedirectView.as_view()), name='notification_redirect'),
+
+
+    ##############################
     # Timeline URLs
     ##############################
     # url for viewing the timeline for a particular module
@@ -39,13 +49,4 @@ urlpatterns = [
     url(r'(?P<module_pk>[A-Za-z0-9]+)/discussion/(?P<entry_pk>[0-9]+)'\
         '/delete/(?P<pk>[0-9]+)/$', login_required(
             DiscussionDeleteView.as_view()), name='delete_comment'),
-
-    ##############################
-    # Notification URLs
-    ##############################
-    url(r'(?P<username>[A-Za-z0-9]+)/notifications/$', login_required(
-        UnseenNotificationView.as_view()), name='all_notification'),
-
-    url(r'(?P<pk>[0-9]+)/redirect/$', login_required(
-        NotificationRedirectView.as_view()), name='notification_redirect'),
 ]
