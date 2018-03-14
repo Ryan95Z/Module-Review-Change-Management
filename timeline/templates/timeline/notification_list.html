@@ -1,7 +1,12 @@
 {% extends 'core/main.html' %}
+{% load static %}
 
 {% block title %}
 	Notifications
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'timeline/styles.css' %}">
 {% endblock %}
 
 {% block main %}
@@ -25,33 +30,47 @@
 						     	<a class="list-group-item list-group-item-action active" id="list-unread-list" data-toggle="list" href="#list-unread" role="tab" aria-controls="unread">
 						     		Unread
 						     	</a>
-						      	<a class="list-group-item list-group-item-action" id="list-all-list" data-toggle="list" href="#list-all" role="tab" aria-controls="all">All Notifications</a>
+						      	<a class="list-group-item list-group-item-action" id="list-all-list" data-toggle="list" href="#list-all" role="tab" aria-controls="all">Recent Notifications</a>
 						  	</div>
 						</div>
 						<div class="col-8">
     						<div class="tab-content" id="nav-tabContent">
       						<div class="tab-pane fade show active" id="list-unread" role="tabpanel" aria-labelledby="list-unread-list">
-      							<ul class="list-group">
-      								{% for o in unseen %}
-      									<li class="list-group-item">
-      										<a href="{% url 'notification_redirect' o.id %}">{{ o.content }}</a>
-      									</li>
-      								{% endfor %}
+      							<ul class="list-group notification-display">
+      								{% if unseen %}
+	      								{% for o in unseen %}
+	      									<li class="list-group-item">
+	      										<a href="{% url 'notification_redirect' o.id %}">{{ o.content }}</a>
+	      									</li>
+	      								{% endfor %}
+	      							{% else %}
+	      								<p class="no-notifications">You have no unseen notifications
+	      									<br>
+	      									<i class="fa fa-grav" aria-hidden="true"></i>
+	      								</p>
+	      							{% endif %}
       							</ul>
       						</div>
       						<div class="tab-pane fade" id="list-all" role="tabpanel" aria-labelledby="list-all-list">
-      							<ul class="list-group">
-      								{% for o in all %}
-      									{% if o.seen %}
-      										<li class="list-group-item list-group-item-dark">
-      											<a href="{{ o.link }}">{{ o.content }}</a>
-      										</li>
-      									{% else %}
-      										<li class="list-group-item">
-      											<a href="{% url 'notification_redirect' o.id %}">{{ o.content }}</a>
-      										</li>
-      									{% endif %}
-      								{% endfor %}
+      							<ul class="list-group notification-display">
+      								{% if all %}
+	      								{% for o in all %}
+	      									{% if o.seen %}
+	      										<li class="list-group-item list-group-item-secondary">
+	      											<a href="{{ o.link }}">{{ o.content }}</a>
+	      										</li>
+	      									{% else %}
+	      										<li class="list-group-item">
+	      											<a href="{% url 'notification_redirect' o.id %}">{{ o.content }}</a>
+	      										</li>
+	      									{% endif %}
+	      								{% endfor %}
+	      							{% else %}
+	      								<p class="no-notifications">You do not have any recent notifications.
+	      									<br>
+	      									<i class="fa fa-grav" aria-hidden="true"></i>
+	      								</p>
+	      							{% endif %}
       							</ul>
       						</div>
 					</div>
