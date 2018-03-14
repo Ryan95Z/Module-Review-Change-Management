@@ -1,5 +1,5 @@
 <li class="nav-item">
-	<a class="nav-link" href="#" data-user="{{ request.session.username }}" id="nav-notification">
+	<a class="nav-link" href="{% url 'all_notification' request.session.username %}" data-user="{{ request.session.username }}" id="nav-notification">
 		<i class="fa fa-bell" aria-hidden="true"></i>
 		<span></span>
 	</a>
@@ -26,8 +26,11 @@
 
 	jQuery(function($) {
 		$(document).ready( function() {
-			
 			getNotifications();
+
+			setInterval(function(){ 
+				getNotifications(); 
+			}, 60000);
 		});
 
 		function getNotifications() {
@@ -50,6 +53,8 @@
                 	span = notification_nav.children('span');
                 	if (data['has_notifications'] == true) {
                 		span.addClass(SPAN_CLASS);
+                	} else {
+                		span.removeClass(SPAN_CLASS);
                 	}
                 }
 			});

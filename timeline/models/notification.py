@@ -13,13 +13,13 @@ class Notification(models.Model):
     content = models.CharField(max_length=300)
     recipient = models.ForeignKey(User)
     seen = models.BooleanField(default=False)
+    link = models.CharField(max_length=100)
 
     objects = NotificationManager()
 
     def __str__(self):
-        status = "seen" if self.seen else "not seen"
-        return "{}| {} for {}".format(
-                status, self.id, self.recipient_username())
+        status = "Seen" if self.seen else "Not seen"
+        return "{} ({})".format(self.content, status)
 
     def recipient_username(self):
         return self.recipient.username
