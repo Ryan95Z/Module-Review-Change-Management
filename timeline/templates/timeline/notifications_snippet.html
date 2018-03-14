@@ -1,0 +1,58 @@
+<li class="nav-item">
+	<a class="nav-link" href="#" data-user="{{ request.session.username }}" id="nav-notification">
+		<i class="fa fa-bell" aria-hidden="true"></i>
+		<span></span>
+	</a>
+</li>
+
+<style type="text/css">
+	.notification:before {
+		content: '';
+		font-size: 12px;
+		position: absolute;
+		width: 10px;
+		text-align: center;
+		height: 10px;
+		background-color: red;
+		padding: 2px;
+		border-radius: 100%;
+		right: 258px;
+		top: 17px;
+	}
+</style>
+
+<script type="text/javascript">
+	SPAN_CLASS = "notification"
+
+	jQuery(function($) {
+		$(document).ready( function() {
+			
+			getNotifications();
+		});
+
+		function getNotifications() {
+			notification_nav = $('#nav-notification');
+			username = notification_nav.attr('data-user');
+			url = "/timeline/api/notifications/";
+			$.ajax({
+				url: url,
+				data: {
+					'user': username,
+				},
+				type: 'POST',
+				dataType: 'json',
+				beforeSend: function(xhr, settings) {
+                    // Get the CSRF token. See csrf_ajax.js for more information.
+                    $.ajaxSettings.beforeSend(xhr, settings);
+                },
+                success: function(data){
+                	console.log(data);
+                	span = notification_nav.children('span');
+                	if (data['has_notifications'] == true) {
+                		span.addClass(SPAN_CLASS);
+                	}
+                }
+			});
+		}
+	});
+</script>

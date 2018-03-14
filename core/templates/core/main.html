@@ -11,6 +11,7 @@
       
   		<div class="collapse navbar-collapse">
   			<ul class="navbar-nav ml-auto">
+           {% include "timeline/notifications_snippet.html" %}
   				<li class="nav-item">
   					<a class="nav-link disabled" href="#">Logged in: {{ request.session.username }}</a>
           </li>
