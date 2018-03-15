@@ -48,6 +48,7 @@
 		      									<li class="list-group-item">
 		      										<a href="{% url 'notification_redirect' o.id %}" class="notification-link">
 		      											<div class="notification">
+		      												<span class="notification-alert-inner"></span>
 		      												<div class="notification-content">
 		      													{{ o.content }}
 		      												</div>
@@ -78,6 +79,10 @@
 		      											<a href="{% url 'notification_redirect' o.id %}" class="notification-link">
 		      										{% endif %}
 		      											<div class="notification">
+		      												{% if not o.seen %}
+		      													<span class="notification-alert-inner"></span>
+		      												{% endif %}
+
 		      												<div class="notification-content">
 		      													{{ o.content }}
 		      												</div>
