@@ -28,9 +28,9 @@ class BaseNotification(ABC):
 
 class DiscussionNotification(BaseNotification):
     def __init__(self):
-        content_template = "{} has written a response on your post"
+        content_template = "{} has written a common for {}"
         super(DiscussionNotification, self).__init__(
-            n_type='reply_notification',
+            n_type='discussion_notification',
             content_template=content_template,
             link_name='discussion'
         )
@@ -39,9 +39,11 @@ class DiscussionNotification(BaseNotification):
         discussion = kwargs['discussion']
         user = kwargs['user']
 
-        content = self.content_template.format(user.username)
-
         entry = discussion.entry
+        content = self.content_template.format(
+            user.username,
+            entry.module_code
+        )
 
         url = self.get_url({
             'module_pk': entry.module_code,
@@ -56,3 +58,32 @@ class DiscussionNotification(BaseNotification):
                     recipient=w.user,
                     link=url,
                 )
+
+
+class ReplyNotification(BaseNotification):
+    def __init__(self):
+        content_template = "{} has replied to your post"
+        super(ReplyNotification, self).__init__(
+            n_type='reply_notification',
+            content_template=content_template,
+            link_name='discussion'
+        )
+
+    def create(self, **kwargs):
+        discussion = kwargs['discussion']
+        user = kwargs['user']
+        parent = kwargs['parent']
+
+        entry = discussion.entry
+        recipient = parent.author
+        url = self.get_url({
+            'module_pk': entry.module_code,
+            'pk': entry.pk,
+        })
+
+        content = self.content_template.format(user.username)
+        self._notification.objects.create(
+            content=content,
+            recipient=recipient,
+            link=url
+        )

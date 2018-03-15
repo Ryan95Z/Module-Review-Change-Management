@@ -111,12 +111,19 @@ class DiscussionView(AjaxableResponseMixin, View):
             # create the discussion
             discussion_obj = Discussion.objects.create(**discussion)
 
-            NotificationFactory.makeEntry(
-                "discussion",
-                discussion=discussion_obj,
-                user=request.user
-            )
-
+            if parent_id is None:
+                NotificationFactory.makeEntry(
+                    "discussion",
+                    discussion=discussion_obj,
+                    user=request.user
+                )
+            else:
+                NotificationFactory.makeEntry(
+                    "reply",
+                    discussion=discussion_obj,
+                    user=request.user,
+                    parent=discussion['parent']
+                )
             return discussion_obj
         return None
 
