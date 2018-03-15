@@ -16,6 +16,14 @@ class NotificationManager(models.Manager):
         notifications = self.model.objects.filter(recipient=user.pk)
         return notifications
 
+    def get_seen_notifications(self, username):
+        user = User.objects.get(username=username)
+        notifications = self.model.objects.filter(
+            recipient=user.pk,
+            seen=True
+        )
+        return notifications
+
 
 class Notification(models.Model):
     created = models.DateTimeField(auto_now_add=True)

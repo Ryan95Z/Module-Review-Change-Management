@@ -403,7 +403,7 @@ li.list-group-item:focus {
 
 .notification > .notification-content {
 	position: relative;
-	width: 80%;
+	width: 75%;
 	float: left;
 }
 

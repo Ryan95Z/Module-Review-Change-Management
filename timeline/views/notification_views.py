@@ -1,4 +1,4 @@
-from timeline.models import Notification
+from timeline.models import Notification, Watcher
 from django.views.generic import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
@@ -10,11 +10,14 @@ class UnseenNotificationView(View):
 
     def get(self, request, *args, **kwargs):
         username = request.user.username
+        user_id = request.user.pk
         unseen = self.model.objects.get_unseen_notifications(username)
         all_notifications = self.model.objects.get_all_notifications(username)
+        watching = Watcher.objects.get(user=user_id).watching.all()
         context = {
             'unseen': unseen,
             'all': all_notifications,
+            'watching': watching,
         }
         return render(request, self.template, context)
 

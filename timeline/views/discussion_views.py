@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from django.urls import reverse
 from django.views.generic import View
 from django.views.generic.edit import UpdateView, DeleteView
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.utils.dateformat import format
 
