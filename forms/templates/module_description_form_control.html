@@ -6,8 +6,11 @@
     {{ object.pk }}
 {% endblock %}
 
-{% block main %}
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'forms/css/form_control.css' %}">
+{% endblock %}
 
+{% block main %}
 <form method="post">
 {% csrf_token %}
 {{ field_formset.management_form }}
@@ -43,22 +46,13 @@
                     <button type="button" class="btn btn-link p-0 move-down"><i class="fa fa-chevron-down"></i></button>
                     {% endif %}
                 </td>
-                <td class="text-center px-1" style="width: 50px">{{ form.entity_required}}</td>
-                <td class="px-1">{{ form.entity_label|add_css_class:"form-control form-control-sm" }}</td>
-                <td class="px-1 type-field" style="width: 130px">{{ form.entity_type|add_css_class:"form-control form-control-sm"}}</td>
-                <td class="px-1" >{{ form.entity_choices|add_css_class:"form-control form-control-sm"}}</td>
-                <td class="px-1" style="width: 80px">{{ form.entity_max_length|add_css_class:"form-control form-control-sm"}}</td>
+                <td class="text-center px-1" style="width: 50px">{{ form.entity_required}}{{ form.entity_required.errors}}</td>
+                <td class="px-1">{{ form.entity_label|add_css_class:"form-control form-control-sm" }}{{ form.entity_label.errors }}</td>
+                <td class="px-1 type-field" style="width: 130px">{{ form.entity_type|add_css_class:"form-control form-control-sm"}}{{ form.entity_type.errors }}</td>
+                <td class="px-1" >{{ form.entity_choices|add_css_class:"form-control form-control-sm"}}{{ form.entity_choices.errors }}</td>
+                <td class="px-1" style="width: 80px">{{ form.entity_max_length|add_css_class:"form-control form-control-sm"}}{{ form.entity_max_length.errors }}</td>
                 <td class="text-center px-1" style="width: 50px"><button class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
                 <input type="hidden" name="form-{{ forloop.counter0 }}-entity_order" id="{{form.entity_order.id_for_label}}" value="{{ forloop.counter0 }}">
-            </tr>
-            <tr>
-                {{ form.non_field_errors }}
-                <td class="px-1"></td>
-                <td class="px-1">{{ form.entity_required.errors}}</td>
-                <td class="px-1">{{ form.entity_label.errors }}</td>
-                <td class="px-1">{{ form.entity_type.errors }}</td>
-                <td class="px-1">{{ form.entity_choices.errors }}</td>
-                <td class="px-1">{{ form.entity_max_length.errors }}</td>
             </tr>
             {% endfor %}
         </tbody>

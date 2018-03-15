@@ -72,8 +72,6 @@ class AdminModuleDescriptionFormModify(View):
                 entity.save()
 
             return redirect('module_description_form_structure') # temp redirect
-
-        print(field_formset.errors)
         return render(request, self.template, {
             'field_formset': field_formset,
             'formset_length': len(field_formset)
