@@ -1,4 +1,3 @@
-from core.models import User, Module
 from timeline.models import Watcher
 from .base_timeline_model_testcase import BaseTimelineModelTestCase
 

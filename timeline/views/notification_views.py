@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 
 
-class UnseenNotificationView(View):
+class NotificationHubView(View):
     model = Notification
     template = "timeline/notification_list.html"
 
@@ -13,6 +13,8 @@ class UnseenNotificationView(View):
         user_id = request.user.pk
         unseen = self.model.objects.get_unseen_notifications(username)
         all_notifications = self.model.objects.get_all_notifications(username)
+
+        # get all the modules the user is watching
         watching = Watcher.objects.get(user=user_id).watching.all()
         context = {
             'unseen': unseen,

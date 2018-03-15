@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from timeline.views import (TimelineListView, TimelineUpdateStatus,
                             TimelineRevertStage, DiscussionView,
                             DiscussionUpdateView, DiscussionDeleteView,
-                            UnseenNotificationView, NotificationRedirectView)
+                            NotificationHubView, NotificationRedirectView)
 
 urlpatterns = [
     url(r'api/', include('timeline.urls.api')),
@@ -12,7 +12,7 @@ urlpatterns = [
     # Notification URLs
     ##############################
     url(r'notifications/$', login_required(
-        UnseenNotificationView.as_view()), name='all_notification'),
+        NotificationHubView.as_view()), name='all_notification'),
 
     url(r'(?P<pk>[0-9]+)/redirect/$', login_required(
         NotificationRedirectView.as_view()), name='notification_redirect'),

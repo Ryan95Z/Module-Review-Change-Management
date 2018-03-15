@@ -10,6 +10,8 @@ from django.utils.dateformat import format
 from timeline.models import TimelineEntry, Discussion
 from timeline.forms import DiscussionForm
 
+from timeline.utils.notifications.factory import NotificationFactory
+
 
 class AjaxableResponseMixin(ABC, object):
     def dispatch(self, request, *args, **kwargs):
@@ -107,7 +109,15 @@ class DiscussionView(AjaxableResponseMixin, View):
                 discussion['parent'] = Discussion.objects.get(pk=parent_id)
 
             # create the discussion
-            return Discussion.objects.create(**discussion)
+            discussion_obj = Discussion.objects.create(**discussion)
+
+            NotificationFactory.makeEntry(
+                "discussion",
+                discussion=discussion_obj,
+                user=request.user
+            )
+
+            return discussion_obj
         return None
 
 
