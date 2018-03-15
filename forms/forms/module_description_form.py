@@ -14,26 +14,26 @@ class ModuleDescriptionForm(forms.Form):
             self.form_entities = FormFieldEntity.objects.get_most_recent_form()
         super(ModuleDescriptionForm, self).__init__(*args, **kwargs)
 
-        for entity_number, e in enumerate(self.form_entities):
+        for e in self.form_entities:
             entity_type = e.get('entity_type')
             if entity_type == "text-input":
-                self.fields['field_%s' % entity_number] = forms.CharField(
+                self.fields['field_entity_%s' % e.get('entity_id')] = forms.CharField(
                     label=e.get('entity_label'),
                     max_length=e.get('entity_max_length')
                 )
             elif entity_type == "text-area":
-                self.fields['field_%s' % entity_number] = forms.CharField(
+                self.fields['field_entity_%s' % e.get('entity_id')] = forms.CharField(
                     widget=forms.Textarea(),
                     label=e.get('entity_label'),
                     max_length=e.get('entity_max_length')
                 )
             elif entity_type == "multi-choice":
-                self.fields['field_%s' % entity_number] = forms.ChoiceField(
+                self.fields['field_entity_%s' % e.get('entity_id')] = forms.ChoiceField(
                     choices=[(choice.strip(),choice.strip()) for choice in e.get('entity_choices').split(',')],
                     label=e.get('entity_label'),
                 )
             elif entity_type == "check-boxes":
-                self.fields['field_%s' % entity_number] = forms.BooleanField(
+                self.fields['field_entity_%s' % e.get('entity_id')] = forms.BooleanField(
                     widget=forms.CheckboxInput,
                     label=e.get('entity_label')
                 )
