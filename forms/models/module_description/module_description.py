@@ -14,6 +14,9 @@ class ModuleDescriptionManager(models.Manager):
             form_version=form_version,
             creation_date=timezone.now())
 
+    def get_most_recent(self, module):
+        return ModuleDescription.objects.filter(module=module).latest('creation_date')
+
 class ModuleDescription(models.Model):
     """
     Represents an instance of a module description 

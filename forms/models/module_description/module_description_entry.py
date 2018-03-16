@@ -6,6 +6,7 @@ class ModuleDescriptionEntryManager(models.Manager):
     """
     Manager for the MD entry model
     """
+    # Create a new entry
     def create_new_entry(self, md_id, field_id, entry):
         if isinstance(entry, str):
             return self.create(
@@ -17,6 +18,11 @@ class ModuleDescriptionEntryManager(models.Manager):
                 module_description_id=md_id,
                 field_id=field_id,
                 integer_entry=entry)
+
+    # Return the values for the most recent module description of a given model
+    def get_last_description(self, module):
+        last_description = ModuleDescription.objects.get_most_recent(module)
+        return ModuleDescriptionEntry.objects.filter(module_description_id=last_description)
 
 class ModuleDescriptionEntry(models.Model):
     """
