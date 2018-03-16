@@ -66,9 +66,30 @@
                             {% endautoescape %}
                         </div>
 
+                        {% if request.user == node.author %}
                         <div style="display: none;" id="text-{{ node.id }}-edit">
-                            <textarea class="form-control" cols="40" rows="4">{{ node.comment }}</textarea>
+                            <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="edit-tab-{{ node.id }}" data-toggle="tab" href="#edit-{{ node.id }}" role="tab" aria-controls="edit-{{ node.id }}" aria-selected="true">Edit</a>
+                            </li>   
+                            <li class="nav-item">
+                                <a class="nav-link nav-preview-edit" id="edit-preview-tab-{{ node.id }}" data-toggle="tab" href="#edit-preview-{{ node.id }}" role="tab" aria-controls="edit-preview-{{ node.id }}" aria-selected="true" data-container="prev">Preview</a>
+                            </li>
+                        </ul>
+
+
+                         <div class="tab-content">
+                            <div class="tab-pane fade show active" id="edit-{{ node.id }}" role="tabpanel" aria-labelledby="edit-tab">
+                                <textarea id="textedit-{{ node.id }}" class="form-control" cols="40" rows="4">{{ node.comment }}</textarea>
+                            </div>
+                            <div class="tab-pane fade" id="edit-preview-{{ node.id }}" role="tabpanel" aria-labelledby="edit-preview-tab-{{ node.id }}" data-editby="#textedit-{{ node.id }}">
+                                <div class="md-preview">
+                                
+                                </div>
+                            </div>
+                         </div>
                         </div>
+                        {% endif %}
 
                         <div class="comment-options">
                         {% if node.level < 2 %}

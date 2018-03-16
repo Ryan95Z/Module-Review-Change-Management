@@ -53,7 +53,17 @@ jQuery(function($) {
             html += '<div class="comment-header"><span class="comment-user">';
             html += '<a href="{:author_url}">{:author}</a></span><span class="comment-time">{:time}</span></div>';
             html += '<div class="comment-content" data-textedit="#text-{:id}-edit">{:content}</div></div>';
-            html += '<div style="display: none;" id="text-{:id}-edit"><textarea class="form-control" cols="40" rows="4">{:md}</textarea></div>'
+            
+            // edit form
+            html +=  '<div style="display: none;" id="text-{:id}-edit"><ul class="nav nav-tabs" role="tablist"><li class="nav-item">';
+            html +=  '<a class="nav-link active" id="edit-tab-{:id}" data-toggle="tab" href="#edit-{:id}" role="tab" aria-controls="edit-{:id}" aria-selected="true">Edit</a></li>';
+            html +=  '<li class="nav-item"><a class="nav-link nav-preview-edit" id="edit-preview-tab-{:id}" data-toggle="tab" href="#edit-preview-{:id}" role="tab" aria-controls="edit-preview-{:id}" aria-selected="true" data-container="prev">Preview</a>';
+            html +=  '</li></ul> <div class="tab-content"><div class="tab-pane fade show active" id="edit-{:id}" role="tabpanel" aria-labelledby="edit-tab">';
+            html +=  '<textarea id="textedit-{:id}" class="form-control" cols="40" rows="4">{:md}</textarea>';
+            html +=  '</div><div class="tab-pane fade" id="edit-preview-{:id}" role="tabpanel" aria-labelledby="edit-preview-tab-{:id}" data-editby="#textedit-{:id}">';
+            html +=  '<div class="md-preview"></div></div></div></div>';
+
+            // options for comment
             html += '<div class="comment-options">';
             html += '<button class="reply"  data-for={:timestamp}><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>';
             html += '<a href="{:edit_url}" class="comment-action comment-edit"><i class="fa fa-pencil" aria-hidden="true"></i><span>Edit</span></a>'
@@ -144,11 +154,19 @@ jQuery(function($) {
 
             // markdown template for the comment
             var ul_html = '<ul class="discussion-responses">{:li}<ul>';
-            var li_html = '<li class="discussion-comment user-comment">';
+            var li_html = '<li class="discussion-comment user-comment" data-node="{:id}">';
             li_html += '<div class="comment-header"><span class="comment-user">';
             li_html += '<a href="{:author_url}">{:author}</a></span><span class="comment-time">{:time}</span></div>';
             li_html += '<div class="comment-content" data-textedit="#text-{:id}-edit">{:content}</div></div>';
-            li_html += '<div style="display: none;" id="text-{:id}-edit"><textarea class="form-control" cols="40" rows="4">{:md}</textarea></div>'
+                
+            li_html +=  '<div style="display: none;" id="text-{:id}-edit"><ul class="nav nav-tabs" role="tablist"><li class="nav-item">';
+            li_html +=  '<a class="nav-link active" id="edit-tab-{:id}" data-toggle="tab" href="#edit-{:id}" role="tab" aria-controls="edit-{:id}" aria-selected="true">Edit</a></li>';
+            li_html +=  '<li class="nav-item"><a class="nav-link nav-preview-edit" id="edit-preview-tab-{:id}" data-toggle="tab" href="#edit-preview-{:id}" role="tab" aria-controls="edit-preview-{:id}" aria-selected="true" data-container="prev">Preview</a>';
+            li_html +=  '</li></ul> <div class="tab-content"><div class="tab-pane fade show active" id="edit-{:id}" role="tabpanel" aria-labelledby="edit-tab">';
+            li_html +=  '<textarea id="textedit-{:id}" class="form-control" cols="40" rows="4">{:md}</textarea>';
+            li_html +=  '</div><div class="tab-pane fade" id="edit-preview-{:id}" role="tabpanel" aria-labelledby="edit-preview-tab-{:id}" data-editby="#textedit-{:id}">';
+            li_html +=  '<div class="md-preview"></div></div></div></div>';
+
             li_html += '<div class="comment-options">';
 
             // if the level is 0, then it can have replies
@@ -302,6 +320,7 @@ jQuery(function($) {
             event.preventDefault();
             var __this = $(this);
             var li = __this.parent().parent();
+            var node_id = li.attr('data-node');
             var action_url = __this.attr('href');
             var anchor_span = __this.children('span');
 
@@ -310,7 +329,7 @@ jQuery(function($) {
             var edit_area = $(comment_content.attr('data-textedit'));
             
             // get the markdown from the textarea
-            var comment_md = edit_area.children('textarea').first().val();
+            var comment_md = $('#textedit-' + node_id).val();
 
             // hide edit area and show new comment
             edit_area.hide();
@@ -347,26 +366,13 @@ jQuery(function($) {
          */
         $('body').on('click', 'a.nav-preview', function(event){
             var textarea = $('#reply-textarea').children('textarea');
-            
+
             // get the markdown
             var md = textarea.val();
             var preview = $('#markdown-preview');
-            $.ajax({
-                type: 'POST',
-                url: '/timeline/api/markdown/',
-                data: {
-                    'markdown': md,
-                },
-                dataType: 'JSON',
-                beforeSend: function(xhr, settings) {
-                    // Get the CSRF token. See csrf_ajax.js for more information.
-                    $.ajaxSettings.beforeSend(xhr, settings);
-                },
-                success: function(data) {
-                    // show the markdown in preview view
-                    preview.html(data['markdown']);
-                }
-            });
+            
+            // process new markdown
+            markdownPreview(preview, md);
         });
 
         /**
@@ -382,15 +388,39 @@ jQuery(function($) {
             var write = $('#write-'+node_id);
             var textarea = write.children('form').children('textarea');
             
+            // process new markdown
+            markdownPreview(preview, textarea.val());
 
-            // get the markdown from the user.
-            var md = textarea.val();
+        });
 
+        /**
+         * Enables the edit form for a comment to preview the markdown.
+         */
+        $('body').on('click', 'a.nav-preview-edit', function(event){
+            var __this = $(this);
+            var preview_tab = $(__this.attr('href'));
+            var preview = preview_tab.children('.md-preview').first();
+            var textarea = $(preview_tab.attr('data-editby'));
+
+            // process new markdown
+            markdownPreview(preview, textarea.val());
+        });
+
+
+        /**
+         * Processes the markdown from the comment form into
+         * html for preview.
+         *
+         * @param   preview             jQuery object of element that displays the html from request
+         * @param   markdown_comment    user comment in markdown form.
+         * @return  void
+         */
+        function markdownPreview(preview, markdown_comment) {
             $.ajax({
                 type: 'POST',
                 url: '/timeline/api/markdown/',
                 data: {
-                    'markdown': md,
+                    'markdown': markdown_comment,
                 },
                 dataType: 'JSON',
                 beforeSend: function(xhr, settings) {
@@ -398,12 +428,11 @@ jQuery(function($) {
                     $.ajaxSettings.beforeSend(xhr, settings);
                 },
                 success: function(data) {
-                    console.log(data);
                     // show the markdown in preview view
                     preview.html(data['markdown']);
                 }
             });
-        });
+        }
 
     });
     
