@@ -6,6 +6,12 @@ class ModuleDescriptionForm(forms.Form):
     Form which takes a module description version and generates a form based on that specific version
     """
     def __init__(self, *args, **kwargs):
+        """
+        In order for the form to be dynamic, it must generate all of the fields
+        in the initialization of the form.
+        """
+        # Retrieve the form version from the kwargs, then collect all of the fields
+        # we need to create. If there is no version, get the most recent one
         if 'md_version' in kwargs:
             self.md_version = kwargs.pop('md_version')
             self.form_entities = FormFieldEntity.objects.get_form(self.md_version)
@@ -14,6 +20,8 @@ class ModuleDescriptionForm(forms.Form):
             self.form_entities = FormFieldEntity.objects.get_most_recent_form()
         super(ModuleDescriptionForm, self).__init__(*args, **kwargs)
 
+        # Loop through all of the entities and determine what widget to render
+        # depending on its type
         for e in self.form_entities:
             entity_type = e.get('entity_type')
             if entity_type == "text-input":
@@ -38,6 +46,7 @@ class ModuleDescriptionForm(forms.Form):
                     label=e.get('entity_label')
                 )
 
+        # Set the form_version. 
         self.fields['form_version'].initial = self.md_version
     
     # Hidden field which can be used to determine which form version this is using

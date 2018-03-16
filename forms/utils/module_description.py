@@ -4,7 +4,7 @@ def md_to_form(queryset):
     and converts them into the correct format to be
     displayed in a module description form.
 
-    Only works if the given entries correclate to the
+    Only works if the given entries correlate to the
     form which is being rendered.
     """
     form_data = {}

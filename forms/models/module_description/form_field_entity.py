@@ -4,9 +4,13 @@ from forms.models.module_description import ModuleDescriptionFormVersion
 
 class FormFieldEntityManager(models.Manager):
     """
-    Manager for the form field entity model
+    Manager for the FormFieldEntity model
     """
     def get_most_recent_form(self):
+        """
+        Returns a queryset of the fields which make up the most recent
+        Module Description form, in order.
+        """
         newest_version = ModuleDescriptionFormVersion.objects.get_most_recent()
         newest_version_fields = self.filter(
             module_description_version=newest_version
@@ -14,6 +18,9 @@ class FormFieldEntityManager(models.Manager):
         return newest_version_fields
 
     def get_form(self, version_id):
+        """
+        Returns a queryset of the fields which make up a given form version, in order.
+        """
         version = ModuleDescriptionFormVersion.objects.get(pk=version_id)
         chosen_version_fields = self.filter(
             module_description_version=version

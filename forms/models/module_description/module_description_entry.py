@@ -4,10 +4,14 @@ from forms.models.module_description import FormFieldEntity, ModuleDescription
 
 class ModuleDescriptionEntryManager(models.Manager):
     """
-    Manager for the MD entry model
+    Manager for the ModuleDescriptionEntry model
     """
-    # Create a new entry
     def create_new_entry(self, md_id, field_id, entry):
+        """
+        Creates a new ModuleDescriptionEntry object and links it to
+        a ModuleDescription 'parent',and  a FormFieldEntity. 
+        """
+        # Determines what type the entry is and sets the appropriate field
         if isinstance(entry, str):
             return self.create(
                 module_description_id=md_id,
