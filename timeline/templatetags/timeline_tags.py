@@ -20,5 +20,5 @@ def entry_comments(entry_id):
     Filter that returns the number of root
     comments that the entry has.
     """
-    discussion = Discussion.objects.filter(level__lte=0, entry=entry_id)
+    discussion = Discussion.objects.filter(entry=entry_id)
     return discussion.count()

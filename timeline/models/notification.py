@@ -40,3 +40,6 @@ class Notification(models.Model):
 
     def recipient_username(self):
         return self.recipient.username
+
+    class Meta:
+        ordering = ['-created']
