@@ -60,12 +60,16 @@
                             </span>
                             <span class="comment-time"> {{ node.created|naturaltime }}</span>
                         </div>
-                        <div class="comment-content">
+                        <div class="comment-content" data-textedit="#text-{{ node.id }}-edit">
                             {% autoescape off %}
                             {{ node.comment|covert_markdown }}
                             {% endautoescape %}
                         </div>
-                        <div class="comment-content-pre">{{ node.comment }}</div>
+
+                        <div style="display: none;" id="text-{{ node.id }}-edit">
+                            <textarea class="form-control" cols="40" rows="4">{{ node.comment }}</textarea>
+                        </div>
+
                         <div class="comment-options">
                         {% if node.level < 2 %}
                             <button class="reply" data-for="{{ node.created|date:'U' }}"><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>

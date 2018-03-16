@@ -52,8 +52,8 @@ jQuery(function($) {
             var html = '<li class="discussion-comment user-comment" data-node="{:id}">';
             html += '<div class="comment-header"><span class="comment-user">';
             html += '<a href="{:author_url}">{:author}</a></span><span class="comment-time">{:time}</span></div>';
-            html += '<div class="comment-content">{:content}</div></div>';
-            html += '<div class="comment-content-pre">{:md}</div>'
+            html += '<div class="comment-content" data-textedit="#text-{:id}-edit">{:content}</div></div>';
+            html += '<div style="display: none;" id="text-{:id}-edit"><textarea class="form-control" cols="40" rows="4">{:md}</textarea></div>'
             html += '<div class="comment-options">';
             html += '<button class="reply"  data-for={:timestamp}><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>';
             html += '<a href="{:edit_url}" class="comment-action comment-edit"><i class="fa fa-pencil" aria-hidden="true"></i><span>Edit</span></a>'
@@ -147,8 +147,8 @@ jQuery(function($) {
             var li_html = '<li class="discussion-comment user-comment">';
             li_html += '<div class="comment-header"><span class="comment-user">';
             li_html += '<a href="{:author_url}">{:author}</a></span><span class="comment-time">{:time}</span></div>';
-            li_html += '<div class="comment-content">{:content}</div></div>';
-            li_html += '<div class="comment-content-pre">{:md}</div>'
+            li_html += '<div class="comment-content" data-textedit="#text-{:id}-edit">{:content}</div></div>';
+            li_html += '<div style="display: none;" id="text-{:id}-edit"><textarea class="form-control" cols="40" rows="4">{:md}</textarea></div>'
             li_html += '<div class="comment-options">';
 
             // if the level is 0, then it can have replies
@@ -276,18 +276,17 @@ jQuery(function($) {
         $('body').on('click', 'a.comment-edit', function(event){
             event.preventDefault();
             var __this = $(this);
+            var anchor_span = __this.children('span');
             var li = __this.parent().parent();
             var comment_content = li.children('.comment-content');
-            var md_comment_content = li.children('.comment-content-pre');
-            
-            // get the markdown that is embedded in the html.
-            var md = md_comment_content.html();
-            var anchor_span = __this.children('span');
 
-            // switch the html to markdown and make it editable
-            comment_content.html(md);
-            comment_content.addClass('comment-content-edit');
-            comment_content.attr('contenteditable','true');
+            // get the edit area
+            var edit_area = $(comment_content.attr('data-textedit'));
+
+            // hide the current comment and display the markdown
+            comment_content.hide();
+            edit_area.show();
+
             // switch the current anchor to be a done anchor
             // to enable the a.comment-done onClick event to work. 
             anchor_span.text('Done');
@@ -304,27 +303,25 @@ jQuery(function($) {
             var __this = $(this);
             var li = __this.parent().parent();
             var action_url = __this.attr('href');
+            var anchor_span = __this.children('span');
 
             // get the comment stuff
             var comment_content = li.children('.comment-content');
-            var md_comment_content = li.children('.comment-content-pre');
-            var html = comment_content.html();
-            var anchor_span = __this.children('span');
+            var edit_area = $(comment_content.attr('data-textedit'));
             
-            // make the comment area editable.
-            comment_content.removeClass('comment-content-edit');
-            comment_content.attr('contenteditable','false');
-            
-            // replace any breaks that the div adds to newlines.
-            // Prevents corruption of the expected outcome of the markup.
-            html = html.replace(/((<br>))/g, '\n');
-            
+            // get the markdown from the textarea
+            var comment_md = edit_area.children('textarea').first().val();
+
+            // hide edit area and show new comment
+            edit_area.hide();
+            comment_content.show();
+
             // Posts the updated comment to be save.
             $.ajax({
                 type: 'POST',
                 url: action_url,
                 data: {
-                    'comment': html,
+                    'comment': comment_md,
                 },
                 dataType: 'JSON',
                 beforeSend: function(xhr, settings) {
@@ -332,9 +329,8 @@ jQuery(function($) {
                     $.ajaxSettings.beforeSend(xhr, settings);
                 },
                 success: function(data) {
-                    // Updates the done button to become an edit button again.
+                    // update the comment
                     comment_content.html(data['html']);
-                    md_comment_content.html(data['md']);
                     
                     // update the label.
                     anchor_span.text('Edit');
