@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from core.models import Module
 from forms.models.tracking_form import ModuleTeaching, ModuleSupport, ModuleAssessment, ModuleSoftware
 from forms.forms import ModuleTeachingHoursForm, ModuleSupportForm, ModuleAssessmentsForm, ModuleSoftwareForm
-from forms.utils.tracking_form_utils import populate_tracking_forms
+from forms.utils.tracking_form import populate_tracking_forms
 
 class LeaderModuleTrackingForm(View):
     """
