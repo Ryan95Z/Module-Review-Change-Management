@@ -20,7 +20,12 @@
             <th class="text-center px-0" scope="col">Order</th>
             <th class="text-center px-0" scope="col">Required</th>
             <th class="text-center px-0" scope="col">Label</th>
-            <th class="text-center px-0" scope="col">Type</th>
+            <th class="text-center px-0" scope="col">
+                Type
+                <a href="#" data-toggle="modal" data-target="#typeHelpModal" style="color: black">
+                    <i class="fa fa-question-circle"></i>
+                </a>
+            </th>
             <th class="text-center px-0" scope="col">
                 Choices
                 <a href="#" data-toggle="modal" data-target="#choicesHelpModal" style="color: black">
@@ -83,27 +88,61 @@
     </tbody>
 </table>
 
-<!-- Choices help text modal -->
-<div class="modal fade" id="choicesHelpModal" tabindex="-1" role="dialog" aria-labelledby="choicesHelpModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
+<!-- Type help text modal -->
+<div class="modal fade" id="typeHelpModal" tabindex="-1" role="dialog" aria-labelledby="typeHelpModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="choicesHelpModalLabel">Choices Field</h5>
+                <h5 class="modal-title" id="typeHelpModalLabel">Type Selection</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p>The choices field only applies to 'Select Box' and 'Check Box' questions, therefore
-                    it is only active when either of these two types are chosen.
+                <p>The type of the field represents what element will be used to render the field
+                    in the form. Some require that you enter a set of choices, and some do not.
                 </p>
-                <p>Choices must be entered in a comma seperated format in order for them to be stored
-                    correctly. The form will produce an error if you fail to do this. (not yet)
-                </p>
-                <p>Example: <code>Oranges, Apples, Pears</code></p>
+                <hr>
+                <h6>Text Input</h6>
+                A text input which is rendered as a sigle line, usually for smaller amounts of text.
+                <hr>
+                <h6>Text Area</h6>
+                A larger text input rendered as several lines which the user can expand. Generally used
+                for larger amounts of text.
+                <hr>
+                <h6>Select Box</h6>
+                A selection box containing the options defined in the choices field. The user can only
+                select one.
+                <hr>
+                <h6>Check Boxes</h6>
+                placeholder
             </div>
         </div>
+    </div>
+    </div>
+
+<!-- Choices help text modal -->
+<div class="modal fade" id="choicesHelpModal" tabindex="-1" role="dialog" aria-labelledby="choicesHelpModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="choicesHelpModalLabel">Choices Field</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
         </div>
+        <div class="modal-body">
+            <p>The choices field only applies to 'Select Box' and 'Check Box' questions, therefore
+                it is only active when either of these two types are chosen.
+            </p>
+            <p>Choices must be entered in a comma seperated format in order for them to be stored
+                correctly. The form will produce an error if you fail to do this. (not yet)
+            </p>
+            <p>Example: <code>Oranges, Apples, Pears</code></p>
+        </div>
+    </div>
+</div>
+</div>
 
 {% endblock %}
 
