@@ -39,7 +39,13 @@
 <!-- Main form -->
 <div class="card">
 	<div class="card-header" data-toggle="collapse" data-target="#desc-collapse" id="desc-heading" aria-expanded="true" aria-controls="desc-collapse" style="cursor:pointer">
-		<h6 class="mb-0">Description</h6>
+		<h6 class="mb-0">
+			Description
+			{% if new_form_version == True %}
+			<!-- When the new_form_version flag is set, we let the user know there is a more recent version -->
+			<span class="badge badge-secondary">Old Form Version</span>
+			{% endif %}
+		</h6>
 	</div>
 	<div id="desc-collapse" class="collapse show" aria-labelledby="desc-heading">
 		<div class="card-body">

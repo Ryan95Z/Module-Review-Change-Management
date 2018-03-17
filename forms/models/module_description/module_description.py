@@ -9,12 +9,19 @@ class ModuleDescriptionManager(models.Manager):
     Manager for the module description object
     """
     def create_new(self, module, form_version):
+        """
+        Create a new ModuleDescription and assign it to a given
+        module and form version
+        """
         return self.create(
             module=module, 
             form_version=form_version,
             creation_date=timezone.now())
 
     def get_most_recent(self, module):
+        """
+        Return the most recent ModuleDescription for a given module
+        """
         return ModuleDescription.objects.filter(module=module).latest('creation_date')
 
 class ModuleDescription(models.Model):

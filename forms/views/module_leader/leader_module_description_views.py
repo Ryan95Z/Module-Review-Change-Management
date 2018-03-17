@@ -16,7 +16,8 @@ class LeaderModuleDescriptionView(View):
         """
         The page can be in view mode and edit mode. When in view mode,
         the form is rendered, but disabled, in edit mode it is enabled.
-        The form is populated with the most recent data.
+        If the current description was created using an older form, this
+        is reflected. When switching to edit mode, the newer form will show.
         """
         # Assign user chosen factors to variables.
         module = Module.objects.get(pk=self.kwargs.get('pk'))
@@ -24,18 +25,30 @@ class LeaderModuleDescriptionView(View):
         form_exists = True
         edit_form = True if form_type == 'new' else False
         
-        # Retrieve the most recent description for this module, format it
-        # for the form, and then set it as the initial values.
+        # Retrieve the most recent description for this module, and
+        # the form version it used. Convert it to form format.
         current_description = ModuleDescriptionEntry.objects.get_last_description(module)
+        version_used = ModuleDescription.objects.get_most_recent(module).form_version
         existing_form = md_to_form(current_description)
-        module_description_form = ModuleDescriptionForm(initial=existing_form)
+
+        # We need to check if the existing data was created using the
+        # most recent form. If not, we set a flag and only render the
+        # most recent form if the user is in edit mode.
+        if version_used == ModuleDescriptionFormVersion.objects.get_most_recent():
+            new_form_version = False
+            module_description_form = ModuleDescriptionForm(initial=existing_form)
+        else:
+            new_form_version = True
+            if edit_form: module_description_form = ModuleDescriptionForm()
+            else: module_description_form = ModuleDescriptionForm(md_version=version_used.pk, initial=existing_form)
 
         # Set the context with the form, and the user chosen stuff
         context = {
             'edit_form': edit_form,
             'form_exists': form_exists,
             'module': module,
-            'form': module_description_form
+            'form': module_description_form,
+            'new_form_version': new_form_version
         }
         return render(request, 'module_description_view.html', context)
     
@@ -76,6 +89,7 @@ class LeaderModuleDescriptionView(View):
                 'edit_form': True,
                 'form_exists': True,
                 'module': module,
-                'form': module_description_form
+                'form': module_description_form,
+                'new_form_version': False
             }
             return render(request, 'module_description_view.html', context)
