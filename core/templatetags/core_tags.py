@@ -32,6 +32,13 @@ def form_type(field):
     """
     return field.field.__class__.__name__
 
+@register.filter(is_safe=True)
+def widget_type(field):
+    """
+    Tag to allow for html form widget type to be determined.
+    Returns string of field type.
+    """
+    return field.field.widget.__class__.__name__
 
 @register.filter(is_safe=True)
 def pagination_range(current_page: int, end_page: int):

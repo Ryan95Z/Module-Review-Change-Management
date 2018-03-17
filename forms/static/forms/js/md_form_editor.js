@@ -3,7 +3,7 @@
 function evaluateChoiceField(typeField) {
     var select_id = typeField.attr("id")
     var row_id = select_id.substring(0, select_id.length - "-entity_type".length)
-    if(typeField.val() == 'multi-choice' || typeField.val() == 'check-boxes') {
+    if(typeField.val() == 'multi-choice' || typeField.val() == 'check-boxes' || typeField.val() == 'radio-buttons') {
         $("#"+row_id+"-entity_choices").attr("disabled", false)
     } else {
         $("#"+row_id+"-entity_choices").val("")

@@ -56,7 +56,7 @@
         </td>
         <td class="text-center px-1" style="width: 50px">{{ form.entity_required}}{{ form.entity_required.errors}}</td>
         <td class="px-1">{{ form.entity_label|add_css_class:"form-control form-control-sm" }}{{ form.entity_label.errors }}</td>
-        <td class="px-1 type-field" style="width: 130px">{{ form.entity_type|add_css_class:"form-control form-control-sm"}}{{ form.entity_type.errors }}</td>
+        <td class="px-1 type-field" style="width: 140px">{{ form.entity_type|add_css_class:"form-control form-control-sm"}}{{ form.entity_type.errors }}</td>
         <td class="px-1" >{{ form.entity_choices|add_css_class:"form-control form-control-sm"}}{{ form.entity_choices.errors }}</td>
         <td class="px-1" style="width: 80px">{{ form.entity_max_length|add_css_class:"form-control form-control-sm"}}{{ form.entity_max_length.errors }}</td>
         <td class="text-center px-1" style="width: 50px"><button class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
@@ -136,8 +136,8 @@
         </button>
     </div>
     <div class="modal-body">
-        <p>The choices field only applies to 'Select Box' and 'Check Box' questions, therefore
-            it is only active when either of these two types are chosen.
+        <p>The choices field only applies to 'Select Box', 'Radio Button' and 'Check Box' questions, 
+            therefore it is only active when either of these two types are chosen.
         </p>
         <p>Choices must be entered in a comma seperated format in order for them to be stored
             correctly. The form will produce an error if you fail to do this. (not yet)

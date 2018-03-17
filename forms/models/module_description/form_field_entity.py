@@ -35,6 +35,7 @@ class FormFieldEntity(models.Model):
         ("text-input", "Text Input"),
         ("text-area", "Text Area"),
         ("multi-choice", "Select Box"),
+        ("radio-buttons", "Radio Buttons"),
         ("check-boxes", "Check Boxes")
     )
 
@@ -42,7 +43,7 @@ class FormFieldEntity(models.Model):
     entity_order = models.PositiveSmallIntegerField()
     entity_label = models.CharField(max_length=100, verbose_name="Title/Label")
     entity_required = models.BooleanField(default=True)
-    entity_type = models.CharField(choices=ENTITY_TYPE_OPTIONS, max_length=12, verbose_name="Field Type")
+    entity_type = models.CharField(choices=ENTITY_TYPE_OPTIONS, max_length=13, verbose_name="Field Type")
     entity_choices = models.CharField(blank=True, max_length=100, verbose_name="Choices")
     entity_default = models.CharField(blank=True, max_length=100, verbose_name="Default")
     entity_description = models.CharField(blank=True, max_length=1000, verbose_name="Description")
