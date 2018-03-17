@@ -48,7 +48,7 @@ class AdminModuleDescriptionFormModify(View):
     View which handles the module description structure form
     """
     def __init__(self):
-        self.template = 'module_description_form_control.html'
+        self.template = 'md_form_structure_edit.html'
         self.field_formset_object = formset_factory(FieldEntityForm, extra=1)
 
     def get(self, request, **kwargs):
