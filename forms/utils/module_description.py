@@ -12,7 +12,6 @@ def md_to_form(queryset):
         field = entry.field_id
         id_for_form = "field_entity_" + str(field.pk)
         field_type = field.entity_type
-        if field_type == "text-input" or field_type == "text-area":
-            form_data[id_for_form] = entry.string_entry
+        form_data[id_for_form] = entry.string_entry
     return form_data
 

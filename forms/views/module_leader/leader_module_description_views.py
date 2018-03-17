@@ -38,9 +38,12 @@ class LeaderModuleDescriptionView(View):
             new_form_version = False
             module_description_form = ModuleDescriptionForm(initial=existing_form)
         else:
-            new_form_version = True
-            if edit_form: module_description_form = ModuleDescriptionForm()
-            else: module_description_form = ModuleDescriptionForm(md_version=version_used.pk, initial=existing_form)
+            if edit_form:
+                new_form_version = False
+                module_description_form = ModuleDescriptionForm()
+            else: 
+                new_form_version = True
+                module_description_form = ModuleDescriptionForm(md_version=version_used.pk, initial=existing_form)
 
         # Set the context with the form, and the user chosen stuff
         context = {
