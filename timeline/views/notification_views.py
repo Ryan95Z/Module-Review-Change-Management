@@ -47,8 +47,8 @@ class GetNotifications(View):
 
     def post(self, request, *args, **kwargs):
         username = request.POST.get('user', '')
-        unseed = self.model.objects.get_unseen_notifications(username)
+        unseen = self.model.objects.get_unseen_notifications(username)
         data = {
-            'has_notifications': unseed.count() > 0,
+            'has_notifications': unseen.count() > 0,
         }
         return JsonResponse(data)
