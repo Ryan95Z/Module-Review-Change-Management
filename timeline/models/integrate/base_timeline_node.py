@@ -1,6 +1,7 @@
 from django.db import models
 from django.forms.models import model_to_dict
 from timeline.utils.factory import EntryFactory
+from timeline.utils.notifications.factory import NotificationFactory
 
 
 class BaseTimelineNode(models.Model):
@@ -51,7 +52,6 @@ class BaseTimelineNode(models.Model):
     def save(self, *args, **kwargs):
         INIT = "init" + self.__class__.__name__
         UPDATE = "update" + self.__class__.__name__
-
         """
         Override standard save method of any model.
         Enables an entry to be made on the timeline
@@ -64,7 +64,8 @@ class BaseTimelineNode(models.Model):
         if not self.created:
             # create an init entry
             super(BaseTimelineNode, self).save(*args, **kwargs)
-            EntryFactory.makeEntry(INIT, self)
+            entry = EntryFactory.makeEntry(INIT, self)
+            NotificationFactory.makeEntry("timeline", entry=entry)
             return
 
         if not override_update:

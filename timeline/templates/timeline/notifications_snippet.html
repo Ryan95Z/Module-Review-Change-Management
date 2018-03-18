@@ -44,7 +44,6 @@
 				},
 				type: 'POST',
 				dataType: 'json',
-				async: false,
 				beforeSend: function(xhr, settings) {
                     // Get the CSRF token. See csrf_ajax.js for more information.
                     $.ajaxSettings.beforeSend(xhr, settings);

@@ -27,32 +27,32 @@ class NotificationManager(models.Manager):
         )
         return notifications
 
-        def remove_old_notifications(self, username):
-            max_days = 10
-            items_deleted = False
-            notifications = self.get_seen_notifications(username)
+    def remove_old_notifications(self, username):
+        max_days = 10
+        items_deleted = False
+        notifications = self.get_seen_notifications(username)
 
-            # current time
-            now = datetime.now()
-            now_timestamp = format(now, u'U')
+        # current time
+        now = datetime.now()
+        now_timestamp = format(now, u'U')
 
-            # loop through all notifications and remove
-            # any that are older than 10 days.
-            for n in notifications:
-                created_timestamp = format(n.seen_at, u'U')
+        # loop through all notifications and remove
+        # any that are older than 10 days.
+        for n in notifications:
+            created_timestamp = format(n.seen_at, u'U')
 
-                # calculates the number of days have passed between
-                # now and the time the notification was created.
-                # formula to calculate difference in days was found here:
-                # https://stackoverflow.com/questions/4079814/finding-days-between-2-unix-timestamps-in-php
-                diff = ((int(now_timestamp) - int(created_timestamp)) / 86400)
-                days = math.floor(diff)
+            # calculates the number of days have passed between
+            # now and the time the notification was created.
+            # formula to calculate difference in days was found here:
+            # https://stackoverflow.com/questions/4079814/finding-days-between-2-unix-timestamps-in-php
+            diff = ((int(now_timestamp) - int(created_timestamp)) / 86400)
+            days = math.floor(diff)
 
-                # if the day has passed
-                if days >= max_days:
-                    items_deleted = True
-                    n.delete()
-            return items_deleted
+            # if the day has passed
+            if days >= max_days:
+                items_deleted = True
+                n.delete()
+        return items_deleted
 
     def __get_user(self, username):
         if username is None or len(username) < 1:

@@ -4,8 +4,11 @@ from timeline.utils.entries import InitEntry, UpdatedEntry
 
 
 from timeline.utils.notifications.factory import NotificationFactory
-from timeline.utils.notifications.notices import (DiscussionNotification,
-                                                  ReplyNotification)
+from timeline.utils.notifications.notices import (DiscussionNotice,
+                                                  ReplyNotice,
+                                                  TLEntryNotice,
+                                                  TLStagingNotice,
+                                                  TLConfirmedNotice)
 
 
 # set up the entry factory for module
@@ -17,5 +20,8 @@ EntryFactory.register(UpdatedEntry, UPDATE, Module)
 
 
 # set the notification factory
-NotificationFactory.register(DiscussionNotification, "discussion")
-NotificationFactory.register(ReplyNotification, "reply")
+NotificationFactory.register(DiscussionNotice, "discussion")
+NotificationFactory.register(ReplyNotice, "reply")
+NotificationFactory.register(TLEntryNotice, "timeline")
+NotificationFactory.register(TLStagingNotice, "staged")
+NotificationFactory.register(TLConfirmedNotice, "confirmed")

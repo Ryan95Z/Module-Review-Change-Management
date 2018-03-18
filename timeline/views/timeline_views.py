@@ -6,6 +6,7 @@ from django.shortcuts import redirect, get_object_or_404
 
 from timeline.models import TimelineEntry
 from timeline.utils.changes import process_changes, revert_changes
+from timeline.utils.notifications.factory import NotificationFactory
 from django.http import HttpResponse
 
 
@@ -66,7 +67,6 @@ class TimelineUpdateStatus(TimelinePostViews):
         to the model.
         """
         entry_pk = kwargs['pk']
-        module_pk = kwargs['module_pk']
 
         # get the current timeline entry.
         entry = get_object_or_404(TimelineEntry, pk=entry_pk)
@@ -80,6 +80,11 @@ class TimelineUpdateStatus(TimelinePostViews):
             pass
         entry.approved_by = request.user
         entry.save()
+        NotificationFactory.makeEntry(
+            entry.status.lower(),
+            entry=entry,
+            user=request.user
+        )
         return redirect(self._get_url(**kwargs))
 
 
@@ -95,7 +100,6 @@ class TimelineRevertStage(TimelinePostViews):
         Post request to enable the rollback
         """
         entry_pk = kwargs['pk']
-        module_pk = kwargs['module_pk']
 
         entry = get_object_or_404(TimelineEntry, pk=entry_pk)
         if entry.status == 'Draft':
