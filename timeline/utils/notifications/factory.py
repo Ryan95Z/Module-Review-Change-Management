@@ -22,6 +22,6 @@ class NotificationFactory(object):
         """
         return NotificationFactory.factories[alis]
 
-    def makeEntry(alis, **kwargs):
+    def makeNotification(alis, **kwargs):
         notices = NotificationFactory.get(alis)
         notices.create(**kwargs)

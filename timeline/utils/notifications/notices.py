@@ -124,7 +124,6 @@ class TLEntryNotice(BaseNotice):
 
 class TLChangeNotice(BaseNotice):
     def __init__(self, n_type, content_template):
-        content_template = "{} has approved a change to {}."
         super(TLChangeNotice, self).__init__(
             n_type='tl_approved__notification',
             content_template=content_template,
@@ -153,7 +152,7 @@ class TLChangeNotice(BaseNotice):
 
 class TLStagingNotice(TLChangeNotice):
     def __init__(self):
-        content_template = "{} has approved a change for stageing to {}"
+        content_template = "{} has approved a change for staging to {}"
         super(TLStagingNotice, self).__init__(
             n_type='tl_staged__notification',
             content_template=content_template,

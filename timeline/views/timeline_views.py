@@ -1,13 +1,11 @@
 from django.urls import reverse
 from django.views.generic import View
 from django.views.generic.list import ListView
-from django.views.generic.edit import UpdateView
 from django.shortcuts import redirect, get_object_or_404
 
 from timeline.models import TimelineEntry
 from timeline.utils.changes import process_changes, revert_changes
-from timeline.utils.notifications.factory import NotificationFactory
-from django.http import HttpResponse
+from timeline.utils.notifications.helpers import push_notification
 
 
 class TimelineListView(ListView):
@@ -80,11 +78,7 @@ class TimelineUpdateStatus(TimelinePostViews):
             pass
         entry.approved_by = request.user
         entry.save()
-        NotificationFactory.makeEntry(
-            entry.status.lower(),
-            entry=entry,
-            user=request.user
-        )
+        push_notification(entry.status, entry=entry, user=request.user)
         return redirect(self._get_url(**kwargs))
 
 
