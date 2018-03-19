@@ -176,8 +176,90 @@
         </div>
     </div>
 </div>
+
+<div style="white-space:pre; visibility: hidden;" class="textarea form-control"><span id='cursor'>|</span></div>
+
+<div class="mentions">
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="list-group">
+              <li class="list-group-item mention-user">Ryan</li>
+              <li class="list-group-item mention-user">Tester</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style type="text/css"> 
+    .mentions {
+        position: absolute;
+        width: 340px;
+        height: 60px;
+        top: 0px;
+        left: 0px;
+        display: none;
+    }
+
+    .mentions .mention-user {
+        padding: 5px !important;
+        cursor: pointer;
+    }
+</style>
+
 {% endblock %}
 
 {% block extra_scripts %}
     <script type="text/javascript" src="{% static 'timeline/js/discussions.js' %}"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready( function(event){
+            var current_textarea = null;
+
+            $('textarea').keyup(function(e){
+                var __this = $(this);
+                var start = __this.prop('selectionStart');
+                current_textarea = __this;
+                $('.mentions').offset(__this.magicCoords());
+
+                if(e.which == '222') {
+                    $('.mentions').show();
+                }
+
+                if (e.which == '32' || start == 0) {
+                    $('.mentions').hide();
+                }
+            });
+
+            $('.mention-user').on('click', function(e){
+                var user = $(this).text();
+                var textarea_val = current_textarea.val();
+                var mention_index = textarea_val.lastIndexOf("\@", textarea_val.length);
+                var updated_textarea_val = textarea_val.substring(0, mention_index).concat("\@" + user);
+                current_textarea.val(updated_textarea_val);             
+                $('.mentions').hide();
+            }); 
+
+
+            $.fn.magicCoords = function() {
+                var __this = $(this);
+                var dummy = $('.textarea');
+                var span = "<span id='cursor'>|</span>";
+                dummy.text(__this.val());
+                dummy.append(span);
+
+                var textarea_coords = __this.offset();
+                var span_coords = $('#cursor').offset();
+                var dummy_coords = dummy.offset();
+                var top = textarea_coords.top + (span_coords.top - dummy_coords.top);
+                var left = textarea_coords.left + (span_coords.left - dummy_coords.left);
+                
+                return {
+                    'top': top,
+                    'left': left
+                }
+            }
+        });
+
+    </script>
 {% endblock %}
