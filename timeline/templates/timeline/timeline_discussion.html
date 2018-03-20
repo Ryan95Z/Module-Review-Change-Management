@@ -177,7 +177,7 @@
     </div>
 </div>
 
-<div style="white-space:pre; visibility: hidden;" class="textarea form-control"><span id='cursor'>|</span></div>
+<div style="white-space:pre; visibility: hidden;" class="textarea form-control"><span id='user-cursor'>|</span></div>
 
 <div class="mentions">
     <div class="row">
@@ -204,6 +204,11 @@
         padding: 5px !important;
         cursor: pointer;
     }
+
+    .mentions .mention-user:first-child,
+    .mentions .mention-user:last-child {
+        border-radius: 0px;
+    }
 </style>
 
 {% endblock %}
@@ -221,6 +226,12 @@
                 var start = __this.prop('selectionStart');
                 current_textarea = __this;
                 $('.mentions').offset(__this.magicCoords());
+
+                // var textarea_val = __this.val();
+                // var mention_index = textarea_val.lastIndexOf("\@", textarea_val.length);
+
+                // var mention = textarea_val.substring("\@", textarea_val.length);           
+
 
                 if(e.which == '222') {
                     $('.mentions').show();
@@ -244,20 +255,25 @@
             $.fn.magicCoords = function() {
                 var __this = $(this);
                 var dummy = $('.textarea');
-                var span = "<span id='cursor'>|</span>";
+                var span = "<span id='user-cursor'>|</span>";
                 dummy.text(__this.val());
                 dummy.append(span);
 
                 var textarea_coords = __this.offset();
-                var span_coords = $('#cursor').offset();
+                var cursor_coords = $('#user-cursor').offset();
                 var dummy_coords = dummy.offset();
-                var top = textarea_coords.top + (span_coords.top - dummy_coords.top);
-                var left = textarea_coords.left + (span_coords.left - dummy_coords.left);
+                var top = textarea_coords.top + (cursor_coords.top - dummy_coords.top);
+                var left = textarea_coords.left + (cursor_coords.left - dummy_coords.left);
                 
                 return {
                     'top': top,
                     'left': left
                 }
+            }
+
+            $.fn.extractName = function() {
+                var __this = $(this);
+
             }
         });
 

@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.utils.dateformat import format
 
+from core.models import User
 from timeline.models import TimelineEntry, Discussion
 from timeline.forms import DiscussionForm
 
@@ -185,5 +186,18 @@ class ConvertMarkdownView(View):
         md = request.POST.get('markdown', '')
         data = {
             'markdown': markdown(md),
+        }
+        return JsonResponse(data)
+
+
+class MentionsView(View):
+    model = User
+
+    def post(self, request, *args, **kwargs):
+        mentions = request.POST.get('mentions', '')
+        usernames = User.objects.filter(
+                        username__icontains=mentions).values('username')
+        data = {
+            'usernames': usernames
         }
         return JsonResponse(data)
