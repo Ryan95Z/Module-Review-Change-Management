@@ -198,6 +198,6 @@ class MentionsView(View):
         usernames = User.objects.filter(
                         username__icontains=mentions).values('username')
         data = {
-            'usernames': usernames
+            'usernames': list(usernames)
         }
         return JsonResponse(data)
