@@ -8,16 +8,19 @@
 <style type="text/css">
 	.notification-alert:before {
 		content: '';
-		font-size: 12px;
 		position: absolute;
 		width: 10px;
-		text-align: center;
 		height: 10px;
 		background-color: red;
-		padding: 2px;
 		border-radius: 100%;
-		right: 258px;
-		top: 17px;
+		right: 264px;
+		top: 15px;
+		display: block;
+	}
+	
+	@-moz-document url-prefix() { 
+ 		.notification-alert:before {
+		right: 259px;
 	}
 </style>
 
