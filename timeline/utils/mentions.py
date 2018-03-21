@@ -16,7 +16,7 @@ def process_mentions(message):
     pattern = re.compile('\@([a-zA-z]+)')
 
     # turn message into space seperated array
-    message = message.split()
+    message = re.findall(r'\S+|\n', message)
 
     # loop through each word, if it is a mention
     # then get the user and create the url

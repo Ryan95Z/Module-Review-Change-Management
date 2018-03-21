@@ -200,7 +200,7 @@ class MentionsView(View):
     def post(self, request, *args, **kwargs):
         mentions = request.POST.get('mentions', '')
         usernames = User.objects.filter(
-                        username__icontains=mentions).values('username')
+                        username__istartswith=mentions).values('username')
         data = {
             'usernames': list(usernames)
         }

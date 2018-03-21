@@ -435,31 +435,29 @@ jQuery(function($) {
         }
 
     });
-    
-
-    
-    /**
-     * Turns a html string template and adds the data
-     * to create markup. To do this, the data parameter needs
-     * to be json or a dictionary, where the keys correspond
-     * to tokens in the html template. For example: Given the JSON
-     * {'id': 1}, there will be a token {:id} that will be mapped by this
-     * function. Any keys in the json that don't match, will be ignored.
-     *
-     * @param   html    string of html with the {:tokens} for the various JSON keys.
-     * @param   data    JSON or dictionary object.
-     * @return          HTML with the tokens filled in.   
-     */
-    function process_html(html, data) {
-        var re;
-        var keys = Object.keys(data);
-        // go through each key
-        for (var k in keys) {
-            // create regex for token
-            re = new RegExp('\{(:' + keys[k] + ')\}', 'g');
-            // find the token and replace everything with value
-            html = html.replace(re, data[keys[k]]);
-        }
-        return html;
-    }
 });
+
+/**
+ * Turns a html string template and adds the data
+ * to create markup. To do this, the data parameter needs
+ * to be json or a dictionary, where the keys correspond
+ * to tokens in the html template. For example: Given the JSON
+ * {'id': 1}, there will be a token {:id} that will be mapped by this
+ * function. Any keys in the json that don't match, will be ignored.
+ *
+ * @param   html    string of html with the {:tokens} for the various JSON keys.
+ * @param   data    JSON or dictionary object.
+ * @return          HTML with the tokens filled in.   
+ */
+function process_html(html, data) {
+    var re;
+    var keys = Object.keys(data);
+    // go through each key
+    for (var k in keys) {
+        // create regex for token
+        re = new RegExp('\{(:' + keys[k] + ')\}', 'g');
+        // find the token and replace everything with value
+        html = html.replace(re, data[keys[k]]);
+    }
+    return html;
+}
