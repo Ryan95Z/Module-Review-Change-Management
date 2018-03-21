@@ -12,6 +12,7 @@ from timeline.models import TimelineEntry, Discussion
 from timeline.forms import DiscussionForm
 
 from timeline.utils.notifications.helpers import push_notification
+from timeline.utils.mentions import process_mentions
 
 
 class AjaxableResponseMixin(ABC, object):
@@ -72,12 +73,13 @@ class DiscussionView(AjaxableResponseMixin, View):
             'pk': discussion.id,
         }
         author_kwargs = {'pk': request.user.id}
+        comment = process_mentions(discussion.comment)
         data = {
             'author': request.user.username,
             'time': 'just now',
             'id': discussion.pk,
             'md': discussion.comment,
-            'content': markdown(discussion.comment),
+            'content': markdown(comment),
             'timestamp': format(discussion.created, u'U'),
             'edit_url': reverse('edit_comment', kwargs=action_kwargs),
             'delete_url': reverse('delete_comment', kwargs=action_kwargs),
@@ -155,6 +157,7 @@ class DiscussionUpdateView(DiscussionGenericView, UpdateView):
             DiscussionUpdateView, self).post(request, *args, **kwargs)
         if request.is_ajax():
             comment = self.get_object().comment
+            comment = process_mentions(comment)
             data = {
                 'md': comment,
                 'html': markdown(comment),
@@ -184,6 +187,7 @@ class ConvertMarkdownView(View):
 
     def post(self, request, *args, **kwargs):
         md = request.POST.get('markdown', '')
+        md = process_mentions(md)
         data = {
             'markdown': markdown(md),
         }
