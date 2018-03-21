@@ -1,6 +1,7 @@
 import markdown
 from django import template
 from timeline.models import Discussion
+from timeline.utils.mentions import process_mentions
 
 register = template.Library()
 
@@ -11,6 +12,7 @@ def covert_markdown(md):
     Filter method that will convert a markdown
     string into html.
     """
+    md = process_mentions(md)
     return markdown.markdown(md)
 
 
