@@ -429,3 +429,27 @@ li.list-group-item:focus {
 	width: 20%;
 	text-align: right;
 }
+
+/* 
+===========================================
+		Styles for mentions 
+===========================================
+*/
+.mentions {
+    position: absolute;
+    width: 340px;
+    height: 60px;
+    top: 0px;
+    left: 0px;
+    display: none;
+}
+
+.mentions .mention-user {
+    padding: 5px !important;
+    cursor: pointer;
+}
+
+.mentions .mention-user:first-child,
+.mentions .mention-user:last-child {
+    border-radius: 0px;
+}

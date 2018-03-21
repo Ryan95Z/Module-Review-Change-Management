@@ -177,8 +177,14 @@
     </div>
 </div>
 
+{% comment "Fake Textarea" %}
+    This is a fake textarea that is used to calculate the coordiantes
+    on where the user's cusor is so that a list of usernames can
+    be displayed.
+{% endcomment %}
 <div style="white-space:pre; visibility: hidden;" class="textarea form-control"><span id='user-cursor'>|</span></div>
 
+<!-- start mentions box -->
 <div class="mentions">
     <div class="row">
         <div class="col-md-12">
@@ -187,124 +193,11 @@
         </div>
     </div>
 </div>
-
-<style type="text/css"> 
-    .mentions {
-        position: absolute;
-        width: 340px;
-        height: 60px;
-        top: 0px;
-        left: 0px;
-        display: none;
-    }
-
-    .mentions .mention-user {
-        padding: 5px !important;
-        cursor: pointer;
-    }
-
-    .mentions .mention-user:first-child,
-    .mentions .mention-user:last-child {
-        border-radius: 0px;
-    }
-</style>
+<!-- end mentions box -->
 
 {% endblock %}
 
 {% block extra_scripts %}
     <script type="text/javascript" src="{% static 'timeline/js/discussions.js' %}"></script>
-
-
-    <script type="text/javascript">
-        $(document).ready( function(event){
-            var current_textarea = null;
-            var os_name = window.navigator.userAgent.indexOf("Mac");
-            var open = false;
-
-            $('textarea').keyup(function(e){
-                var __this = $(this);
-                var start = __this.prop('selectionStart');
-                current_textarea = __this;
-                $('.mentions').offset(__this.magicCoords());
-
-
-                var textarea_val = __this.val();
-                var loc = textarea_val.lastIndexOf("\@", start);
-                var item = textarea_val.substring(loc, start);
-                var space = item.indexOf(" ");
-                if(space == -1) space = item.length;
-                var name = item.substring(1, space);
-
-                if(e.which == '222' || e.which == 50) {
-                    open = true;
-                    $('.mentions').show();
-                }
-
-                if (open) {
-                    $.ajax({
-                        url: '/timeline/api/mentions/',
-                        type: 'POST',
-                        data: {
-                            'mentions': name
-                        },
-                        dataType: 'json',
-                        beforeSend: function(xhr, settings) {
-                            $.ajaxSettings.beforeSend(xhr, settings);
-                        },
-                        success: function(data) {
-                            var li = '<li class="list-group-item mention-user">{:user}</li>'
-                            var usernames = data['usernames']
-                            var list = $('#user-list');
-                            list.html('');
-                            for(var i = 0; i < usernames.length; ++i) {
-                                list.append(
-                                    '<li class="list-group-item mention-user">' + usernames[i].username +'</li>'
-                                );
-                            }
-                        },
-                    });
-                }
-
-                if (e.which == '32' || start == 0) {
-                    open = false;
-                    $('.mentions').hide();
-                }
-            });
-
-            $('body').on('click', '.mention-user', function(e){
-                var user = $(this).text();
-                var textarea_val = current_textarea.val();
-                var mention_index = textarea_val.lastIndexOf("\@", textarea_val.length);
-                var updated_textarea_val = textarea_val.substring(0, mention_index).concat("\@" + user);
-                current_textarea.val(updated_textarea_val);             
-                $('.mentions').hide();
-            }); 
-
-
-            $.fn.magicCoords = function() {
-                var __this = $(this);
-                var dummy = $('.textarea');
-                var span = "<span id='user-cursor'>|</span>";
-                dummy.text(__this.val());
-                dummy.append(span);
-
-                var textarea_coords = __this.offset();
-                var cursor_coords = $('#user-cursor').offset();
-                var dummy_coords = dummy.offset();
-                var top = textarea_coords.top + (cursor_coords.top - dummy_coords.top);
-                var left = textarea_coords.left + (cursor_coords.left - dummy_coords.left);
-                
-                return {
-                    'top': top,
-                    'left': left
-                }
-            }
-
-            $.fn.extractName = function() {
-                var __this = $(this);
-
-            }
-        });
-
-    </script>
+    <script type="text/javascript" src="{% static 'timeline/js/mentions.js' %}"></script>
 {% endblock %}
