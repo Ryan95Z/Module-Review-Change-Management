@@ -18,18 +18,31 @@ from timeline.utils.mentions import (process_mentions,
 
 
 class AjaxableResponseMixin(ABC, object):
+    """
+    Class that controls flow of request if
+    an ajax request is made.
+    """
     def dispatch(self, request, *args, **kwargs):
+        """
+        Override of Django's default dispatch method
+        """
         if request.method.lower() == 'get' and request.is_ajax():
+            # prevent ajax get request
             handle = self.http_method_not_allowed(request, *args, **kwargs)
         elif request.method.lower() == 'post' and request.is_ajax():
+            # execute custom post method if POST & ajax request
             handle = self.ajax_post(request, *args, **kwargs)
         else:
+            # execute normal get and post methods if not ajax
             handle = super(
                 AjaxableResponseMixin, self).dispatch(request, *args, **kwargs)
         return handle
 
     @abstractmethod
     def ajax_post(self, request, *args, **kwargs):
+        """
+        Abstract method that will process ajax request
+        """
         pass
 
 
@@ -48,6 +61,7 @@ class DiscussionView(AjaxableResponseMixin, View):
         module_code = kwargs.get('module_pk')
         entry = TimelineEntry.objects.get(pk=entry_id)
 
+        # get the discussion
         discussion = Discussion.objects.filter(
             entry=entry_id).get_descendants(include_self=True)
 
@@ -68,14 +82,26 @@ class DiscussionView(AjaxableResponseMixin, View):
         return redirect(self.__redirect_url(**kwargs))
 
     def ajax_post(self, request, *args, **kwargs):
+        """
+        Method for handling any ajax requests. Will add the new comemnt
+        and return json
+        """
+        # add the new comment
         discussion = self.__process_new_discussion(request, *args, **kwargs)
+
+        # url kwargs for deleting and editing views
         action_kwargs = {
             'module_pk': self.kwargs['module_pk'],
             'entry_pk': self.kwargs['pk'],
             'pk': discussion.id,
         }
+
+        # url kwargs for user's profile
         author_kwargs = {'pk': request.user.id}
+
+        # prepare comment by adding mentions markdown
         comment = process_mentions(discussion.comment)
+
         data = {
             'author': request.user.username,
             'time': 'just now',
@@ -145,6 +171,10 @@ class DiscussionView(AjaxableResponseMixin, View):
 
 
 class DiscussionGenericView(object):
+    """
+    Object that provides context and url
+    for update and delete discussion views
+    """
     def get_context_data(self, *args, **kwargs):
         context = super(
             DiscussionGenericView, self).get_context_data(*args, **kwargs)
@@ -162,14 +192,57 @@ class DiscussionGenericView(object):
 
 
 class DiscussionUpdateView(DiscussionGenericView, UpdateView):
+    """
+    Update view for a discussion
+    """
     model = Discussion
     fields = ['comment']
 
+    def __compare_updated_mentions(self, request):
+        """
+        Private method that checks for any new mentions
+        that have been added to a discussion comment
+        """
+        obj = self.get_object()
+        original_comment = obj.comment
+        updated_comment = request.POST.get('comment')
+        author_username = obj.author.username
+
+        # extract mentions from old comment and new one
+        original_mention = extract_mentions(original_comment, author_username)
+        updated_mention = extract_mentions(updated_comment, author_username)
+
+        # return the difference
+        return [m for m in updated_mention if m not in original_mention]
+
+    def __process_mentions(self, mentions):
+        """
+        Private method that provides notifications
+        for any new mentions that have been added.
+        """
+        obj = self.get_object()
+        author = obj.author
+        entry = obj.entry
+
+        # push notifications to new mentioned users
+        push_mention_notifications(mentions, author, entry)
+
     def post(self, request, *args, **kwargs):
+        # check for any updates to mentions
+        mentions_diff = self.__compare_updated_mentions(request)
+
+        # save changes
         response = super(
             DiscussionUpdateView, self).post(request, *args, **kwargs)
+
+        # provide notifications for new mentions, if any.
+        self.__process_mentions(mentions_diff)
+
+        # if ajax request, provide json
         if request.is_ajax():
             comment = self.get_object().comment
+
+            # process any mentions in markdown
             comment = process_mentions(comment)
             data = {
                 'md': comment,
@@ -180,17 +253,24 @@ class DiscussionUpdateView(DiscussionGenericView, UpdateView):
 
 
 class DiscussionDeleteView(DiscussionGenericView, DeleteView):
+    """
+    View to delete a specific discussion comment
+    """
     model = Discussion
 
     def post(self, request, *args, **kwargs):
         response = super(
             DiscussionDeleteView, self).post(request, *args, **kwargs)
         if request.is_ajax():
+            # if ajax request, return json stating it has happened
             return JsonResponse({'success': True})
         return response
 
 
 class ConvertMarkdownView(View):
+    """
+    Provides preview of markdown before it is commited
+    """
     def dispatch(self, request, *args, **kwargs):
         if request.method.lower() == 'post' and request.is_ajax():
             handle = self.post(request, *args, **kwargs)
@@ -208,12 +288,18 @@ class ConvertMarkdownView(View):
 
 
 class MentionsView(View):
+    """
+    Provides a list of usernames based on the mentions search
+    """
     model = User
 
     def post(self, request, *args, **kwargs):
         mentions = request.POST.get('mentions', '')
+
+        # look for all usernames that contain term
         usernames = User.objects.filter(
                         username__istartswith=mentions).values('username')
+
         data = {
             'usernames': list(usernames)
         }
