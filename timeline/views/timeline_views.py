@@ -1,12 +1,11 @@
 from django.urls import reverse
 from django.views.generic import View
 from django.views.generic.list import ListView
-from django.views.generic.edit import UpdateView
 from django.shortcuts import redirect, get_object_or_404
 
 from timeline.models import TimelineEntry
 from timeline.utils.changes import process_changes, revert_changes
-from django.http import HttpResponse
+from timeline.utils.notifications.helpers import push_notification
 
 
 class TimelineListView(ListView):
@@ -22,7 +21,7 @@ class TimelineListView(ListView):
 
     def get_queryset(self):
         module_id = self.kwargs['module_pk']
-        return self.model.objects.filter(module=module_id)
+        return self.model.objects.filter(module_code=module_id)
 
     def get_context_data(self, *args, **kwargs):
         context = super(
@@ -30,45 +29,6 @@ class TimelineListView(ListView):
         context['module_code'] = self.kwargs['module_pk']
         context['block_pagination'] = True
         return context
-
-
-class TimelineUpdateView(UpdateView):
-    """
-    View to enable manual changes if user needs to
-    update the entry for some reason.
-    """
-    model = TimelineEntry
-    fields = ['changes']
-
-    def dispatch(self, request, *args, **kwargs):
-        """
-        Override of dispatch method to prevent
-        an entry that is not saved as a draft to be
-        edited if the user attempts a manual override
-        via url manipulation.
-        """
-        entry = self.get_object()
-        kwargs = {'module_pk': entry.module_code()}
-
-        # if status is not draft,
-        # then redirect back to timeline
-        if entry.status != 'Draft':
-            return redirect(reverse('module_timeline', kwargs=kwargs))
-
-        # continue with request if valid
-        return super(
-            TimelineUpdateView, self).dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(TimelineUpdateView, self).get_context_data(**kwargs)
-        context['title'] = self.object.title
-        context['pk'] = self.object.pk
-        context['module_code'] = self.object.module_code()
-        return context
-
-    def get_success_url(self):
-        kwargs = {'module_pk': self.object.module_code()}
-        return reverse('module_timeline', kwargs=kwargs)
 
 
 class TimelinePostViews(View):
@@ -105,7 +65,6 @@ class TimelineUpdateStatus(TimelinePostViews):
         to the model.
         """
         entry_pk = kwargs['pk']
-        module_pk = kwargs['module_pk']
 
         # get the current timeline entry.
         entry = get_object_or_404(TimelineEntry, pk=entry_pk)
@@ -119,6 +78,7 @@ class TimelineUpdateStatus(TimelinePostViews):
             pass
         entry.approved_by = request.user
         entry.save()
+        push_notification(entry.status, entry=entry, user=request.user)
         return redirect(self._get_url(**kwargs))
 
 
@@ -134,7 +94,6 @@ class TimelineRevertStage(TimelinePostViews):
         Post request to enable the rollback
         """
         entry_pk = kwargs['pk']
-        module_pk = kwargs['module_pk']
 
         entry = get_object_or_404(TimelineEntry, pk=entry_pk)
         if entry.status == 'Draft':

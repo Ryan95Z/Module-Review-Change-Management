@@ -3,15 +3,15 @@ from timeline.models import TableChange
 from django.db.models import ForeignKey
 
 
-def have_changes(model_pk, model):
+def have_changes(model_pk, instance):
     """
     Function to return any changes that have not been
     commited for a model instance
     """
-    if len(str(model_pk)) < 1 or model is None:
-        raise ValueError("A valid model pk and model instance is required")
+    if instance is None or model_pk is None:
+        raise ValueError("A valid model pk and instance is required")
 
-    model_str = model.__class__.__name__
+    model_str = instance.__class__.__name__
     changes = TableChange.objects.filter(
         model_id=model_pk,
         changes_for_model=model_str
@@ -23,8 +23,11 @@ def process_changes(entry_pk):
     """
     Processes the changes for an entry on the timeline.
     """
+    if entry_pk is None:
+        raise ValueError("entry_pk cannot be None")
+
     if int(entry_pk) < 1:
-        raise ValueError("entry pk needs to be greater than zero")
+        raise ValueError("entry pk needs to be greater than zero.")
 
     changes = TableChange.objects.filter(related_entry=entry_pk)
     for change in changes:
@@ -32,7 +35,7 @@ def process_changes(entry_pk):
             app_label=change.model_app_label,
             model_name=change.changes_for_model
         )
-        
+
         item = model.objects.get(pk=change.model_id)
 
         # field name
@@ -60,20 +63,23 @@ def process_changes(entry_pk):
 
         # remove the change entry
         change.delete()
-    return model
+    return True
 
 
 def revert_changes(entry_pk):
     """
     Function to remove changes for a entry in the timeline
     """
+    if entry_pk is None:
+        raise ValueError("entry pk cannot be None")
+
     if int(entry_pk) < 1:
         raise ValueError("entry pk needs to be greater than zero")
 
     changes = TableChange.objects.filter(related_entry=entry_pk)
 
     # check for changes. If there are, the delete each one.
-    if len(changes) > 0:
+    if changes.count() > 0:
         for change in changes:
             change.delete()
         return True

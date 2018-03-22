@@ -1,0 +1,20 @@
+{% extends 'core/main.html' %}
+
+{% block title %}
+	Comment Confirm Delete
+{% endblock %}
+
+{% block main %}
+	<div class="row">
+		<div class="col-md-12">
+			<h2>Confirm comment deletion</h2>
+			<p>Are you sure you want to delete your comment? This will also delete responses made by other users.</p>
+
+			<form action="{% url 'delete_comment' module_code entry_id discussion_id %}" method="POST">
+				{% csrf_token %}
+				<button type="submit" class="btn btn-danger btn-md">Confirm</button>
+				<a href="{% url 'discussion' module_code entry_id %}" class="btn btn-success btn-md">Cancel</a>
+			</form>
+		</div>
+	</div>
+{% endblock %}
