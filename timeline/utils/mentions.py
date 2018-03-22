@@ -1,6 +1,7 @@
 import re
-from core.models import User
 from django.urls import reverse
+from core.models import User
+from timeline.models import TimelineEntry
 from timeline.utils.notifications.helpers import push_notification
 
 MENTION_REGEX = '\@([a-zA-z0-9]+)'
@@ -13,9 +14,19 @@ def process_mentions(comment):
     Arguments:
         comment     String comment from user
 
-    Return
+    Return:
         original comment with url markdown
     """
+    if comment is None:
+        raise ValueError("comment cannot be None")
+
+    # enusre only strings are processed
+    if not isinstance(comment, str):
+        raise ValueError("comment must be of type string")
+
+    if len(comment) < 1:
+        return comment
+
     pattern = re.compile(MENTION_REGEX)
 
     # turn comment into space seperated array
@@ -38,7 +49,7 @@ def process_mentions(comment):
     return ' '.join(map(str, comment))
 
 
-def extract_mentions(comment, author_username):
+def extract_mentions(comment, author_username=''):
     """
     Extracts all of the usernames that are mention from a comment.
 
@@ -53,6 +64,9 @@ def extract_mentions(comment, author_username):
     if not isinstance(comment, str):
         raise ValueError("comment is expected to be a string")
 
+    if not isinstance(author_username, str):
+        raise ValueError("author username is expected to be a string")
+
     # extract all of the mentions from the comment
     pattern = re.compile(MENTION_REGEX)
     mentions = pattern.findall(comment)
@@ -63,12 +77,37 @@ def extract_mentions(comment, author_username):
 
 
 def push_mention_notifications(mentions, comment_author, entry):
+    """
+    Wrapper function that will handle mentions and notifications
+    in one operation.
+
+    Arguments:
+        mentions            list of usernames, such as ['ryan', 'test']
+                            or is a string, such as "@ryan hello world".
+
+        comment_author      author that created the comment that will
+                            trigger the notifications.
+
+        entry               timeline entry for this comment
+
+    Return:
+        number of mentions it has seen
+    """
     # only allow strings and lists to be processed
     if not isinstance(mentions, str) and not isinstance(mentions, list):
         raise ValueError(
             "Expected a list or string for mentions"
         )
 
+    # ensure only users are processed
+    if not isinstance(comment_author, User):
+        raise ValueError("comment author expects a core:User type")
+
+    # ensure only timeline entires are processed
+    if not isinstance(entry, TimelineEntry):
+        raise ValueError("entry expects TimelineEntry type")
+
+    # if empty, automatically return o
     if len(mentions) < 1:
         return 0
 
