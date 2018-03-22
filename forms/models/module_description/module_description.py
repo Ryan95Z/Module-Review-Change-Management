@@ -33,8 +33,3 @@ class ModuleDescription(models.Model):
     creation_date = models.DateTimeField()
 
     objects = ModuleDescriptionManager()
-
-    class Meta:
-        unique_together = (("module", "form_version"))
-
-    

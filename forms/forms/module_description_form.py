@@ -28,30 +28,35 @@ class ModuleDescriptionForm(forms.Form):
                 self.fields['field_entity_%s' % e.get('entity_id')] = forms.CharField(
                     widget=forms.TextInput(attrs={'class':'form-control form-control-sm'}),
                     label=e.get('entity_label'),
-                    max_length=e.get('entity_max_length')
+                    max_length=e.get('entity_max_length'),
+                    required=e.get('entity_required')
                 )
             elif entity_type == "text-area":
                 self.fields['field_entity_%s' % e.get('entity_id')] = forms.CharField(
                     widget=forms.Textarea(attrs={'rows':'6', 'class':'form-control form-control-sm'}),
                     label=e.get('entity_label'),
-                    max_length=e.get('entity_max_length')
+                    max_length=e.get('entity_max_length'),
+                    required=e.get('entity_required')
                 )
             elif entity_type == "multi-choice":
                 self.fields['field_entity_%s' % e.get('entity_id')] = forms.ChoiceField(
                     widget=forms.Select(attrs={'class':'form-control form-control-sm'}),
                     choices=[(choice.strip(),choice.strip()) for choice in e.get('entity_choices').split(',')],
                     label=e.get('entity_label'),
+                    required=e.get('entity_required')
                 )
             elif entity_type == "radio-buttons":
                 self.fields['field_entity_%s' % e.get('entity_id')] = forms.ChoiceField(
                     widget=forms.RadioSelect(),
                     choices=[(choice.strip(),choice.strip()) for choice in e.get('entity_choices').split(',')],
-                    label=e.get('entity_label')
+                    label=e.get('entity_label'),
+                    required=e.get('entity_required')
                 )
             elif entity_type == "check-boxes":
                 self.fields['field_entity_%s' % e.get('entity_id')] = forms.BooleanField(
                     widget=forms.CheckboxInput,
-                    label=e.get('entity_label')
+                    label=e.get('entity_label'),
+                    required=e.get('entity_required')
                 )
 
         # Set the form_version. 

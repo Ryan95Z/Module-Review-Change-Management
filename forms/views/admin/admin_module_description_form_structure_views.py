@@ -34,7 +34,7 @@ class AdminModuleDescriptionFormStructureOld(View):
         try:
             version_pk = self.kwargs['pk']
             chosen_version = ModuleDescriptionFormVersion.objects.get(pk=version_pk)
-            chosen_version_fields = FormFieldEntity.objects.get_form(chosen_version)
+            chosen_version_fields = FormFieldEntity.objects.get_form(version_pk)
             all_versions = ModuleDescriptionFormVersion.objects.get_version_list()
             context = {
                 'form_exists': True,
