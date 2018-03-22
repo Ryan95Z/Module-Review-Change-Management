@@ -28,6 +28,9 @@
 <h2>Module Description Form {% if edit_form %} (Edit Mode) {% else %} (View Mode){% endif %}</h2><hr>
 <h6>Module Code: {{ module.module_code }} ({{ module.module_name }})</h6><hr>
 
+{% if not form_exists and not edit_form %}
+    There's isnt a description for this module yet. <a href="{% url 'update_module_description' module.module_code %}" >Create one.</a> 
+{% else %}
 <form action="" method="POST" id="module-description">
 {% csrf_token %}
 
@@ -63,7 +66,6 @@
 					</label>
 					</div>
 					{% endfor %}
-				</div>
 				{% else %}
 				{{ field }}
 				{% endif %}
@@ -78,6 +80,7 @@
 {% endif %}
 </form>
 
+{% endif %}
 {% endblock %}
 
 {% block scripts %}

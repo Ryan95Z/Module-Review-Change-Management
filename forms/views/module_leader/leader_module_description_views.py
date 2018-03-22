@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.core.exceptions import ObjectDoesNotExist
 
 from django.views import View
 from core.models import Module
@@ -27,18 +28,21 @@ class LeaderModuleDescriptionView(View):
         
         # Retrieve the most recent description for this module, and
         # the form version it used. Convert it to form format.
-        current_description = ModuleDescriptionEntry.objects.get_last_description(module)
-        version_used = ModuleDescription.objects.get_most_recent(module).form_version
-        existing_form = md_to_form(current_description)
+        try:
+            current_description = ModuleDescriptionEntry.objects.get_last_description(module)
+            version_used = ModuleDescription.objects.get_most_recent(module).form_version
+            existing_form = md_to_form(current_description)
+        except ObjectDoesNotExist:
+            form_exists = False
 
         # We need to check if the existing data was created using the
         # most recent form. If not, we set a flag and only render the
         # most recent form if the user is in edit mode.
-        if version_used == ModuleDescriptionFormVersion.objects.get_most_recent():
+        if form_exists and version_used == ModuleDescriptionFormVersion.objects.get_most_recent():
             new_form_version = False
             module_description_form = ModuleDescriptionForm(initial=existing_form)
         else:
-            if edit_form:
+            if not form_exists or edit_form:
                 new_form_version = False
                 module_description_form = ModuleDescriptionForm()
             else: 
