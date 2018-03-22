@@ -12,7 +12,9 @@ from timeline.models import TimelineEntry, Discussion
 from timeline.forms import DiscussionForm
 
 from timeline.utils.notifications.helpers import push_notification
-from timeline.utils.mentions import process_mentions
+from timeline.utils.mentions import (process_mentions,
+                                     extract_mentions,
+                                     push_mention_notifications)
 
 
 class AjaxableResponseMixin(ABC, object):
@@ -114,12 +116,15 @@ class DiscussionView(AjaxableResponseMixin, View):
             # create the discussion
             discussion_obj = Discussion.objects.create(**discussion)
 
+            # if thre is not parent id, then we push a discussion
+            # notification.
             if parent_id is None:
                 push_notification(
                     "discussion",
                     discussion=discussion_obj,
                     user=request.user
                 )
+            # otherwise, if there is a parent id, then it is a response
             else:
                 push_notification(
                     "reply",
@@ -127,6 +132,14 @@ class DiscussionView(AjaxableResponseMixin, View):
                     user=request.user,
                     parent=discussion['parent']
                 )
+
+            # process any mentions that are in the comment
+            # and send notifications to these users.
+            push_mention_notifications(
+                discussion['comment'],
+                discussion['author'],
+                discussion['entry']
+            )
             return discussion_obj
         return None
 

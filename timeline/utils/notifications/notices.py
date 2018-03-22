@@ -301,3 +301,26 @@ class TLConfirmedNotice(TLChangeNotice):
         super(TLConfirmedNotice, self).__init__(
             content_template=content_template,
         )
+
+
+class MentionNotice(BaseNotice):
+    def __init__(self):
+        content_template = "{} mentioned you in a post for {}"
+        super(MentionNotice, self).__init__(
+            content_template=content_template,
+            link_name='discussion'
+        )
+
+    def create(self, **kwargs):
+        author = kwargs['author']
+        entry = kwargs['entry']
+        mention_user = kwargs['mention']
+        module_code = entry.module_code
+
+        content = self.content_template.format(author.username, module_code)
+        url = self.get_url({
+            'module_pk': module_code,
+            'pk': entry.pk,
+        })
+
+        self._create_notification(content, mention_user, url)

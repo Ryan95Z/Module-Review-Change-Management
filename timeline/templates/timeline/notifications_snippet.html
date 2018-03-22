@@ -52,7 +52,6 @@
                     $.ajaxSettings.beforeSend(xhr, settings);
                 },
                 success: function(data){
-                	console.log(data);
                 	span = notification_nav.children('span');
                 	if (data['has_notifications'] == true) {
                 		span.addClass(SPAN_CLASS);

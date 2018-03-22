@@ -7,7 +7,8 @@ from timeline.utils.notifications.factory import NotificationFactory
 from timeline.utils.notifications.notices import (DiscussionNotice,
                                                   ReplyNotice,
                                                   TLStagingNotice,
-                                                  TLConfirmedNotice)
+                                                  TLConfirmedNotice,
+                                                  MentionNotice)
 
 
 # set up the entry factory for module
@@ -23,3 +24,4 @@ NotificationFactory.register(DiscussionNotice, "discussion")
 NotificationFactory.register(ReplyNotice, "reply")
 NotificationFactory.register(TLStagingNotice, "staged")
 NotificationFactory.register(TLConfirmedNotice, "confirmed")
+NotificationFactory.register(MentionNotice, "mention")

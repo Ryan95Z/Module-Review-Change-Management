@@ -1,6 +1,9 @@
 import re
 from core.models import User
 from django.urls import reverse
+from timeline.utils.notifications.helpers import push_notification
+
+MENTION_REGEX = '\@([a-zA-z]+)'
 
 
 def process_mentions(message):
@@ -13,7 +16,7 @@ def process_mentions(message):
     Return
         original message with url markdown
     """
-    pattern = re.compile('\@([a-zA-z]+)')
+    pattern = re.compile(MENTION_REGEX)
 
     # turn message into space seperated array
     message = re.findall(r'\S+|\n', message)
@@ -33,3 +36,32 @@ def process_mentions(message):
 
     # assemble the mesage back together
     return ' '.join(map(str, message))
+
+
+def extract_mentions(comment, author_username):
+    # extract all of the mentions from the comment
+    pattern = re.compile(MENTION_REGEX)
+    mentions = pattern.findall(comment)
+
+    # remove any trace of the user who wrote the comment
+    # from being mentioned in their own comment
+    return [u for u in mentions if u != author_username]
+
+
+def push_mention_notifications(comment, comment_author, entry):
+    username = comment_author.username
+
+    # extract mentions from comment
+    mentions = extract_mentions(comment, username)
+
+    # loop through each mention username and push
+    # a notification to them.
+    for m in mentions:
+        user = User.objects.get(username=m)
+        push_notification(
+            'mention',
+            author=comment_author,
+            entry=entry,
+            mention=user
+        )
+    return len(mentions)
