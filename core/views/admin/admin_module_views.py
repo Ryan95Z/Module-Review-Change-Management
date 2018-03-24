@@ -7,6 +7,7 @@ from core.views.mixins import AdminTestMixin
 from core.models import Module
 from core.forms import SearchForm
 from timeline.utils.changes import have_changes
+from timeline.utils.notifications.helpers import WatcherWrapper
 
 
 class AdminModuleListView(AdminTestMixin, ListView):
@@ -51,6 +52,12 @@ class AdminModuleCreateView(AdminTestMixin, CreateView):
         return context
 
     def get_success_url(self):
+        # before sending success url, connect the user
+        # to recieve notifiations
+        obj = self.object
+        watcher = WatcherWrapper(obj.module_leader)
+        # add the module created to thier list
+        watcher.add_module(obj)
         return reverse('all_modules')
 
 
