@@ -47,7 +47,6 @@ class WatcherWrapper(object):
         self.__watcher.save()
 
     def bulk_module_remove(self, *modules):
-        print(modules)
         self.__watcher.watching.remove(*modules)
         self.__watcher.save()
 
