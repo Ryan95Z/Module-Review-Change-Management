@@ -49,7 +49,6 @@ class AdminProgrammeTutorUpdateViewTest(AdminViewTestCase):
         data = {
             'programme_name': "Computer Science",
             'tutor_year': "Year 2",
-            'programme_tutor_user': self.user.id
         }
 
         response = self.run_valid_post_view(self.url, data)
@@ -63,40 +62,6 @@ class AdminProgrammeTutorUpdateViewTest(AdminViewTestCase):
         # assert that the year was updated
         self.assertEquals(data['tutor_year'], updated_tutor.tutor_year)
 
-    def test_invalid_post_with_tutor_already_assigned(self):
-        """
-        Test case for asserting what happens if a year tutor
-        is re-assigned when they have a year already applied to them.
-        """
-        tutor_err = "['Programme tutor with this Programme tutor user already exists.']"
-        # create a tmp tutor to test that an already assigned
-        # tutor cannot be overwritten
-        tmp_tutor = self.manager.create_new_tutor(
-            programme_name="Computer Science",
-            tutor_year="Year 2",
-            username="Tutor",
-            first_name="Tutor",
-            last_name="Tutor",
-            email="tutor@test.com",
-            password="password"
-        )
-
-        data = {
-            'programme_name': "Computer Science",
-            'tutor_year': "Year 2",
-            'programme_tutor_user': self.user.id
-        }
-
-        url = reverse('update_tutor', kwargs={'pk': tmp_tutor.pk})
-        context = self.run_invalid_post_view(url, data).context
-
-        # get errors from context
-        form_errors = context['form'].errors.as_data()
-        form_tutor_error = form_errors['programme_tutor_user'][0].__str__()
-
-        self.assertEquals(context['form_type'], 'Update')
-        self.assertEquals(form_tutor_error, tutor_err)
-
     def test_invalid_post_with_blank_data(self):
         """
         Test case for a blank data
@@ -105,7 +70,6 @@ class AdminProgrammeTutorUpdateViewTest(AdminViewTestCase):
         data = {
             'programme_name': '',
             'tutor_year': '',
-            'programme_tutor_user': ''
         }
 
         context = self.run_invalid_post_view(self.url, data).context
@@ -114,11 +78,9 @@ class AdminProgrammeTutorUpdateViewTest(AdminViewTestCase):
         form_errors = context['form'].errors.as_data()
         form_tutor_name_error = form_errors['programme_name'][0].__str__()
         form_tutor_year_error = form_errors['tutor_year'][0].__str__()
-        form_tutor_error = form_errors['programme_tutor_user'][0].__str__()
 
         self.assertEquals(context['form_type'], 'Update')
         self.assertEquals(form_tutor_name_error, required_error)
-        self.assertEquals(form_tutor_error, required_error)
         self.assertEquals(form_tutor_year_error, required_error)
 
     def test_invalid_post_with_random_data(self):
@@ -128,7 +90,6 @@ class AdminProgrammeTutorUpdateViewTest(AdminViewTestCase):
         data = {
             'programme_name': 34,
             'tutor_year': "1234",
-            'programme_tutor_user': self.admin.username
         }
 
         self.run_invalid_post_view(self.url, data)

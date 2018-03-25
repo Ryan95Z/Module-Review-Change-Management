@@ -29,16 +29,18 @@ urlpatterns = [
         AdminProgrammeTutorCreateView.as_view()), name='new_tutor'),
     url(r'^tutors/(?P<pk>[0-9]+)/$', login_required(
         AdminProgrammeTutorUpdateView.as_view()), name="update_tutor"),
+    url(r'^tutors/(?P<pk>[0-9]+)/delete/$', login_required(
+        AdminProgrammeTutorDeleteView.as_view()), name="delete_tutor"),
 
     # reviewer urls
     url(r'^reviewers/$', login_required(
-        AdminReviewerListView.as_view()), name = 'all_reviewers'),
+        AdminReviewerListView.as_view()), name='all_reviewers'),
     url(r'^reviewers/new/', login_required(
         AdminReviewerCreateView.as_view()), name='new_reviewer'),
     url(r'^reviewers/(?P<pk>[0-9]+)/$', login_required(
         AdminReviewerUpdateView.as_view()), name='update_reviewer'),
     url(r'^reviewers/(?P<pk>[0-9]+)/delete/$', login_required(
-        AdminReviewerDeleteView.as_view()), name = 'delete_reviewer'),
+        AdminReviewerDeleteView.as_view()), name='delete_reviewer'),
 
     # module urls
     url(r'^modules/$', login_required(

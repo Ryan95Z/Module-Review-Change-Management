@@ -1,11 +1,9 @@
 from django.urls import reverse
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.shortcuts import render
 
 from core.views.mixins import AdminTestMixin
-from core.forms import ReviewerCreationForm
-from core.models import User, Reviewer, Module
+from core.models import Reviewer, Module
 
 from timeline.utils.notifications.helpers import WatcherWrapper
 

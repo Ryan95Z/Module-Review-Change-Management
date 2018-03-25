@@ -11,7 +11,8 @@
 			{% if form_type == 'Create' %}
 				<h1>New Tutor</h1>
 			{% else %}
-				<h1>Update {{ object.programme_name }} - {{ object.tutor_year }}</h1><hr>
+				<h1>Updating Tutor {{ object.get_tutor_name }}</h1><hr>
+				<h4>{{ object.programme_name }} - {{ object.tutor_year }}</h4><br>
 			{% endif %}
 			<form action="{{ form_url }}" method="POST">
 				{% csrf_token %}
