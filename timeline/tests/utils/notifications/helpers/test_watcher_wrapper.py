@@ -4,6 +4,9 @@ from core.models import Module
 
 
 class TestWatcherWrapper(LoggedInTestCase, ModuleTestCase):
+    """
+    Tests for WatcherWrapper helper class
+    """
     def setUp(self):
         super(TestWatcherWrapper, self).setUp()
         self.obj = WatcherWrapper
@@ -50,8 +53,60 @@ class TestWatcherWrapper(LoggedInTestCase, ModuleTestCase):
         self.assertTrue(removed)
         self.assertEquals(watcher.modules().count(), 0)
 
-    def test_add_modules_invalid_data(self):
+    def test_bulk_modules_methods(self):
+        """
+        Test case for adding and removing a
+        number of modules in one call.
+        """
         watcher = self.obj(self.user)
+
+        # get test modules
         module_list = list(Module.objects.all())
-        watcher.bulk_module_add(*module_list)
+
+        # test adding modules
+        output = watcher.bulk_module_add(*module_list)
+        self.assertTrue(output)
         self.assertEquals(watcher.modules().count(), 2)
+
+        # test removing modules
+        output = watcher.bulk_module_remove(*module_list)
+        self.assertTrue(output)
+        self.assertEquals(watcher.modules().count(), 0)
+
+    def test_wrapper_incorrect_types(self):
+        """
+        Test for ensuring that incorrect data types are
+        not processed for certain methods.
+        """
+        # incorrect data for the constructor
+        incorrect_data_list = ["user", 1234, self.module]
+        for data in incorrect_data_list:
+            with self.assertRaises(ValueError):
+                WatcherWrapper(data)
+
+        watcher = self.obj(self.user)
+
+        # test incorrect data for add and remove single modules
+        incorrect_data_list = [234646, 2.334, self.user]
+        for data in incorrect_data_list:
+            with self.assertRaises(ValueError):
+                watcher.add_module(data)
+
+            with self.assertRaises(ValueError):
+                watcher.remove_module(data)
+
+    def test_moudle_does_not_exist(self):
+        """
+        Test add and remove single module methods
+        when a module code that doesn't exist is provided.
+        """
+        watcher = self.obj(self.user)
+
+        # module code that does not exist
+        module_code = "CM3301"
+
+        output = watcher.add_module(module_code)
+        self.assertFalse(output)
+
+        output = watcher.remove_module(module_code)
+        self.assertFalse(output)
