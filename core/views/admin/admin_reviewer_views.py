@@ -73,15 +73,25 @@ class AdminReviewerUpdateView(AdminTestMixin, UpdateView):
 
     def __process_watchers(self, request):
         """
-        Private method for processing 
+        Private method that updates notification watcher for a reviewer.
         """
+        # get the new list of module codes
         module_codes = request.POST.getlist('modules', None)
         obj = self.get_object()
         watcher = WatcherWrapper(obj.user)
+
+        # get the new modules
         new_modules = set(Module.objects.filter(module_code__in=module_codes))
         old_modules = set(obj.modules.all())
+
+        # compare the old modules to new to determine which
+        # modules are no longer being reviewed by reviewer
         modules_to_remove = list(old_modules.difference(new_modules))
+
+        # remove modules that are not being reviewed by user
         watcher.bulk_module_remove(*modules_to_remove)
+
+        # add any new modules that are being reviewed
         watcher.bulk_module_add(*list(new_modules))
 
 

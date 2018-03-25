@@ -1,6 +1,7 @@
 from django.apps import apps
-from timeline.models import TableChange
 from django.db.models import ForeignKey
+from timeline.models import TableChange
+from timeline.utils.notifications.helpers import WatcherWrapper
 
 
 def have_changes(model_pk, instance):
@@ -53,6 +54,21 @@ def process_changes(entry_pk):
 
             # make the change
             setattr(item, field, obj)
+
+            model = change.changes_for_model
+            # Since we are dependent on the module object
+            # we can manage the watching of notifications at this level.
+            # we look that the field and model is for the module leader
+            # then we make the changes
+            if field == 'module_leader' and model == 'Module':
+                # remove the old module leader from watching module
+                old_user = key_object.objects.get(pk=change.current_value)
+                old_user_watcher = WatcherWrapper(old_user)
+                old_user_watcher.remove_module(change.related_module_code())
+
+                # add the new module leader as a watcher
+                new_user_watcher = WatcherWrapper(obj)
+                new_user_watcher.add_module(change.related_module_code())
         else:
             # make change to model attribute
             setattr(item, field, change.new_value)
