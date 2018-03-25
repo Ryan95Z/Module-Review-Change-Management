@@ -16,6 +16,13 @@ SEMESTER_OPTIONS = (
     ('Double Semester', 'Double Semester')
 )
 
+MODULE_LEVEL = (
+    ('L4', 'L4'),
+    ('L5', 'L5'),
+    ('L6', 'L6'),
+    ('L7', 'L7')
+)
+
 
 class ModuleManager(models.Manager):
     """
@@ -63,7 +70,10 @@ class Module(BaseTimelineNode):
             MaxValueValidator(120),
             MinValueValidator(10)
     ])
-    module_level = models.CharField(max_length=10)
+    module_level = models.CharField(
+        max_length=2,
+        choices=MODULE_LEVEL
+    )
 
     semester = models.CharField(
         max_length=15,
