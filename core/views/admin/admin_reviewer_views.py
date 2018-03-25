@@ -51,7 +51,7 @@ class AdminReviewerUpdateView(AdminTestMixin, UpdateView):
     View to update existing reviewer
     """
     model = Reviewer
-    fields = ['user', 'modules']
+    fields = ['modules']
 
     def get_context_data(self, **kwargs):
         kwargs = {'pk': self.object.id}
