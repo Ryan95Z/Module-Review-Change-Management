@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import TextInput, Textarea, NumberInput, Select, CheckboxInput
 from forms.models import ModuleTeaching, ModuleAssessment, ModuleExam, ModuleSupport, ModuleSoftware
 
 class ModuleTeachingHoursForm(forms.ModelForm):
@@ -16,19 +17,14 @@ class ModuleSupportForm(forms.ModelForm):
     class Meta:
         model = ModuleSupport
         exclude = ('module_code',)
-
-    lab_support_required = forms.BooleanField(
-        widget=forms.CheckboxInput(attrs={'data-toggle':'collapse', 'data-target':'#lab_support_collapse'}))
-    lab_support_skills = forms.CharField(
-        widget=forms.TextInput(attrs={'class':'form-control form-control-sm'}))
-    lab_support_notes = forms.CharField(
-        widget=forms.Textarea(attrs={'rows':'3', 'class':'form-control form-control-sm'}))
-    tutorial_support_required = forms.BooleanField(
-        widget=forms.CheckboxInput(attrs={'data-toggle':'collapse', 'data-target':'#tutorial_support_collapse'}))
-    tutorial_support_skills = forms.CharField(
-        widget=forms.TextInput(attrs={'class':'form-control form-control-sm'}))
-    tutorial_support_notes = forms.CharField(
-        widget=forms.Textarea(attrs={'rows':'3', 'class':'form-control form-control-sm'}))
+        widgets = {
+            'lab_support_required': CheckboxInput(attrs={'data-toggle':'collapse', 'data-target':'#lab_support_collapse'}),
+            'lab_support_skills': TextInput(attrs={'class':'form-control form-control-sm'}),
+            'lab_support_notes': Textarea(attrs={'rows':'3', 'class':'form-control form-control-sm'}),
+            'tutorial_support_required': CheckboxInput(attrs={'data-toggle':'collapse', 'data-target':'#tutorial_support_collapse'}),
+            'tutorial_support_skills': TextInput(attrs={'class':'form-control form-control-sm'}),
+            'tutorial_support_notes': Textarea(attrs={'rows':'3', 'class':'form-control form-control-sm'}),
+        }
         
 class ModuleAssessmentsForm(forms.ModelForm):
     """
@@ -37,10 +33,16 @@ class ModuleAssessmentsForm(forms.ModelForm):
     class Meta:
         model = ModuleAssessment
         exclude = ('module_code',)
-
-    learning_outcomes_covered = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': '3'})
-    )
+        widgets = {
+            'assessment_title': TextInput(attrs={'class':'form-control form-control-sm'}),
+            'assessment_type': TextInput(attrs={'class':'form-control form-control-sm'}),
+            'assessment_weight': NumberInput(attrs={'class':'form-control form-control-sm'}),
+            'assessment_duration': NumberInput(attrs={'class':'form-control form-control-sm'}),
+            'assessment_hand_out': Select(attrs={'class':'form-control form-control-sm'}),
+            'assessment_hand_in': Select(attrs={'class':'form-control form-control-sm'}),
+            'assessment_semester': Select(attrs={'class':'form-control form-control-sm'}),
+            'learning_outcomes_covered': Textarea(attrs={'rows': '3', 'class':'form-control form-control-sm'}),
+        }
 
 class ModuleSoftwareForm(forms.ModelForm):
     """

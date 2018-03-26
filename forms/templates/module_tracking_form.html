@@ -139,13 +139,30 @@
                 must equal 100%. Durations for coursework assessments should be realistic estimates of the time
                 required to complete the assessment.  <br><br>
                 {{ assessment_form.non_field_errors }}
-                <div class="form-group row">
-                    <label class="col-sm-1 col-form-label col-form-label-sm">{{assessment_form.assessment_title.label}}</label>
-                    <div class="col ">
-                        {{ assessment_form.assessment_title|add_css_class:"form-control"}}
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label for="{{assessment_form.assessment_type.id_for_label}}">{{assessment_form.assessment_type.label}}</label>
+                        {{ assessment_form.assessment_type }}
+                    </div>
+                    <div class="form-group col-md-10">
+                        <label for="{{assessment_form.assessment_title.id_for_label}}">{{assessment_form.assessment_title.label}}</label>
+                        {{ assessment_form.assessment_title }}
                     </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="{{assessment_form.assessment_weight.id_for_label}}">{{assessment_form.assessment_weight.label}}</label>
+                        {{ assessment_form.assessment_weight }}
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="{{assessment_form.assessment_duration.id_for_label}}">{{assessment_form.assessment_duration.label}}</label>
+                        {{ assessment_form.assessment_duration }}
+                    </div>
+                </div>
+                
+
+
+                <!-- <div class="form-group">
                     <label class="col-sm-1 col-form-label col-form-label-sm">{{assessment_form.assessment_type.label}}</label>
                     <div class="col">
                         {{ assessment_form.assessment_type|add_css_class:"form-control"}}
@@ -155,7 +172,7 @@
                         {{ assessment_form.assessment_weight|add_css_class:"form-control"}}
                     </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-group">
                     <label class="col-sm-auto col-form-label col-form-label-sm">{{assessment_form.assessment_duration.label}}</label>
                     <div class="col-sm-1">
                         {{ assessment_form.assessment_duration|add_css_class:"form-control"}}
@@ -169,12 +186,12 @@
                         {{ assessment_form.assessment_hand_in|add_css_class:"form-control"}}
                     </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-group">
                     <label class="col-sm-2 col-form-label col-form-label-sm">{{assessment_form.learning_outcomes_covered.label}}</label>
                     <div class="col">
                         {{ assessment_form.learning_outcomes_covered|add_css_class:"form-control"}}
                     </div>
-                </div>
+                </div> -->
             </div>
             </div>
         </div>
