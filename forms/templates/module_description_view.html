@@ -56,28 +56,34 @@
 			<div class="form-group col-md-10">
 				<label for="{{ details_form.module_name.id_for_label }}">{{details_form.module_name.label}}</label>
 				{{details_form.module_name|add_css_class:"form-control form-control-sm"}}
+				{{details_form.module_name.errors}}
 			</div>
 		</div>
 		<div class="form-row">
 			<div class="form-group col-md-1">
 				<label for="{{ details_form.module_credits.id_for_label }}">{{details_form.module_credits.label}}</label>
 				{{details_form.module_credits|add_css_class:"form-control form-control-sm"}}
+				{{details_form.module_credits.errors}}
 			</div>
 			<div class="form-group col-md-1">
 				<label for="{{ details_form.module_level.id_for_label }}">{{details_form.module_level.label}}</label>
 				{{details_form.module_level|add_css_class:"form-control form-control-sm"}}
+				{{details_form.module_level.errors}}
 			</div>
 			<div class="form-group col-md-3">
 				<label for="{{ details_form.semester.id_for_label }}">{{details_form.semester.label}}</label>
 				{{details_form.semester|add_css_class:"form-control form-control-sm"}}
+				{{details_form.semester.errors}}
 			</div>
 			<div class="form-group col-md-3">
 				<label for="{{ details_form.delivery_language.id_for_label }}">{{details_form.delivery_language.label}}</label>
 				{{details_form.delivery_language|add_css_class:"form-control form-control-sm"}}
+				{{details_form.delivery_language.errors}}
 			</div>
 			<div class="form-group col-md-4">
 				<label for="{{ details_form.module_leader.id_for_label }}">{{details_form.module_leader.label}}</label>
 				{{details_form.module_leader|add_css_class:"form-control form-control-sm"}}
+				{{details_form.module_leader.errors}}
 			</div>
 		</div>
 	</div>
