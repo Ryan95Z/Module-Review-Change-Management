@@ -18,13 +18,13 @@ class ModuleSupportForm(forms.ModelForm):
         exclude = ('module_code',)
 
     lab_support_required = forms.BooleanField(
-        widget=forms.CheckboxInput(attrs={'class':'form-check-input'}))
+        widget=forms.CheckboxInput(attrs={'data-toggle':'collapse', 'data-target':'#lab_support_collapse'}))
     lab_support_skills = forms.CharField(
         widget=forms.TextInput(attrs={'class':'form-control form-control-sm'}))
     lab_support_notes = forms.CharField(
         widget=forms.Textarea(attrs={'rows':'3', 'class':'form-control form-control-sm'}))
     tutorial_support_required = forms.BooleanField(
-        widget=forms.CheckboxInput(attrs={'class':'form-check-input'}))
+        widget=forms.CheckboxInput(attrs={'data-toggle':'collapse', 'data-target':'#tutorial_support_collapse'}))
     tutorial_support_skills = forms.CharField(
         widget=forms.TextInput(attrs={'class':'form-control form-control-sm'}))
     tutorial_support_notes = forms.CharField(
