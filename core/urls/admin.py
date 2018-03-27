@@ -31,6 +31,8 @@ urlpatterns = [
         AdminProgrammeTutorUpdateView.as_view()), name="update_tutor"),
     url(r'^tutors/(?P<pk>[0-9]+)/delete/$', login_required(
         AdminProgrammeTutorDeleteView.as_view()), name="delete_tutor"),
+    url(r'^tutors/load_modules/$', get_modules, name="ajax_tutor_modules"),
+
 
     # reviewer urls
     url(r'^reviewers/$', login_required(

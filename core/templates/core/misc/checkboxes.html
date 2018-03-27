@@ -1,0 +1,8 @@
+{% for m in modules %}
+	<li>
+		<label for="id_modules_{{ forloop.counter0 }}">
+			<input name="modules" value="{{ m.module_code }}" id="id_modules_{{ forloop.counter0 }}" type="checkbox">
+			{{ m }}
+		</label>
+	</li>
+{% endfor %}

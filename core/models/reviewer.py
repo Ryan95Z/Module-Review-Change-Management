@@ -1,7 +1,7 @@
 from django.db import models
 from django.db import IntegrityError
-from .user import User, UserManager
-from .module import Module
+from core.models import User, UserManager, Module
+
 
 class ReviewerManager(object):
     """
@@ -13,7 +13,7 @@ class ReviewerManager(object):
         self.user_manager.model = User
 
     def create_new_reviewer(self, modules, username, first_name, last_name,
-                         email, password=None):
+                            email, password=None):
 
         if not isinstance(modules, (list,)):
             modules = [modules]

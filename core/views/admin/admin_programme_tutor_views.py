@@ -1,9 +1,11 @@
 from django.urls import reverse
+from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from core.views.mixins import AdminTestMixin
 from core.models import User, Module, ProgrammeTutor
+from core.forms import TutorForm
 
 from timeline.utils.notifications.helpers import WatcherWrapper
 
@@ -28,7 +30,9 @@ class AdminProgrammeTutorCreateView(AdminTestMixin, CreateView):
     View to create programme tutor
     """
     model = ProgrammeTutor
-    fields = ['programme_name', 'tutor_year', 'programme_tutor_user']
+    # fields = ['programme_name', 'tutor_year', 'programme_tutor_user']
+    form_class = TutorForm
+    template_name = "core/programmetutor_form.html"
 
     def get_form(self, *args, **kwargs):
         form = super(
@@ -46,10 +50,11 @@ class AdminProgrammeTutorCreateView(AdminTestMixin, CreateView):
         context['form_url'] = reverse('new_tutor')
         # button text
         context['form_type'] = 'Create'
+        context['form_range'] = 3
         return context
 
     def get_success_url(self):
-        self.__process_watchers()
+        # self.__process_watchers()
         return reverse('all_tutors')
 
     def __process_watchers(self):
@@ -74,7 +79,8 @@ class AdminProgrammeTutorUpdateView(AdminTestMixin, UpdateView):
     View to update existing programme tutor
     """
     model = ProgrammeTutor
-    fields = ['programme_name', 'tutor_year']
+    form_class = TutorForm
+    template_name = "core/programmetutor_form.html"
 
     def get_context_data(self, **kwargs):
         kwargs = {'pk': self.object.id}
@@ -84,13 +90,14 @@ class AdminProgrammeTutorUpdateView(AdminTestMixin, UpdateView):
         context['form_url'] = reverse('update_tutor', kwargs=kwargs)
         # button text
         context['form_type'] = 'Update'
+        context['form_range'] = 2
         return context
 
     def get_success_url(self):
         return reverse('all_tutors')
 
     def post(self, request, *args, **kwargs):
-        self.__process_watchers(request)
+        # self.__process_watchers(request)
         return super(
             AdminProgrammeTutorUpdateView, self).post(request, *args, **kwargs)
 
@@ -154,7 +161,7 @@ class AdminProgrammeTutorDeleteView(AdminTestMixin, DeleteView):
         return reverse('all_tutors')
 
     def post(self, request, *args, **kwargs):
-        self.__process_watchers()
+        # self.__process_watchers()
         return super(
             AdminProgrammeTutorDeleteView, self).post(request, *args, **kwargs)
 
@@ -172,3 +179,11 @@ class AdminProgrammeTutorDeleteView(AdminTestMixin, DeleteView):
         # remove the modules from watch list
         watcher = WatcherWrapper(obj.programme_tutor_user)
         watcher.bulk_module_remove(*list(modules))
+
+
+def get_modules(request):
+    year = request.GET.get('year', None)
+    level = YEAR_LEVELS[year]
+
+    modules = Module.objects.filter(module_level=level)
+    return render(request, "core/misc/checkboxes.html", {'modules': modules})

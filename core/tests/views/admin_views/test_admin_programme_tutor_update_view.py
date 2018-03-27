@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse
 from core.tests.views.admin_views.admin_test_case import AdminViewTestCase
-from core.models import ProgrammeTutor, ProgrammeTutorManager
+from core.models import ProgrammeTutor, ProgrammeTutorManager, Module
 
 
 class AdminProgrammeTutorUpdateViewTest(AdminViewTestCase):
@@ -22,6 +22,19 @@ class AdminProgrammeTutorUpdateViewTest(AdminViewTestCase):
 
         kwargs = {'pk': self.tutor.pk}
         self.url = reverse('update_tutor', kwargs=kwargs)
+
+        self.admin.is_module_leader = True
+        self.admin.save()
+
+        self.module = Module.objects.create(
+            module_code="CMXXXX",
+            module_name="Test Module",
+            module_credits="10",
+            module_level="L4",
+            semester="Autumn Semester",
+            delivery_language="English",
+            module_leader=self.admin
+        )
 
     def test_get_tutor_update_view(self):
         """
@@ -48,10 +61,15 @@ class AdminProgrammeTutorUpdateViewTest(AdminViewTestCase):
         """
         data = {
             'programme_name': "Computer Science",
-            'tutor_year': "Year 2",
+            'tutor_year': "Year 1",
+            'modules': self.module.module_code
         }
 
         response = self.run_valid_post_view(self.url, data)
+
+        self.client.force_login(self.admin)
+        response = self.client.post(self.url, data)
+
         self.assertEquals(response.url, reverse('all_tutors'))
 
         updated_tutor = ProgrammeTutor.objects.get(id=self.tutor.pk)
