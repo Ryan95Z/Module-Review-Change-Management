@@ -6,6 +6,10 @@
     {{ module.module_code }}
 {% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'forms/css/tracking_form.css' %}">
+{% endblock %}
+
 {% block main %}
 
 <form action="" method="POST" id="tracking-form">
@@ -150,48 +154,29 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
                         <label for="{{assessment_form.assessment_weight.id_for_label}}">{{assessment_form.assessment_weight.label}}</label>
                         {{ assessment_form.assessment_weight }}
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
                         <label for="{{assessment_form.assessment_duration.id_for_label}}">{{assessment_form.assessment_duration.label}}</label>
                         {{ assessment_form.assessment_duration }}
                     </div>
-                </div>
-                
-
-
-                <!-- <div class="form-group">
-                    <label class="col-sm-1 col-form-label col-form-label-sm">{{assessment_form.assessment_type.label}}</label>
-                    <div class="col">
-                        {{ assessment_form.assessment_type|add_css_class:"form-control"}}
+                    <div class="form-group col-md-4">
+                        <label for="{{assessment_form.assessment_hand_out.id_for_label}}">{{assessment_form.assessment_hand_out.label}}</label>
+                        {{ assessment_form.assessment_hand_out }}
                     </div>
-                    <label class="col-sm-auto col-form-label col-form-label-sm">{{assessment_form.assessment_weight.label}}</label>
-                    <div class="col-sm-1">
-                        {{ assessment_form.assessment_weight|add_css_class:"form-control"}}
+                    <div class="form-group col-md-4">
+                        <label for="{{assessment_form.assessment_hand_in.id_for_label}}">{{assessment_form.assessment_hand_in.label}}</label>
+                        {{ assessment_form.assessment_hand_in }}
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-auto col-form-label col-form-label-sm">{{assessment_form.assessment_duration.label}}</label>
-                    <div class="col-sm-1">
-                        {{ assessment_form.assessment_duration|add_css_class:"form-control"}}
-                    </div>
-                    <label class="col-sm-auto col-form-label col-form-label-sm">{{assessment_form.assessment_hand_out.label}}</label>
-                    <div class="col-sm-auto">
-                        {{ assessment_form.assessment_hand_out|add_css_class:"form-control"}}
-                    </div>
-                    <label class="col-sm-auto col-form-label col-form-label-sm">{{assessment_form.assessment_hand_in.label}}</label>
-                    <div class="col-sm-auto">
-                        {{ assessment_form.assessment_hand_in|add_css_class:"form-control"}}
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="{{assessment_form.learning_outcomes_covered.id_for_label}}">{{assessment_form.learning_outcomes_covered.label}}</label>
+                        {{ assessment_form.learning_outcomes_covered }}
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 col-form-label col-form-label-sm">{{assessment_form.learning_outcomes_covered.label}}</label>
-                    <div class="col">
-                        {{ assessment_form.learning_outcomes_covered|add_css_class:"form-control"}}
-                    </div>
-                </div> -->
             </div>
             </div>
         </div>

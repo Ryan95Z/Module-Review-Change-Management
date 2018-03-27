@@ -41,7 +41,7 @@ class ModuleAssessmentsForm(forms.ModelForm):
             'assessment_hand_out': Select(attrs={'class':'form-control form-control-sm'}),
             'assessment_hand_in': Select(attrs={'class':'form-control form-control-sm'}),
             'assessment_semester': Select(attrs={'class':'form-control form-control-sm'}),
-            'learning_outcomes_covered': Textarea(attrs={'rows': '3', 'class':'form-control form-control-sm'}),
+            'learning_outcomes_covered': Textarea(attrs={'rows': '2', 'class':'form-control form-control-sm'}),
         }
 
 class ModuleSoftwareForm(forms.ModelForm):
