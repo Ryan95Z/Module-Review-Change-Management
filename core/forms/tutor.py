@@ -10,9 +10,13 @@ YEAR_LEVELS = {
 
 
 class TutorForm(forms.ModelForm):
+    """
+    Custom form ProgrammeTutor for model.
+    Developed to allow the drop downs to be dynamic to
+    refine the options for the admin.
+    """
     def __init__(self, *args, **kwargs):
         super(TutorForm, self).__init__(*args, **kwargs)
-
         instance = kwargs.get('instance', None)
 
         # if we are not processing an existing model, default

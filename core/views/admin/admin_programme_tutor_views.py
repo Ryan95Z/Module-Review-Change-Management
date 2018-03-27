@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.http import Http404
 from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -50,11 +51,13 @@ class AdminProgrammeTutorCreateView(AdminTestMixin, CreateView):
         context['form_url'] = reverse('new_tutor')
         # button text
         context['form_type'] = 'Create'
+
+        # number of fields the form should loop through
         context['form_range'] = 3
         return context
 
     def get_success_url(self):
-        # self.__process_watchers()
+        self.__process_watchers()
         return reverse('all_tutors')
 
     def __process_watchers(self):
@@ -63,11 +66,8 @@ class AdminProgrammeTutorCreateView(AdminTestMixin, CreateView):
         """
         user = self.object.programme_tutor_user
 
-        # convert module year to level
-        module_level = YEAR_LEVELS[self.object.tutor_year]
-
         # get the modules
-        modules = Module.objects.filter(module_level=module_level)
+        modules = self.object.modules.all()
 
         # add the modules to user's watch list
         tutor_watcher = WatcherWrapper(user)
@@ -86,10 +86,13 @@ class AdminProgrammeTutorUpdateView(AdminTestMixin, UpdateView):
         kwargs = {'pk': self.object.id}
         context = super(
             AdminProgrammeTutorUpdateView, self).get_context_data(**kwargs)
+
         # url for form action
         context['form_url'] = reverse('update_tutor', kwargs=kwargs)
         # button text
         context['form_type'] = 'Update'
+
+        # number of fields the form should loop through
         context['form_range'] = 2
         return context
 
@@ -97,7 +100,7 @@ class AdminProgrammeTutorUpdateView(AdminTestMixin, UpdateView):
         return reverse('all_tutors')
 
     def post(self, request, *args, **kwargs):
-        # self.__process_watchers(request)
+        self.__process_watchers(request)
         return super(
             AdminProgrammeTutorUpdateView, self).post(request, *args, **kwargs)
 
@@ -106,49 +109,22 @@ class AdminProgrammeTutorUpdateView(AdminTestMixin, UpdateView):
         Private method to update the tutor's watch list
         by removing and adding relevant modules
         """
-        updated_year = request.POST.get('tutor_year', None)
+
+        # get the list of new module codes
+        module_codes = request.POST.getlist('modules', None)
         obj = self.get_object()
-        current_year = obj.tutor_year
+        watcher = WatcherWrapper(obj.programme_tutor_user)
 
-        # if the years are the same, stop and
-        # don't make the changes.
-        if updated_year == current_year:
-            return
+        # get the current and new modules
+        new_modules = set(Module.objects.filter(module_code__in=module_codes))
+        current_modules = set(obj.modules.all())
 
-        # since years are different, proceed with changes
-        updated_modules_lvl = None
+        # determine what needs to be removed
+        modules_to_remove = list(current_modules.difference(new_modules))
 
-        # covert the year, if it does not match, return
-        # and let django handle the error
-        try:
-            updated_modules_lvl = YEAR_LEVELS[updated_year]
-        except KeyError:
-            return
-
-        # get the new modules for the tutor to watch
-        updated_modules = list(Module.objects.filter(
-            module_level=updated_modules_lvl
-        ))
-
-        # covert the year again to get the modules the
-        # tutor is currently watching. These will be removed
-        # As before, if the level is wrong, let django handle
-        # it by returning.
-        current_modules_lvl = None
-        try:
-            current_modules_lvl = YEAR_LEVELS[current_year]
-        except KeyError:
-            return
-
-        # get the current modules
-        current_modules = list(Module.objects.filter(
-            module_level=current_modules_lvl
-        ))
-
-        # update watch list by removing current modules and adding new ones
-        tutor_watcher = WatcherWrapper(obj.programme_tutor_user)
-        tutor_watcher.bulk_module_remove(*current_modules)
-        tutor_watcher.bulk_module_add(*updated_modules)
+        # update the modules this tutor is watching
+        watcher.bulk_module_remove(*modules_to_remove)
+        watcher.bulk_module_add(*list(new_modules))
 
 
 class AdminProgrammeTutorDeleteView(AdminTestMixin, DeleteView):
@@ -161,7 +137,7 @@ class AdminProgrammeTutorDeleteView(AdminTestMixin, DeleteView):
         return reverse('all_tutors')
 
     def post(self, request, *args, **kwargs):
-        # self.__process_watchers()
+        self.__process_watchers()
         return super(
             AdminProgrammeTutorDeleteView, self).post(request, *args, **kwargs)
 
@@ -172,9 +148,7 @@ class AdminProgrammeTutorDeleteView(AdminTestMixin, DeleteView):
         """
         obj = self.get_object()
 
-        # get the level current level and then use it to get modules
-        module_level = YEAR_LEVELS[obj.tutor_year]
-        modules = Module.objects.filter(module_level=module_level)
+        modules = obj.modules.all()
 
         # remove the modules from watch list
         watcher = WatcherWrapper(obj.programme_tutor_user)
@@ -182,8 +156,19 @@ class AdminProgrammeTutorDeleteView(AdminTestMixin, DeleteView):
 
 
 def get_modules(request):
+    """
+    Simple request function to get the html for the programme
+    tutor form.
+    """
     year = request.GET.get('year', None)
-    level = YEAR_LEVELS[year]
+    if year is None:
+        raise Http404("year has not been provided.")
+
+    try:
+        level = YEAR_LEVELS[year]
+    except KeyError:
+        raise Http404("Invalid year provided. \
+            Can either be year 1, year 2, year 3 or MSC")
 
     modules = Module.objects.filter(module_level=level)
     return render(request, "core/misc/checkboxes.html", {'modules': modules})

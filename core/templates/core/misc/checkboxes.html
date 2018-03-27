@@ -1,8 +1,12 @@
-{% for m in modules %}
-	<li>
-		<label for="id_modules_{{ forloop.counter0 }}">
-			<input name="modules" value="{{ m.module_code }}" id="id_modules_{{ forloop.counter0 }}" type="checkbox">
-			{{ m }}
-		</label>
-	</li>
-{% endfor %}
+{% if modules|length < 1 %}
+	<p>There are no modules available for this year.</p>
+{% else %}
+	{% for m in modules %}
+		<li>
+			<label for="id_modules_{{ forloop.counter0 }}">
+				<input name="modules" value="{{ m.module_code }}" id="id_modules_{{ forloop.counter0 }}" type="checkbox">
+				{{ m }}
+			</label>
+		</li>
+	{% endfor %}
+{% endif %}
