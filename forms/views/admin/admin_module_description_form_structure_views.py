@@ -54,7 +54,7 @@ class AdminModuleDescriptionFormModify(View):
     # Setting the template and generating a formset object on initialization
     def __init__(self):
         self.template = 'md_form_structure_edit.html'
-        self.field_formset_object = formset_factory(FieldEntityForm, extra=1)
+        self.field_formset_object = formset_factory(FieldEntityForm, extra=1, max_num=1)
 
     # When the user GETs the page, the most recent form structure is retrieved,
     # and used to populate the form. In the event that there is no existing form
@@ -62,7 +62,7 @@ class AdminModuleDescriptionFormModify(View):
     def get(self, request, **kwargs):
         try:
             newest_version_fields = FormFieldEntity.objects.get_most_recent_form()
-            field_formset = self.field_formset_object(request.GET or None, initial=newest_version_fields)
+            field_formset = self.field_formset_object(request.GET or None, initial=newest_version_fields, prefix='structure_form')
         except ObjectDoesNotExist :
             field_formset = self.field_formset_object(request.GET or None)
 
@@ -72,7 +72,7 @@ class AdminModuleDescriptionFormModify(View):
     # and then each of the fields is stored in a FormFieldEntity object, and 
     # linked to the 'parent' with a foreign key.
     def post(self, request, **kwargs):
-        field_formset = self.field_formset_object(request.POST)
+        field_formset = self.field_formset_object(request.POST, prefix='structure_form')
         
         if field_formset.is_valid():
             md_version = ModuleDescriptionFormVersion.objects.create_new_version()

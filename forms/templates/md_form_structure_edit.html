@@ -38,20 +38,20 @@
     <th class="text-center px-0" scope="col">Max Length</th>
     <th class="text-center px-0" scope="col">Delete</th>
 </thead>
-<tbody id="form_set">
+<tbody id="structure_form-dynamic_form">
     {% for form in field_formset.forms %}
-    <tr class="form_row">
+    <tr class="form_row dynamic-row">
         <td class="px-1" style="width: 90px">
             <span class="row-order">{{ forloop.counter }}</span>
             {% if forloop.counter0 == 0 %}
             <button type="button" disabled class="btn btn-link p-0 move-up"><i class="fa fa-chevron-up"></i></button>
             {% else %}
-            <button type="button" class="btn btn-link p-0 move-up"><i class="fa fa-chevron-up"></i></button>
+            <button type="button" name="structure_form" class="btn btn-link p-0 move-up"><i class="fa fa-chevron-up"></i></button>
             {% endif %}
             {% if forloop.counter >= field_formset.forms|length %}
             <button type="button" disabled class="btn btn-link p-0 move-down"><i class="fa fa-chevron-down"></i></button>
             {% else %}
-            <button type="button" class="btn btn-link p-0 move-down"><i class="fa fa-chevron-down"></i></button>
+            <button type="button" name="structure_form" class="btn btn-link p-0 move-down"><i class="fa fa-chevron-down"></i></button>
             {% endif %}
         </td>
         <td class="text-center px-1" style="width: 50px">{{ form.entity_required}}{{ form.entity_required.errors}}</td>
@@ -59,8 +59,8 @@
         <td class="px-1 type-field" style="width: 140px">{{ form.entity_type|add_css_class:"form-control form-control-sm"}}{{ form.entity_type.errors }}</td>
         <td class="px-1" >{{ form.entity_choices|add_css_class:"form-control form-control-sm"}}{{ form.entity_choices.errors }}</td>
         <td class="px-1" style="width: 80px">{{ form.entity_max_length|add_css_class:"form-control form-control-sm"}}{{ form.entity_max_length.errors }}</td>
-        <td class="text-center px-1" style="width: 50px"><button class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
-        <input type="hidden" name="form-{{ forloop.counter0 }}-entity_order" id="{{form.entity_order.id_for_label}}" value="{{ forloop.counter0 }}">
+        <td class="text-center px-1" style="width: 50px"><button type="button" name="structure_form" class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
+        <input type="hidden" name="structure_form-{{ forloop.counter0 }}-entity_order" id="{{form.entity_order.id_for_label}}" value="{{ forloop.counter0 }}">
     </tr>
     {% endfor %}
 </tbody>
@@ -68,26 +68,26 @@
 
 <!-- Form controls -->
 <a class="btn btn-danger btn-sm" role="button" href="{% url 'module_description_form_structure' %}">Cancel</a>
-<input type="button" class="btn btn-primary btn-sm" value="Add Row" id="add_row">
+<input type="button" name="structure_form" class="btn btn-primary btn-sm add-row" value="Add Row">
 <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>
 
 <!-- Empty form which is used to generate new rows in the form -->
 <table style="display:none">
-<tbody id="empty_form">
-<tr class="form_row">
+<tbody id="structure_form-empty_form">
+<tr class="form_row dynamic-row">
     <td class="px-1">
         <span class="row-order"></span>
-        <button type="button" class="btn btn-link p-0 move-up"><i class="fa fa-chevron-up"></i></button>
-        <button type="button" class="btn btn-link p-0 move-down"><i class="fa fa-chevron-down"></i></button>
+        <button type="button" name="structure_form" class="btn btn-link p-0 move-up"><i class="fa fa-chevron-up"></i></button>
+        <button type="button" name="structure_form" class="btn btn-link p-0 move-down"><i class="fa fa-chevron-down"></i></button>
     </td>
     <td class="text-center px-1">{{ field_formset.empty_form.entity_required}}</td>
     <td class="px-1">{{ field_formset.empty_form.entity_label|add_css_class:"form-control form-control-sm" }}</td>
     <td class="px-1 type-field">{{ field_formset.empty_form.entity_type|add_css_class:"form-control form-control-sm"}}</td>
     <td class="px-1">{{ field_formset.empty_form.entity_choices|add_css_class:"form-control form-control-sm"}}</td>
     <td class="px-1">{{ field_formset.empty_form.entity_max_length|add_css_class:"form-control form-control-sm"}}</td>
-    <td class="text-center px-1"><button class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
-    <input type="hidden" name="form-__prefix__-entity_order" id="{{field_formset.empty_form.entity_order.id_for_label}}" value="0">
+    <td class="text-center px-1"><button type="button" name="structure_form" class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
+    <input type="hidden" name="structure_form-__prefix__-entity_order" id="{{field_formset.empty_form.entity_order.id_for_label}}" value="0">
 </tr>
 </tbody>
 </table>
