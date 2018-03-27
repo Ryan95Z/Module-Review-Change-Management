@@ -1,5 +1,6 @@
 from django.views.generic import TemplateView
 from core.models import Module
+from timeline.models import Notification
 
 
 class DashboardView(TemplateView):
@@ -12,6 +13,5 @@ class DashboardView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['my_modules'] = Module.objects.filter(module_leader=self.request.user)
         context['all_modules'] = Module.objects.all()
+        context['my_notifications'] = Notification.objects.get_all_notifications(self.request.user)
         return context
-
-    
