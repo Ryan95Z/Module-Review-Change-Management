@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse
 from core.tests.views.admin_views.admin_test_case import AdminViewTestCase
-from core.models import ProgrammeTutorManager, ProgrammeTutor, User
+from core.models import ProgrammeTutorManager, ProgrammeTutor
 
 
 class AdminProgrammeTutorCreateViewTest(AdminViewTestCase):
@@ -59,7 +59,7 @@ class AdminProgrammeTutorCreateViewTest(AdminViewTestCase):
         manager.model = ProgrammeTutor
 
         # create a tutor
-        tutor = manager.create_tutor('Computer Science', 'Year 1', self.user)
+        manager.create_tutor('Computer Science', 'Year 1', self.user)
 
         tutor_err = "['Programme tutor with this Programme tutor user already exists.']"
 
@@ -91,7 +91,6 @@ class AdminProgrammeTutorCreateViewTest(AdminViewTestCase):
             'programme_tutor_user': self.admin.username
         }
 
-
         # expected errors
         ex_user_err = "['Select a valid choice. That choice is not one of the available choices.']"
         ex_year_err = "['Select a valid choice. {} is not one of the available choices.']".format(year)
@@ -105,4 +104,3 @@ class AdminProgrammeTutorCreateViewTest(AdminViewTestCase):
         self.assertEquals(context['form_type'], 'Create')
         self.assertEquals(year_err, ex_year_err)
         self.assertEquals(user_err, ex_user_err)
-
