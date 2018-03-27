@@ -19,24 +19,22 @@ function recalculateIndexes(formPrefix) {
 // This function manages the order column. It updates
 // all of the numbers so that they always remain consistent, and
 // disables/reenables the up and down buttons. It also updates the
-// value of the hidden order field
+// value of the hidden order field. 
 function recalculateOrder(formPrefix) {
     var rowOrderFields = $('.row-order');
     var total_forms = $('#id_'+formPrefix+'-TOTAL_FORMS').val();
 
-    var order = 1;
-    rowOrderFields.each(function() {
-        $('#id_'+formPrefix+'-'+(order - 1)+'-entity_order').val(order - 1)
-        $(this).text(order);
+    rowOrderFields.each(function(order) {
+        $('#id_'+formPrefix+'-'+(order)+'-entity_order').val(order)
+        $(this).text(order + 1);
         $(this).siblings(".move-up").prop('disabled', false)
         $(this).siblings(".move-down").prop('disabled', false)
-        if(order - 1 == 0) {
+        if(order == 0) {
             $(this).siblings(".move-up").prop('disabled', true)
         } 
-        if(order >= total_forms) {
+        if(order + 1 >= total_forms) {
             $(this).siblings(".move-down").prop('disabled', true)
         }
-        order++;
     })
 }
 // Adds an additional row to the form, and updates all required ids

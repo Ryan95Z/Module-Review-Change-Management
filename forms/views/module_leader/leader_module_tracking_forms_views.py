@@ -3,6 +3,7 @@ from django.views.generic.detail import DetailView
 from core.views.mixins import LoggedInTestMixin
 from django.shortcuts import render, redirect
 from django.core.exceptions import ObjectDoesNotExist
+from django.forms import formset_factory
 
 from core.models import Module
 from forms.models.tracking_form import ModuleTeaching, ModuleSupport, ModuleAssessment, ModuleSoftware
@@ -17,21 +18,28 @@ class LeaderModuleTrackingForm(View):
         super(LeaderModuleTrackingForm, self).__init__()
         self.teaching_hours_form = ModuleTeachingHoursForm
         self.support_form = ModuleSupportForm
-        self.assessment_form = ModuleAssessmentsForm
         self.software_form = ModuleSoftwareForm
+        self.assessment_formset = formset_factory(ModuleAssessmentsForm, extra=1, max_num=1)
 
     def get(self, request, **kwargs):
         """
         GET method which provides the tracking form
         """
+        module_pk = kwargs.get('pk')
         form_type = kwargs.get('form_type', 'view')
         form_exists = True
         edit_form = True if form_type == 'new' else False
 
         try:
-            self.teaching_hours_form, self.support_form, self.assessment_form, self.software_form = populate_tracking_forms(self.kwargs.get('pk'))
+            self.teaching_hours_form, self.support_form, self.software_form = populate_tracking_forms(module_pk)
         except ObjectDoesNotExist:
             form_exists = False
+
+        try:
+            assessments = ModuleAssessment.objects.filter(module_code=module_pk).values()
+            assessment_forms = self.assessment_formset(initial=assessments, prefix='assessment_form')
+        except ObjectDoesNotExist:
+            assessment_forms = self.assessment_formset(None)
 
         module = Module.objects.get(pk=self.kwargs.get('pk'))
         context = {
@@ -41,7 +49,7 @@ class LeaderModuleTrackingForm(View):
             'module': module, 
             'teaching_hours_form': self.teaching_hours_form,
             'support_form': self.support_form,
-            'assessment_form': self.assessment_form,
+            'assessment_forms': assessment_forms,
             'software_form': self.software_form
         }
         return render(request, 'module_tracking_form.html', context)

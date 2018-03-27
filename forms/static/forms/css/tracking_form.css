@@ -1,9 +1,24 @@
-
+/* Making labels smaller to save space */
 label {
     font-size: .875rem;
     line-height: 1.5;
 }
 
+/* Less space between each form in the assessment formset */
 #assessment-collapse .form-group {
     margin-bottom: 0.5rem;
+}
+
+/* Making buttons look like links (for the add and remove buttons in dynamic forms */
+.delete-row {
+    background:none!important;
+    border:none; 
+    padding:0!important;
+    
+    font-family:arial,sans-serif; 
+    color:#069;
+    cursor:pointer;
+}
+.delete-row:hover{
+    text-decoration:underline;
 }
