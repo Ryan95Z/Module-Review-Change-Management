@@ -37,23 +37,23 @@ class LeaderModuleTrackingForm(View):
             form_exists = False
 
         try:
-            assessments = ModuleAssessment.objects.filter(module_code=module_pk).values()
+            assessments = ModuleAssessment.objects.filter(module=module_pk).values()
             assessment_forms = self.assessment_formset(initial=assessments, prefix='assessment_form')
         except ObjectDoesNotExist:
             assessment_forms = self.assessment_formset(None)
 
         try:
-            software = ModuleSoftware.objects.filter(module_code=module_pk).values()
+            software = ModuleSoftware.objects.filter(module=module_pk).values()
             software_forms = self.software_formset(initial=software, prefix='software_form')
         except ObjectDoesNotExist:
             software_forms = self.software_formset(None)
         
 
-        module = Module.objects.get(pk=self.kwargs.get('pk'))
+        module = Module.objects.get(pk=module_pk)
         context = {
             'edit_form': edit_form,
             'form_exists': form_exists,
-            'pk': module.module_code,
+            'pk': module_pk,
             'module': module, 
             'teaching_hours_form': self.teaching_hours_form,
             'support_form': self.support_form,
@@ -66,7 +66,7 @@ class LeaderModuleTrackingForm(View):
         """
         POST method which submits the new tracking form
         """
-        module_code = kwargs.get('pk')
+        module_pk = kwargs.get('pk')
 
         teaching_hours_form = self.teaching_hours_form(request.POST)
         support_form = self.support_form(request.POST)
@@ -79,30 +79,30 @@ class LeaderModuleTrackingForm(View):
         software_valid = software_form.is_valid()
 
         if teaching_hours_valid and support_valid and assessments_valid and software_valid:
-            module = Module.objects.get(pk=module_code)
+            module = Module.objects.get(pk=module_pk)
 
             teaching_hours_object = teaching_hours_form.save(commit=False)
             support_object = support_form.save(commit=False)
             assessment_object = assessments_form.save(commit=False)
             software_object = software_form.save(commit=False)
 
-            # teaching_hours_object.module_code = module
-            # support_object.module_code = module
-            # assessment_object.module_code = module
-            # software_object.module_code = module
+            # teaching_hours_object.module_pk = module
+            # support_object.module_pk = module
+            # assessment_object.module_pk = module
+            # software_object.module_pk = module
             
             teaching_hours_object.save()
             support_object.save()
             assessment_object.save()
             software_object.save()
 
-            return redirect('view_module_tracking_form', pk=module_code)
+            return redirect('view_module_tracking_form', pk=module_pk)
         else:
             error_context = {
                 'edit_form': True,
                 'form_exists': True,
-                'pk': module_code,
-                'module': Module.objects.get(pk=module_code), 
+                'pk': module_pk,
+                'module': Module.objects.get(pk=module_pk), 
                 'teaching_hours_form': teaching_hours_form,
                 'support_form': support_form,
                 'assessment_form': assessments_form,
