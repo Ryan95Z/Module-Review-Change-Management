@@ -1,4 +1,5 @@
 {% extends 'core/main.html' %}
+{% load static %}
 {% load core_tags %}
 
 {% block title %}
@@ -14,6 +15,7 @@
 				<h1>Updating Tutor {{ object.get_tutor_name }}</h1><hr>
 				<h4>{{ object.programme_name }} - {{ object.tutor_year }}</h4><br>
 			{% endif %}
+			
 			<form id="form" data-url="{% url 'ajax_tutor_modules' %}" action="{{ form_url }}" method="POST">
 				{% csrf_token %}
 
@@ -59,28 +61,5 @@
 {% endblock %}
 
 {% block extra_scripts %}
-	<script type="text/javascript">
-		jQuery(function($){
-			$('#id_tutor_year').change( function(){
-				var year = $(this).val();
-				var url = $('#form').attr('data-url');
-
-				$.ajax({
-					url: url,
-					method: 'POST',
-					data: {
-						'year': year,
-					},
-					dataType: 'html',
-                	beforeSend: function(xhr, settings) {
-                    	// Get the CSRF token. See csrf_ajax.js for more information.
-                    	$.ajaxSettings.beforeSend(xhr, settings);
-                	},
-					success: function(data) {
-						$('#module_list').html(data);
-					}
-				});
-			});
-		});
-	</script>
+	<script type="text/javascript" src="{% static 'core/js/tutor_form.js' %}"></script>
 {% endblock %}
