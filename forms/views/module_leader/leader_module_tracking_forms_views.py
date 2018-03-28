@@ -25,6 +25,7 @@ class LeaderModuleTrackingForm(View):
         """
         # Getting varibales from the url
         module_pk = kwargs.get('pk')
+        module = Module.objects.get(pk=module_pk)
         form_type = kwargs.get('form_type', 'view')
 
         # Setting flags
@@ -34,39 +35,38 @@ class LeaderModuleTrackingForm(View):
 
         # Gathering existing data. If nothing is found, create empty forms
         try:
-            teaching_hours = ModuleTeaching.objects.get(module=module_pk)
+            teaching_hours = ModuleTeaching.objects.get(module=module, current_flag=True)
             teaching_hours_form = ModuleTeachingHoursForm(instance=teaching_hours)
         except ObjectDoesNotExist:
             teaching_hours_form = ModuleTeachingHoursForm()
             form_errors.append("Teaching Hours")
   
         try:
-            support = ModuleSupport.objects.get(module=module_pk)
+            support = ModuleSupport.objects.get(module=module, current_flag=True)
             support_form = ModuleSupportForm(instance=support)
         except ObjectDoesNotExist:
             support_form = ModuleSupportForm()
             form_errors.append("Teaching Support")
 
         try:
-            assessments = ModuleAssessment.objects.filter(module=module_pk).values()
+            assessments = ModuleAssessment.objects.get_current_assessments(module)
             assessment_forms = self.assessment_formset(queryset=assessments, prefix='assessment_form')
         except ObjectDoesNotExist:
             assessment_forms = self.assessment_formset()
-            form_errors.append("Assessment")
+            form_errors.append("Assessments")
 
         try:
-            software = ModuleSoftware.objects.filter(module=module_pk).values()
+            software = ModuleSoftware.objects.get_current_software(module)
             software_forms = self.software_formset(queryset=software, prefix='software_form')
         except ObjectDoesNotExist:
             software_forms = self.software_formset(None)
             form_errors.append("Software Requirements")
 
-        print(form_errors)
-
+        # If absolutely no data is found, we set the form_exists flag to false
         if len(form_errors) > 3:
             form_exists = False
 
-        module = Module.objects.get(pk=module_pk)
+        # Setting the context
         context = {
             'edit_form': edit_form,
             'form_errors': form_errors,

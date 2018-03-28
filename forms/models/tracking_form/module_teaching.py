@@ -20,6 +20,10 @@ class ModuleTeaching(TLEntry):
     teaching_schedule_assessment = models.PositiveSmallIntegerField(default=0, verbose_name="Scheduled examination/assessment")
     teaching_placement = models.PositiveSmallIntegerField(default=0, verbose_name="Placement")
 
+    archive_flag = models.BooleanField(default=False)
+    staging_flag = models.BooleanField(default=False)
+    current_flag = models.BooleanField(default=False)
+
     def __str__(self):
         return "Teaching hours for {}".format(self.module_code)
 

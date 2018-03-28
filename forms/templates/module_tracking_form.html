@@ -69,6 +69,10 @@
             <div class="card-header" id="mot-heading" data-toggle="collapse" data-target="#mot-collapse" aria-expanded="false" aria-controls="mot-collapse" style="cursor:pointer">
             <h6 class="mb-0">
                 2. Methods of Teaching
+                {% if "Teaching Hours" in form_errors and not edit_form %}
+                    <!-- If no data was found for this section (in view mode), display a badge -->
+                    <span class="badge badge-secondary">Missing Data</span>
+		        {% endif %}
             </h6>
             </div>
             <div id="mot-collapse" class="collapse show" aria-labelledby="mot-heading">
@@ -103,6 +107,10 @@
             <div class="card-header" id="ts-heading" data-toggle="collapse" data-target="#ts-collapse" aria-expanded="false" aria-controls="ts-collapse" style="cursor:pointer">
             <h6 class="mb-0">
                 3. Teaching Support
+                {% if "Teaching Support" in form_errors and not edit_form %}
+                    <!-- If no data was found for this section (in view mode), display a badge -->
+                    <span class="badge badge-secondary">Missing Data</span>
+		        {% endif %}
             </h6>
             </div>
             <div id="ts-collapse" class="collapse show" aria-labelledby="ts-heading">
@@ -145,6 +153,10 @@
             <div class="card-header" id="assessment-heading" data-toggle="collapse" data-target="#assessment-collapse" aria-expanded="false" aria-controls="assessment-collapse" style="cursor:pointer">
                 <h6 class="mb-0">
                     4. Assessments
+                    {% if "Assessments" in form_errors and not edit_form %}
+                    <!-- If no data was found for this section (in view mode), display a badge -->
+                    <span class="badge badge-secondary">Missing Data</span>
+		        {% endif %}
                 </h6>
             </div>
             <div id="assessment-collapse" class="collapse show" aria-labelledby="assessment-heading">
@@ -212,6 +224,10 @@
             <div class="card-header" id="swlr-heading" data-toggle="collapse" data-target="#swlr-collapse" aria-expanded="false" aria-controls="swlr-collapse" style="cursor:pointer">
                 <h6 class="mb-0">
                     5. Software and Lab Requirements
+                    {% if "Software Requirements" in form_errors and not edit_form %}
+                    <!-- If no data was found for this section (in view mode), display a badge -->
+                    <span class="badge badge-secondary">Missing Data</span>
+		        {% endif %}
                 </h6>
             </div>
             <div id="swlr-collapse" class="collapse show" aria-labelledby="swlr-heading">
