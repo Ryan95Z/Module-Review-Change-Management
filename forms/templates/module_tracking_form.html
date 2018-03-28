@@ -159,7 +159,7 @@
                 {{ assessment_forms.management_form }}
                 {% for assessment_form in assessment_forms %}
                 <div class="dynamic-row">
-                    <span><i class="assessment-number">Assessment {{ forloop.counter }}</i> (<button type="button" name="assessment_form" class="delete-row">remove</button>)</span>
+                    <span><i class="assessment-number">Assessment {{ forloop.counter }}</i> {% if edit_form %}(<button type="button" name="assessment_form" class="delete-row">remove</button>){%endif%}</span>
                     {{ assessment_form.non_field_errors }}
                     <div class="form-row">
                         <div class="form-group col-md-2">
@@ -199,7 +199,9 @@
                 </div>
                 {% endfor %}
                 </div>
+                {% if edit_form %}
                 <div class="col-md-2 mx-auto"><button type="button" name="assessment_form" class="btn btn-primary btn-sm add-row">Add Another</button></div>
+                {% endif %}
             </div>
             </div>
         </div>
@@ -237,12 +239,14 @@
                             <td class="px-1 py-1" style="width: 70px">{{ software_form.software_version }}{{ software_form.software_version.errors }}</td>
                             <td class="px-1 py-1">{{ software_form.software_packages }}{{ software_form.software_packages.errors }}</td>
                             <td class="px-1 py-1">{{ software_form.software_additional_comment }}{{ software_form.software_additional_comment.errors }}</td>
-                            <td class="text-center px-1 py-1" style="width: 50px"><button type="button" name="software_form" class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
+                            {% if edit_form %}<td class="text-center px-1 py-1" style="width: 50px"><button type="button" name="software_form" class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>{%endif%}
                         </tr>
                         {% endfor %}
                     </tbody>
-                </table>    
-                <div class="col-md-2 mx-auto"><button type="button" name="software_form" class="btn btn-primary btn-sm add-row">Add Another</button></div>               
+                </table> 
+                {% if edit_form %}   
+                <div class="col-md-2 mx-auto"><button type="button" name="software_form" class="btn btn-primary btn-sm add-row">Add Another</button></div> 
+                {% endif %}              
             </div>
             </div>
         </div>

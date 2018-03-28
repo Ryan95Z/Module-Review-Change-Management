@@ -9,8 +9,8 @@ label{
     margin-bottom: 0.5rem;
 }
 
-/* Making buttons look like links (for the add and remove buttons in dynamic forms */
-.delete-row {
+/* Making buttons look like links (for the remove buttons in assessment forms) */
+#assessment_form-dynamic_form .delete-row {
     background:none!important;
     border:none; 
     padding:0!important;
@@ -19,7 +19,7 @@ label{
     color:#069;
     cursor:pointer;
 }
-.delete-row:hover{
+#assessment_form-dynamic_form .delete-row:hover{
     text-decoration:underline;
 }
 
