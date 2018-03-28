@@ -51,7 +51,6 @@ class BaseTimelineNode(models.Model):
     def save(self, *args, **kwargs):
         INIT = "init" + self.__class__.__name__
         UPDATE = "update" + self.__class__.__name__
-
         """
         Override standard save method of any model.
         Enables an entry to be made on the timeline

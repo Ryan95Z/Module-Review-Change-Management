@@ -347,3 +347,121 @@
 	padding: 5px;
 	margin-top: 6px;
 }
+
+
+/* 
+===========================================
+	styles for notifications
+===========================================
+*/
+
+li.list-group-item:hover,
+li.list-group-item:active,
+li.list-group-item:focus {
+	background-color: #f2f2f2;
+}
+
+.notification-number {
+	position: relative;
+	float: right;
+}
+
+.notification-display{
+	background-color: #cccccc;
+	border: 4px solid #404040;
+	height: 400px;
+	padding: 10px;
+	border-radius: 5px;
+	position: relative;
+	overflow-y: auto;
+}
+
+.no-notifications{
+	position: absolute;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+}
+
+.no-notifications > i {
+	font-size: 50px;
+	margin-top: 10px;
+	position: relative;
+}
+
+.notification-link,
+.notification-link:hover{
+	color: black;
+}
+
+.notification {
+	width: 100%;
+	font-size: 14px;
+}
+
+.notification > .notification-alert-inner {
+	content: '';
+	font-size: 12px;
+	position: absolute;
+	width: 10px;
+	text-align: center;
+	height: 10px;
+	background-color: red;
+	padding: 2px;
+	border-radius: 100%;
+	left: 6px;
+	top: 18px;
+}
+
+.notification > .notification-content {
+	position: relative;
+	width: 75%;
+	left: 4px;
+	float: left;
+}
+
+.notification > .notification-time {
+	position: relative;
+	float: right;
+	width: 20%;
+	text-align: right;
+}
+
+
+.notification-display-snipper{
+		background-color: #cccccc;
+		padding: 10px;
+		height: 300px;
+		overflow-y: scroll;
+	}
+
+.notification-display-snipper li {
+	font-size: 12px;
+}
+
+/* 
+===========================================
+		Styles for mentions 
+===========================================
+*/
+.mentions {
+    position: absolute;
+    width: 340px;
+    height: 60px;
+    top: 0px;
+    left: 0px;
+    display: none;
+}
+
+.mentions .mention-user {
+    padding: 5px !important;
+    cursor: pointer;
+}
+
+.mentions .mention-user:first-child,
+.mentions .mention-user:last-child {
+    border-radius: 0px;
+}

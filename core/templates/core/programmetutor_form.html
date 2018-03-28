@@ -1,4 +1,5 @@
 {% extends 'core/main.html' %}
+{% load static %}
 {% load core_tags %}
 
 {% block title %}
@@ -11,20 +12,54 @@
 			{% if form_type == 'Create' %}
 				<h1>New Tutor</h1>
 			{% else %}
-				<h1>Update {{ object.programme_name }} - {{ object.tutor_year }}</h1><hr>
+				<h1>Updating Tutor {{ object.get_tutor_name }}</h1><hr>
+				<h4>{{ object.programme_name }} - {{ object.tutor_year }}</h4><br>
 			{% endif %}
-			<form action="{{ form_url }}" method="POST">
+			
+			<form id="form" data-url="{% url 'ajax_tutor_modules' %}" action="{{ form_url }}" method="POST">
 				{% csrf_token %}
+
+
 				{% for f in form %}
-					<div class="form-group">
-					<label for="{{ f.id_for_label }}">{{ f.label }}</label>
-					{{ f|add_css_class:"form-control" }}
-					{{ f.errors }}
+					{% if forloop.counter0 < form_range %}
+						<div class="form-group">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+						{{ f|add_css_class:"form-control" }}
+						{{ f.errors }}
 					</div>
+					{% endif %}
 				{% endfor %}
+
+				
+				<div class="row">
+					<div class="col-md-9">
+						{{ form.modules.label_tag }}
+						<div class="row" id="module_list">
+						
+					
+							{% for choice_id, choice_label in form.modules.field.choices %}
+								
+								<div class="col-md-3">
+									<label for="id_modules_{{ forloop.counter0 }}">
+										<input name="modules" value="{{ choice_id }}" id="id_modules_{{ forloop.counter0 }}" type="checkbox">
+										{{ choice_label }}
+									</label>
+								</div>
+
+							{% endfor %}
+							{{ form.modules.errors }}
+						</div>
+					</div>
+				</div>
+				<br>
+
 				<button type="submit" class="btn btn-primary">{{ form_type }}</button>
 				<a href="{% url 'all_tutors' %}" class="btn btn-danger">Cancel</a>
 			</form>
 		</div>
 	</div>
+{% endblock %}
+
+{% block extra_scripts %}
+	<script type="text/javascript" src="{% static 'core/js/tutor_form.js' %}"></script>
 {% endblock %}

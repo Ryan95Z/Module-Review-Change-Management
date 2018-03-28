@@ -52,8 +52,18 @@ jQuery(function($) {
             var html = '<li class="discussion-comment user-comment" data-node="{:id}">';
             html += '<div class="comment-header"><span class="comment-user">';
             html += '<a href="{:author_url}">{:author}</a></span><span class="comment-time">{:time}</span></div>';
-            html += '<div class="comment-content">{:content}</div></div>';
-            html += '<div class="comment-content-pre">{:md}</div>'
+            html += '<div class="comment-content" data-textedit="#text-{:id}-edit">{:content}</div></div>';
+            
+            // edit form
+            html +=  '<div style="display: none;" id="text-{:id}-edit"><ul class="nav nav-tabs" role="tablist"><li class="nav-item">';
+            html +=  '<a class="nav-link active" id="edit-tab-{:id}" data-toggle="tab" href="#edit-{:id}" role="tab" aria-controls="edit-{:id}" aria-selected="true">Edit</a></li>';
+            html +=  '<li class="nav-item"><a class="nav-link nav-preview-edit" id="edit-preview-tab-{:id}" data-toggle="tab" href="#edit-preview-{:id}" role="tab" aria-controls="edit-preview-{:id}" aria-selected="true" data-container="prev">Preview</a>';
+            html +=  '</li></ul> <div class="tab-content"><div class="tab-pane fade show active" id="edit-{:id}" role="tabpanel" aria-labelledby="edit-tab">';
+            html +=  '<textarea id="textedit-{:id}" class="form-control" cols="40" rows="4">{:md}</textarea>';
+            html +=  '</div><div class="tab-pane fade" id="edit-preview-{:id}" role="tabpanel" aria-labelledby="edit-preview-tab-{:id}" data-editby="#textedit-{:id}">';
+            html +=  '<div class="md-preview"></div></div></div></div>';
+
+            // options for comment
             html += '<div class="comment-options">';
             html += '<button class="reply"  data-for={:timestamp}><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>';
             html += '<a href="{:edit_url}" class="comment-action comment-edit"><i class="fa fa-pencil" aria-hidden="true"></i><span>Edit</span></a>'
@@ -144,11 +154,19 @@ jQuery(function($) {
 
             // markdown template for the comment
             var ul_html = '<ul class="discussion-responses">{:li}<ul>';
-            var li_html = '<li class="discussion-comment user-comment">';
+            var li_html = '<li class="discussion-comment user-comment" data-node="{:id}">';
             li_html += '<div class="comment-header"><span class="comment-user">';
             li_html += '<a href="{:author_url}">{:author}</a></span><span class="comment-time">{:time}</span></div>';
-            li_html += '<div class="comment-content">{:content}</div></div>';
-            li_html += '<div class="comment-content-pre">{:md}</div>'
+            li_html += '<div class="comment-content" data-textedit="#text-{:id}-edit">{:content}</div></div>';
+                
+            li_html +=  '<div style="display: none;" id="text-{:id}-edit"><ul class="nav nav-tabs" role="tablist"><li class="nav-item">';
+            li_html +=  '<a class="nav-link active" id="edit-tab-{:id}" data-toggle="tab" href="#edit-{:id}" role="tab" aria-controls="edit-{:id}" aria-selected="true">Edit</a></li>';
+            li_html +=  '<li class="nav-item"><a class="nav-link nav-preview-edit" id="edit-preview-tab-{:id}" data-toggle="tab" href="#edit-preview-{:id}" role="tab" aria-controls="edit-preview-{:id}" aria-selected="true" data-container="prev">Preview</a>';
+            li_html +=  '</li></ul> <div class="tab-content"><div class="tab-pane fade show active" id="edit-{:id}" role="tabpanel" aria-labelledby="edit-tab">';
+            li_html +=  '<textarea id="textedit-{:id}" class="form-control" cols="40" rows="4">{:md}</textarea>';
+            li_html +=  '</div><div class="tab-pane fade" id="edit-preview-{:id}" role="tabpanel" aria-labelledby="edit-preview-tab-{:id}" data-editby="#textedit-{:id}">';
+            li_html +=  '<div class="md-preview"></div></div></div></div>';
+
             li_html += '<div class="comment-options">';
 
             // if the level is 0, then it can have replies
@@ -276,18 +294,17 @@ jQuery(function($) {
         $('body').on('click', 'a.comment-edit', function(event){
             event.preventDefault();
             var __this = $(this);
+            var anchor_span = __this.children('span');
             var li = __this.parent().parent();
             var comment_content = li.children('.comment-content');
-            var md_comment_content = li.children('.comment-content-pre');
-            
-            // get the markdown that is embedded in the html.
-            var md = md_comment_content.html();
-            var anchor_span = __this.children('span');
 
-            // switch the html to markdown and make it editable
-            comment_content.html(md);
-            comment_content.addClass('comment-content-edit');
-            comment_content.attr('contenteditable','true');
+            // get the edit area
+            var edit_area = $(comment_content.attr('data-textedit'));
+
+            // hide the current comment and display the markdown
+            comment_content.hide();
+            edit_area.show();
+
             // switch the current anchor to be a done anchor
             // to enable the a.comment-done onClick event to work. 
             anchor_span.text('Done');
@@ -303,28 +320,27 @@ jQuery(function($) {
             event.preventDefault();
             var __this = $(this);
             var li = __this.parent().parent();
+            var node_id = li.attr('data-node');
             var action_url = __this.attr('href');
+            var anchor_span = __this.children('span');
 
             // get the comment stuff
             var comment_content = li.children('.comment-content');
-            var md_comment_content = li.children('.comment-content-pre');
-            var html = comment_content.html();
-            var anchor_span = __this.children('span');
+            var edit_area = $(comment_content.attr('data-textedit'));
             
-            // make the comment area editable.
-            comment_content.removeClass('comment-content-edit');
-            comment_content.attr('contenteditable','false');
-            
-            // replace any breaks that the div adds to newlines.
-            // Prevents corruption of the expected outcome of the markup.
-            html = html.replace(/((<br>))/g, '\n');
-            
+            // get the markdown from the textarea
+            var comment_md = $('#textedit-' + node_id).val();
+
+            // hide edit area and show new comment
+            edit_area.hide();
+            comment_content.show();
+
             // Posts the updated comment to be save.
             $.ajax({
                 type: 'POST',
                 url: action_url,
                 data: {
-                    'comment': html,
+                    'comment': comment_md,
                 },
                 dataType: 'JSON',
                 beforeSend: function(xhr, settings) {
@@ -332,9 +348,8 @@ jQuery(function($) {
                     $.ajaxSettings.beforeSend(xhr, settings);
                 },
                 success: function(data) {
-                    // Updates the done button to become an edit button again.
+                    // update the comment
                     comment_content.html(data['html']);
-                    md_comment_content.html(data['md']);
                     
                     // update the label.
                     anchor_span.text('Edit');
@@ -351,26 +366,13 @@ jQuery(function($) {
          */
         $('body').on('click', 'a.nav-preview', function(event){
             var textarea = $('#reply-textarea').children('textarea');
-            
+
             // get the markdown
             var md = textarea.val();
             var preview = $('#markdown-preview');
-            $.ajax({
-                type: 'POST',
-                url: '/timeline/api/markdown/',
-                data: {
-                    'markdown': md,
-                },
-                dataType: 'JSON',
-                beforeSend: function(xhr, settings) {
-                    // Get the CSRF token. See csrf_ajax.js for more information.
-                    $.ajaxSettings.beforeSend(xhr, settings);
-                },
-                success: function(data) {
-                    // show the markdown in preview view
-                    preview.html(data['markdown']);
-                }
-            });
+            
+            // process new markdown
+            markdownPreview(preview, md);
         });
 
         /**
@@ -381,19 +383,44 @@ jQuery(function($) {
             var preview_id = __this.attr('aria-controls');
 
             // trim the preview_id to just get the node id.
-            var node_id = preview_id.substr(preview_id.length - 3);
+            var node_id = preview_id.replace("preview-", "");
             var preview = $('#' + preview_id).children('div.md-preview');
             var write = $('#write-'+node_id);
             var textarea = write.children('form').children('textarea');
             
-            // get the markdown from the user.
-            var md = textarea.val();
+            // process new markdown
+            markdownPreview(preview, textarea.val());
 
+        });
+
+        /**
+         * Enables the edit form for a comment to preview the markdown.
+         */
+        $('body').on('click', 'a.nav-preview-edit', function(event){
+            var __this = $(this);
+            var preview_tab = $(__this.attr('href'));
+            var preview = preview_tab.children('.md-preview').first();
+            var textarea = $(preview_tab.attr('data-editby'));
+
+            // process new markdown
+            markdownPreview(preview, textarea.val());
+        });
+
+
+        /**
+         * Processes the markdown from the comment form into
+         * html for preview.
+         *
+         * @param   preview             jQuery object of element that displays the html from request
+         * @param   markdown_comment    user comment in markdown form.
+         * @return  void
+         */
+        function markdownPreview(preview, markdown_comment) {
             $.ajax({
                 type: 'POST',
                 url: '/timeline/api/markdown/',
                 data: {
-                    'markdown': md,
+                    'markdown': markdown_comment,
                 },
                 dataType: 'JSON',
                 beforeSend: function(xhr, settings) {
@@ -405,34 +432,32 @@ jQuery(function($) {
                     preview.html(data['markdown']);
                 }
             });
-        });
+        }
 
     });
-    
-
-    
-    /**
-     * Turns a html string template and adds the data
-     * to create markup. To do this, the data parameter needs
-     * to be json or a dictionary, where the keys correspond
-     * to tokens in the html template. For example: Given the JSON
-     * {'id': 1}, there will be a token {:id} that will be mapped by this
-     * function. Any keys in the json that don't match, will be ignored.
-     *
-     * @param   html    string of html with the {:tokens} for the various JSON keys.
-     * @param   data    JSON or dictionary object.
-     * @return          HTML with the tokens filled in.   
-     */
-    function process_html(html, data) {
-        var re;
-        var keys = Object.keys(data);
-        // go through each key
-        for (var k in keys) {
-            // create regex for token
-            re = new RegExp('\{(:' + keys[k] + ')\}', 'g');
-            // find the token and replace everything with value
-            html = html.replace(re, data[keys[k]]);
-        }
-        return html;
-    }
 });
+
+/**
+ * Turns a html string template and adds the data
+ * to create markup. To do this, the data parameter needs
+ * to be json or a dictionary, where the keys correspond
+ * to tokens in the html template. For example: Given the JSON
+ * {'id': 1}, there will be a token {:id} that will be mapped by this
+ * function. Any keys in the json that don't match, will be ignored.
+ *
+ * @param   html    string of html with the {:tokens} for the various JSON keys.
+ * @param   data    JSON or dictionary object.
+ * @return          HTML with the tokens filled in.   
+ */
+function process_html(html, data) {
+    var re;
+    var keys = Object.keys(data);
+    // go through each key
+    for (var k in keys) {
+        // create regex for token
+        re = new RegExp('\{(:' + keys[k] + ')\}', 'g');
+        // find the token and replace everything with value
+        html = html.replace(re, data[keys[k]]);
+    }
+    return html;
+}

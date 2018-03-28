@@ -1,12 +1,11 @@
 from django.urls import reverse
 from django.views.generic import View
 from django.views.generic.list import ListView
-from django.views.generic.edit import UpdateView
 from django.shortcuts import redirect, get_object_or_404
 
 from timeline.models import TimelineEntry
 from timeline.utils.changes import process_changes, revert_changes
-from django.http import HttpResponse
+from timeline.utils.notifications.helpers import push_notification
 
 
 class TimelineListView(ListView):
@@ -66,7 +65,6 @@ class TimelineUpdateStatus(TimelinePostViews):
         to the model.
         """
         entry_pk = kwargs['pk']
-        module_pk = kwargs['module_pk']
 
         # get the current timeline entry.
         entry = get_object_or_404(TimelineEntry, pk=entry_pk)
@@ -80,6 +78,7 @@ class TimelineUpdateStatus(TimelinePostViews):
             pass
         entry.approved_by = request.user
         entry.save()
+        push_notification(entry.status, entry=entry, user=request.user)
         return redirect(self._get_url(**kwargs))
 
 
@@ -95,7 +94,6 @@ class TimelineRevertStage(TimelinePostViews):
         Post request to enable the rollback
         """
         entry_pk = kwargs['pk']
-        module_pk = kwargs['module_pk']
 
         entry = get_object_or_404(TimelineEntry, pk=entry_pk)
         if entry.status == 'Draft':

@@ -1,0 +1,16 @@
+{% extends 'core/main.html' %}
+{% load core_tags %}
+
+{% block title %}
+	Year Tutors
+{% endblock %}
+
+{% block main %}
+	<h3>Delete Confirm</h3><hr>
+
+    <form action="{% url 'delete_tutor' object.pk %}" method="post">{% csrf_token %}
+        <p>Are you sure you want to delete <strong>{{ object.get_tutor_name }}</strong> as a tutor for <strong>{{ object.programme_name }} {{ object.tutor_year}}</strong>?</p>
+        <input type="submit" value="Confirm" class="btn btn-danger"/>
+        <a href="{% url 'all_tutors' %}" class="btn btn-success">Cancel</a>
+    </form>
+{% endblock %}

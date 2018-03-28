@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.db import models
+from django.forms import CheckboxSelectMultiple
 
 
 class ProgrammeTutorAdmin(admin.ModelAdmin):
@@ -11,6 +13,10 @@ class ProgrammeTutorAdmin(admin.ModelAdmin):
 
     search_fields = ('programme_name', 'tutor_year', 'tutor_name', 'tutor_username')
     ordering = ('tutor_year', )
+
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': CheckboxSelectMultiple},
+    }
 
     def tutor_name(self, obj):
         """

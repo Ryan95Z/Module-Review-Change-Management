@@ -1,11 +1,11 @@
 from django.urls import reverse
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.shortcuts import render
 
 from core.views.mixins import AdminTestMixin
-from core.forms import ReviewerCreationForm
-from core.models import User, Reviewer
+from core.models import Reviewer, Module
+
+from timeline.utils.notifications.helpers import WatcherWrapper
 
 
 class AdminReviewerListView(AdminTestMixin, ListView):
@@ -29,7 +29,18 @@ class AdminReviewerCreateView(AdminTestMixin, CreateView):
         context['form_type'] = 'Create'
         return context
 
+    def __process_watchers(self):
+        # add modules that the user needs to review
+        # to thier notification watch list
+        user = self.object.user
+
+        # get all the modules
+        modules = list(self.object.modules.all())
+        watcher = WatcherWrapper(user)
+        watcher.bulk_module_add(*modules)
+
     def get_success_url(self):
+        self.__process_watchers()
         return reverse('all_reviewers')
 
 
@@ -38,14 +49,7 @@ class AdminReviewerUpdateView(AdminTestMixin, UpdateView):
     View to update existing reviewer
     """
     model = Reviewer
-    fields = ['user', 'modules']
-
-    def get_form(self, *args, **kwargs):
-        form = super(AdminReviewerUpdateView, self).get_form(*args, **kwargs)
-        # limit drop down to only contain those with reviewer permission
-        form.fields['user'].queryset = User.objects.filter(
-            is_module_reviewer=True)
-        return form
+    fields = ['modules']
 
     def get_context_data(self, **kwargs):
         kwargs = {'pk': self.object.id}
@@ -57,8 +61,37 @@ class AdminReviewerUpdateView(AdminTestMixin, UpdateView):
         context['form_type'] = 'Update'
         return context
 
+    def post(self, request, *args, **kwargs):
+        self.__process_watchers(request)
+        return super(
+            AdminReviewerUpdateView, self).post(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse('all_reviewers')
+
+    def __process_watchers(self, request):
+        """
+        Private method that updates notification watcher for a reviewer.
+        """
+        # get the new list of module codes
+        module_codes = request.POST.getlist('modules', None)
+        obj = self.get_object()
+        watcher = WatcherWrapper(obj.user)
+
+        # get the new modules
+        new_modules = set(Module.objects.filter(module_code__in=module_codes))
+        old_modules = set(obj.modules.all())
+
+        # compare the old modules to new to determine which
+        # modules are no longer being reviewed by reviewer
+        modules_to_remove = list(old_modules.difference(new_modules))
+
+        # remove modules that are not being reviewed by user
+        watcher.bulk_module_remove(*modules_to_remove)
+
+        # add any new modules that are being reviewed
+        watcher.bulk_module_add(*list(new_modules))
+
 
 class AdminReviewerDeleteView(AdminTestMixin, DeleteView):
     """
@@ -66,6 +99,15 @@ class AdminReviewerDeleteView(AdminTestMixin, DeleteView):
     """
     model = Reviewer
 
+    def post(self, request, *args, **kwargs):
+        # remove all modules from list that were being watched
+        obj = self.get_object()
+        modules = list(obj.modules.all())
+        watcher = WatcherWrapper(obj.user)
+        watcher.bulk_module_remove(*modules)
+
+        return super(
+            AdminReviewerDeleteView, self).post(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse("all_reviewers")
-

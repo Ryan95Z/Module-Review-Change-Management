@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse
 from core.tests.views.admin_views.admin_test_case import AdminViewTestCase
-from core.models import ProgrammeTutorManager, ProgrammeTutor, User
+from core.models import ProgrammeTutorManager, ProgrammeTutor, Module
 
 
 class AdminProgrammeTutorCreateViewTest(AdminViewTestCase):
@@ -13,7 +13,18 @@ class AdminProgrammeTutorCreateViewTest(AdminViewTestCase):
 
         # update admin user permissons for this test
         self.admin.is_year_tutor = True
+        self.admin.is_module_leader = True
         self.admin.save()
+
+        self.module = Module.objects.create(
+            module_code="CMXXXX",
+            module_name="Test Module",
+            module_credits="10",
+            module_level="L4",
+            semester="Autumn Semester",
+            delivery_language="English",
+            module_leader=self.admin
+        )
 
     def test_get_tutor_create_view(self):
         """
@@ -44,7 +55,8 @@ class AdminProgrammeTutorCreateViewTest(AdminViewTestCase):
         data = {
             'programme_name': 'Computer Science',
             'tutor_year': "Year 1",
-            'programme_tutor_user': self.admin.id
+            'programme_tutor_user': self.admin.id,
+            'modules': self.module.module_code
         }
 
         response = self.run_valid_post_view(self.url, data)
@@ -59,7 +71,7 @@ class AdminProgrammeTutorCreateViewTest(AdminViewTestCase):
         manager.model = ProgrammeTutor
 
         # create a tutor
-        tutor = manager.create_tutor('Computer Science', 'Year 1', self.user)
+        manager.create_tutor('Computer Science', 'Year 1', self.user)
 
         tutor_err = "['Programme tutor with this Programme tutor user already exists.']"
 
@@ -91,7 +103,6 @@ class AdminProgrammeTutorCreateViewTest(AdminViewTestCase):
             'programme_tutor_user': self.admin.username
         }
 
-
         # expected errors
         ex_user_err = "['Select a valid choice. That choice is not one of the available choices.']"
         ex_year_err = "['Select a valid choice. {} is not one of the available choices.']".format(year)
@@ -105,4 +116,3 @@ class AdminProgrammeTutorCreateViewTest(AdminViewTestCase):
         self.assertEquals(context['form_type'], 'Create')
         self.assertEquals(year_err, ex_year_err)
         self.assertEquals(user_err, ex_user_err)
-

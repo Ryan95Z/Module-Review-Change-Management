@@ -1,6 +1,6 @@
 from django.db import models
 from django.db import IntegrityError
-from core.models import User, UserManager
+from core.models import Module, User, UserManager
 
 # choices for tutor_year field in YearTutor model
 YEAR_CHOICES = (
@@ -100,6 +100,8 @@ class ProgrammeTutor(models.Model):
     )
 
     programme_tutor_user = models.OneToOneField(User)
+
+    modules = models.ManyToManyField(Module)
 
     objects = ProgrammeTutorManager()
 

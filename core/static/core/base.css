@@ -110,3 +110,23 @@ h1 > .h-sub-action{
 #sidebar-col .p-msg{
 	font-size: 20px;
 }
+
+
+@media(max-width: 1477px) {
+	#id_search {
+		display: block;
+		width: 180px;
+	}
+}
+
+@media(max-width: 1381px) {
+	#id_search {;
+		width: 150px;
+	}
+}
+
+@media(max-width: 1237px) {
+	#id_search {;
+		width: 140px;
+	}
+}

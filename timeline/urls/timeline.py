@@ -2,10 +2,21 @@ from django.conf.urls import url, include
 from django.contrib.auth.decorators import login_required
 from timeline.views import (TimelineListView, TimelineUpdateStatus,
                             TimelineRevertStage, DiscussionView,
-                            DiscussionUpdateView, DiscussionDeleteView)
+                            DiscussionUpdateView, DiscussionDeleteView,
+                            NotificationHubView, NotificationRedirectView)
 
 urlpatterns = [
     url(r'api/', include('timeline.urls.api')),
+
+    ##############################
+    # Notification URLs
+    ##############################
+    url(r'notifications/$', login_required(
+        NotificationHubView.as_view()), name='all_notification'),
+
+    url(r'(?P<pk>[0-9]+)/redirect/$', login_required(
+        NotificationRedirectView.as_view()), name='notification_redirect'),
+
 
     ##############################
     # Timeline URLs

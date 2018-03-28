@@ -60,12 +60,37 @@
                             </span>
                             <span class="comment-time"> {{ node.created|naturaltime }}</span>
                         </div>
-                        <div class="comment-content">
+                        <div class="comment-content" data-textedit="#text-{{ node.id }}-edit">
                             {% autoescape off %}
                             {{ node.comment|covert_markdown }}
                             {% endautoescape %}
                         </div>
-                        <div class="comment-content-pre">{{ node.comment }}</div>
+
+                        {% if request.user == node.author %}
+                        <div style="display: none;" id="text-{{ node.id }}-edit">
+                            <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="edit-tab-{{ node.id }}" data-toggle="tab" href="#edit-{{ node.id }}" role="tab" aria-controls="edit-{{ node.id }}" aria-selected="true">Edit</a>
+                            </li>   
+                            <li class="nav-item">
+                                <a class="nav-link nav-preview-edit" id="edit-preview-tab-{{ node.id }}" data-toggle="tab" href="#edit-preview-{{ node.id }}" role="tab" aria-controls="edit-preview-{{ node.id }}" aria-selected="true" data-container="prev">Preview</a>
+                            </li>
+                        </ul>
+
+
+                         <div class="tab-content">
+                            <div class="tab-pane fade show active" id="edit-{{ node.id }}" role="tabpanel" aria-labelledby="edit-tab">
+                                <textarea id="textedit-{{ node.id }}" class="form-control" cols="40" rows="4">{{ node.comment }}</textarea>
+                            </div>
+                            <div class="tab-pane fade" id="edit-preview-{{ node.id }}" role="tabpanel" aria-labelledby="edit-preview-tab-{{ node.id }}" data-editby="#textedit-{{ node.id }}">
+                                <div class="md-preview">
+                                
+                                </div>
+                            </div>
+                         </div>
+                        </div>
+                        {% endif %}
+
                         <div class="comment-options">
                         {% if node.level < 2 %}
                             <button class="reply" data-for="{{ node.created|date:'U' }}"><i class="fa fa-reply" aria-hidden="true"></i> Reply</button>
@@ -120,6 +145,7 @@
             {% endif %}
         </div>
 
+        <!--       post high level comment form -->
         <div class="comment-form">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
@@ -149,11 +175,31 @@
                 </div>
             </div>
         </div>
+        <!-- end of post high level comment form -->
     </div>
 </div>
+
+{% comment "Fake Textarea" %}
+    This is a fake textarea that is used to calculate the coordiantes
+    on where the user's cusor is so that a list of usernames can
+    be displayed.
+{% endcomment %}
+<div style="white-space:pre; visibility: hidden;" class="textarea form-control"><span id='user-cursor'>|</span></div>
+
+<!-- start mentions box -->
+<div class="mentions">
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="list-group" id="user-list">
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- end mentions box -->
+
 {% endblock %}
 
 {% block extra_scripts %}
-    <script type="text/javascript" src="{% static 'timeline/js/csrf_ajax.js' %}"></script>
     <script type="text/javascript" src="{% static 'timeline/js/discussions.js' %}"></script>
+    <script type="text/javascript" src="{% static 'timeline/js/mentions.js' %}"></script>
 {% endblock %}
