@@ -1,6 +1,9 @@
 from django.db import models
-from core.models import Module
 from django.core.validators import MaxValueValidator
+from timeline.register import timeline_register
+from timeline.models.integrate.entry import TLEntry
+
+from core.models import Module
 
 HAND_OUT_IN_OPTIONS = (
     ('1A', 'Autumn Week 1'),
@@ -32,7 +35,8 @@ SEMESTER_OPTIONS = (
     ('Spring Semester', 'Spring Semester'),
 )
 
-class ModuleAssessment(models.Model):
+@timeline_register
+class ModuleAssessment(TLEntry):
     """
     Model which represents the assessment details of a module
     """
@@ -46,7 +50,9 @@ class ModuleAssessment(models.Model):
     assessment_hand_in = models.CharField(choices=HAND_OUT_IN_OPTIONS, max_length=15, verbose_name="Hand in week")
     assessment_semester = models.CharField(blank=True, choices=SEMESTER_OPTIONS, max_length=15, verbose_name="Semester")
     learning_outcomes_covered = models.CharField(max_length=500, verbose_name="Learning Outcomes Covered")
-    module_code = models.ForeignKey(Module, on_delete=models.CASCADE)
 
     def __str__(self):
         return "Assessment for {}".format(self.module_code)
+
+    def title(self):
+        return "Assessments"

@@ -1,7 +1,11 @@
 from django.db import models
+from timeline.register import timeline_register
+from timeline.models.integrate.entry import TLEntry
+
 from core.models import Module
 
-class ModuleSoftware(models.Model):
+@timeline_register
+class ModuleSoftware(TLEntry):
     """
     Model which represents the software requirements for a module
     """
@@ -13,7 +17,9 @@ class ModuleSoftware(models.Model):
     software_packages = models.CharField(blank=True, max_length=100, verbose_name="Packages")
     software_tags = models.CharField(blank=True, max_length=100)
     software_additional_comment = models.TextField(blank=True, max_length=500, verbose_name="Additional Comments")
-    module_code = models.ForeignKey(Module, on_delete=models.CASCADE)
 
     def __str__(self):
         return "Software requirements for {}".format(self.module_code)
+    
+    def title(self):
+        return "Software"

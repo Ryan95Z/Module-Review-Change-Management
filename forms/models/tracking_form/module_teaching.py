@@ -1,7 +1,11 @@
 from django.db import models
+from timeline.register import timeline_register
+from timeline.models.integrate.entry import TLEntry
+
 from core.models import Module
 
-class ModuleTeaching(models.Model):
+@timeline_register
+class ModuleTeaching(TLEntry):
     """
     Model which represents teaching information related to a module
     """
@@ -15,10 +19,12 @@ class ModuleTeaching(models.Model):
     teaching_external_visits = models.PositiveSmallIntegerField(default=0, verbose_name="External Visits")
     teaching_schedule_assessment = models.PositiveSmallIntegerField(default=0, verbose_name="Scheduled examination/assessment")
     teaching_placement = models.PositiveSmallIntegerField(default=0, verbose_name="Placement")
-    module_code = models.OneToOneField(Module, on_delete=models.CASCADE)
 
     def __str__(self):
         return "Teaching hours for {}".format(self.module_code)
+
+    def title(self):
+        return "Module Teaching"
 
     def total_teaching_hours(self):
         """
