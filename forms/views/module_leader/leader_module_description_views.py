@@ -23,11 +23,20 @@ class LeaderModuleDescriptionView(View):
         # Assign user chosen factors to variables.
         module = Module.objects.get(pk=self.kwargs.get('pk'))
         form_type = kwargs.get('form_type', 'view')
-        form_exists = True
+
         edit_form = True if form_type == 'new' else False
+        form_version_exists = True
+        form_exists = True
 
         # Populate the ModuleDetails form
         details_form = ModuleDetailForm(instance=module)
+
+        # Get the most recent form version. If one does not exist,
+        # set a flag
+        try:
+            newest_form_version = ModuleDescriptionFormVersion.objects.get_most_recent()
+        except ObjectDoesNotExist:
+            form_version_exists = False
         
         # Retrieve the most recent description for this module, and
         # the form version it used. Convert it to form format.
@@ -41,11 +50,14 @@ class LeaderModuleDescriptionView(View):
         # We need to check if the existing data was created using the
         # most recent form. If not, we set a flag and only render the
         # most recent form if the user is in edit mode.
-        if form_exists and version_used == ModuleDescriptionFormVersion.objects.get_most_recent():
+        if form_version_exists and form_exists and version_used == newest_form_version:
             new_form_version = False
             module_description_form = ModuleDescriptionForm(initial=existing_form)
         else:
-            if not form_exists or edit_form:
+            if not form_version_exists:
+                new_form_version = False
+                module_description_form = None
+            elif not form_exists or edit_form:
                 new_form_version = False
                 module_description_form = ModuleDescriptionForm()
             else: 
@@ -55,6 +67,7 @@ class LeaderModuleDescriptionView(View):
         # Set the context with the form, and the user chosen stuff
         context = {
             'edit_form': edit_form,
+            'form_version_exists': form_version_exists,
             'form_exists': form_exists,
             'module': module,
             'details_form': details_form,

@@ -103,6 +103,9 @@
 </div>
 <div id="desc-collapse" class="collapse show" aria-labelledby="desc-heading">
 	<div class="card-body">
+		{% if not form_version_exists %}
+		<p>A Module Description form structure has not been defined.</p>
+		{% else %}
 		{% for field in form.visible_fields %}
 		<div class="row">
 			<h6>{{ field.label }}</h6>
@@ -123,6 +126,7 @@
 		</div>
 		<br>
 		{% endfor %}
+		{% endif %}
 	</div>
 </div>
 </div>
