@@ -22,6 +22,10 @@ class ModuleSupport(TLEntry):
         verbose_name="What skills will the tutors require?")
     tutorial_support_notes = models.TextField(blank=True, max_length=1000, verbose_name="Notes")
 
+    archive_flag = models.BooleanField(default=False)
+    staging_flag = models.BooleanField(default=False)
+    current_flag = models.BooleanField(default=False)
+
     def __str__(self):
         return "Support information for {}".format(self.module_code)
 

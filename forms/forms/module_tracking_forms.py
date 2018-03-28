@@ -8,7 +8,7 @@ class ModuleTeachingHoursForm(forms.ModelForm):
     """
     class Meta:
         model = ModuleTeaching
-        exclude = ('module_code',)
+        exclude = ('module_code', 'archive_flag', 'staging_flag', 'current_flag')
 
 class ModuleSupportForm(forms.ModelForm):
     """
@@ -16,7 +16,7 @@ class ModuleSupportForm(forms.ModelForm):
     """
     class Meta:
         model = ModuleSupport
-        exclude = ('module_code',)
+        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag')
         widgets = {
             'lab_support_required': CheckboxInput(attrs={'data-toggle':'collapse', 'data-target':'#lab_support_collapse'}),
             'lab_support_skills': TextInput(attrs={'class':'form-control form-control-sm'}),
@@ -32,7 +32,7 @@ class ModuleAssessmentsForm(forms.ModelForm):
     """
     class Meta:
         model = ModuleAssessment
-        exclude = ('module_code',)
+        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag')
         widgets = {
             'assessment_title': TextInput(attrs={'class':'form-control form-control-sm'}),
             'assessment_type': TextInput(attrs={'class':'form-control form-control-sm'}),
@@ -50,7 +50,7 @@ class ModuleSoftwareForm(forms.ModelForm):
     """
     class Meta:
         model = ModuleSoftware
-        exclude = ('module_code',)
+        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag')
         widgets = {
             'software_name': TextInput(attrs={'class':'form-control form-control-sm'}),
             'software_version': TextInput(attrs={'class':'form-control form-control-sm'}),
