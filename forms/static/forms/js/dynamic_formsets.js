@@ -25,7 +25,7 @@ function recalculateOrder(formPrefix) {
     var total_forms = $('#id_'+formPrefix+'-TOTAL_FORMS').val();
 
     rowOrderFields.each(function(order) {
-        $('#id_'+formPrefix+'-'+(order)+'-entity_order').val(order)
+        $('#id_'+formPrefix+'-'+order+'-entity_order').val(order)
         $(this).text(order + 1);
         $(this).siblings(".move-up").prop('disabled', false)
         $(this).siblings(".move-down").prop('disabled', false)

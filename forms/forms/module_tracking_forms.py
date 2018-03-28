@@ -51,3 +51,9 @@ class ModuleSoftwareForm(forms.ModelForm):
     class Meta:
         model = ModuleSoftware
         exclude = ('module_code',)
+        widgets = {
+            'software_name': TextInput(attrs={'class':'form-control form-control-sm'}),
+            'software_version': TextInput(attrs={'class':'form-control form-control-sm'}),
+            'software_packages': TextInput(attrs={'class':'form-control form-control-sm'}),
+            'software_additional_comment': TextInput(attrs={'class':'form-control form-control-sm'}),
+        }

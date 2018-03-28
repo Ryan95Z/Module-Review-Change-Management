@@ -20,6 +20,7 @@ class LeaderModuleTrackingForm(View):
         self.support_form = ModuleSupportForm
         self.software_form = ModuleSoftwareForm
         self.assessment_formset = formset_factory(ModuleAssessmentsForm, extra=1, max_num=1)
+        self.software_formset = formset_factory(ModuleSoftwareForm, extra=1, max_num=1)
 
     def get(self, request, **kwargs):
         """
@@ -31,7 +32,7 @@ class LeaderModuleTrackingForm(View):
         edit_form = True if form_type == 'new' else False
 
         try:
-            self.teaching_hours_form, self.support_form, self.software_form = populate_tracking_forms(module_pk)
+            self.teaching_hours_form, self.support_form = populate_tracking_forms(module_pk)
         except ObjectDoesNotExist:
             form_exists = False
 
@@ -40,6 +41,13 @@ class LeaderModuleTrackingForm(View):
             assessment_forms = self.assessment_formset(initial=assessments, prefix='assessment_form')
         except ObjectDoesNotExist:
             assessment_forms = self.assessment_formset(None)
+
+        try:
+            software = ModuleSoftware.objects.filter(module_code=module_pk).values()
+            software_forms = self.software_formset(initial=software, prefix='software_form')
+        except ObjectDoesNotExist:
+            software_forms = self.software_formset(None)
+        
 
         module = Module.objects.get(pk=self.kwargs.get('pk'))
         context = {
@@ -50,7 +58,7 @@ class LeaderModuleTrackingForm(View):
             'teaching_hours_form': self.teaching_hours_form,
             'support_form': self.support_form,
             'assessment_forms': assessment_forms,
-            'software_form': self.software_form
+            'software_forms': software_forms
         }
         return render(request, 'module_tracking_form.html', context)
 

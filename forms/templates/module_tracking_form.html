@@ -149,9 +149,11 @@
             </div>
             <div id="assessment-collapse" class="collapse show" aria-labelledby="assessment-heading">
             <div class="card-body">
-                Please provide data for all exams and assignments below (see guidance note 4). Total weighting
-                must equal 100%. Durations for coursework assessments should be realistic estimates of the time
-                required to complete the assessment.  <br><br>
+                <p>
+                    Please provide data for all exams and assignments below (see guidance note 4). Total weighting
+                    must equal 100%. Durations for coursework assessments should be realistic estimates of the time
+                    required to complete the assessment.
+                </p>
 
                 <div id="assessment_form-dynamic_form">
                 {{ assessment_forms.management_form }}
@@ -212,28 +214,35 @@
             </div>
             <div id="swlr-collapse" class="collapse show" aria-labelledby="swlr-heading">
             <div class="card-body">
-                Please provide details of the software and labs you will require. You should only list specific
-                applications or version numbers where it is strictly necessary - for example, “text editor” is
-                sufficient detail if any text editor will do, or “Python” if either of 2.* or 3.* are ok.  <br><br>
-                {{ software_form.non_field_errors }}
+                <p>
+                    Please provide details of the software and labs you will require. You should only list specific
+                    applications or version numbers where it is strictly necessary - for example, “text editor” is
+                    sufficient detail if any text editor will do, or “Python” if either of 2.* or 3.* are ok.
+                </p>
 
-                <div class="form-group row">
-                    <label class="col-sm-auto col-form-label col-form-label-sm">{{software_form.software_name.label}}</label>
-                    <div class="col-sm-auto ">
-                        {{ software_form.software_name|add_css_class:"form-control"}}
-                        {{ sofwtare_form.software_name.erorrs }}
-                    </div>
-                    <label class="col-sm-auto col-form-label col-form-label-sm">{{software_form.software_version.label}}</label>
-                    <div class="col-sm-1 ">
-                        {{ software_form.software_version|add_css_class:"form-control"}}
-                        {{ sofwtare_form.software_version.erorrs }}
-                    </div>
-                    <label class="col-sm-auto col-form-label col-form-label-sm">{{software_form.software_packages.label}}</label>
-                    <div class="col-sm-auto ">
-                        {{ software_form.software_packages|add_css_class:"form-control"}}
-                        {{ sofwtare_form.software_packages.erorrs }}
-                    </div>
-                </div>                    
+                <table class="table">
+                    <thead>
+                        <th class="px-1" scope="col">{{software_forms.empty_form.software_name.label}}</th>
+                        <th class="px-1" scope="col">{{software_forms.empty_form.software_version.label}}</th>
+                        <th class="px-1" scope="col">{{software_forms.empty_form.software_packages.label}}</th>
+                        <th class="px-1" scope="col">{{software_forms.empty_form.software_additional_comment.label}}</th>
+                        <th class="px-1" scope="col"></th>
+                    </thead>
+                    <tbody id="software_form-dynamic_form">
+                        {{ software_forms.management_form }}
+                        {% for software_form in software_forms.forms %}
+                        {{ software_form.non_field_errors }}
+                        <tr class="form_row dynamic-row">
+                            <td class="px-1 py-1">{{ software_form.software_name}}{{ software_form.software_name.errors}}</td>
+                            <td class="px-1 py-1" style="width: 70px">{{ software_form.software_version }}{{ software_form.software_version.errors }}</td>
+                            <td class="px-1 py-1">{{ software_form.software_packages }}{{ software_form.software_packages.errors }}</td>
+                            <td class="px-1 py-1">{{ software_form.software_additional_comment }}{{ software_form.software_additional_comment.errors }}</td>
+                            <td class="text-center px-1 py-1" style="width: 50px"><button type="button" name="software_form" class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>    
+                <div class="col-md-2 mx-auto"><button type="button" name="software_form" class="btn btn-primary btn-sm add-row">Add Another</button></div>               
             </div>
             </div>
         </div>
@@ -286,6 +295,21 @@
     <hr>
 </div>
 </div>
+
+<!-- Empty form for software formset -->
+<table style="display:none">
+<tbody id="software_form-empty_form">
+    {{ software_forms.empty_form.non_field_errors }}
+    <tr class="form_row dynamic-row">
+        <td class="px-1 py-1">{{ software_forms.empty_form.software_name}}{{ software_forms.empty_form.software_name.errors}}</td>
+        <td class="px-1 py-1" style="width: 70px">{{ software_forms.empty_form.software_version }}{{ software_forms.empty_form.software_version.errors }}</td>
+        <td class="px-1 py-1">{{ software_forms.empty_form.software_packages }}{{ software_forms.empty_form.software_packages.errors }}</td>
+        <td class="px-1 py-1">{{ software_forms.empty_form.software_additional_comment }}{{ software_forms.empty_form.software_additional_comment.errors }}</td>
+        <td class="text-center px-1 py-1" style="width: 50px"><button type="button" name="software_form" class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
+    </tr>
+</tbody>
+</table>
+
 {% endblock %}
 
 <!-- Loading in the scripts, including the dynamic formset script. 
