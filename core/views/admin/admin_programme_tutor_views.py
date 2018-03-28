@@ -1,21 +1,15 @@
 from django.urls import reverse
 from django.http import Http404
 from django.shortcuts import render
+from django.views.generic import View
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from core.views.mixins import AdminTestMixin
 from core.models import User, Module, ProgrammeTutor
-from core.forms import TutorForm
+from core.forms import TutorForm, YEAR_LEVELS
 
 from timeline.utils.notifications.helpers import WatcherWrapper
-
-YEAR_LEVELS = {
-    'Year 1': 'L4',
-    'Year 2': 'L5',
-    'Year 3': 'L6',
-    'MSC': 'L7',
-}
 
 
 class AdminProgrammeTutorListView(AdminTestMixin, ListView):
@@ -155,20 +149,22 @@ class AdminProgrammeTutorDeleteView(AdminTestMixin, DeleteView):
         watcher.bulk_module_remove(*list(modules))
 
 
-def get_modules(request):
+class FormCheckboxesView(View):
     """
-    Simple request function to get the html for the programme
-    tutor form.
+    Method to retrieve checkboxes for the form
+    when a specific year is provided.
     """
-    year = request.GET.get('year', None)
-    if year is None:
-        raise Http404("year has not been provided.")
+    def post(self, request, *args, **kwargs):
+        year = request.POST.get('year', None)
+        if year is None:
+            raise Http404("year has not been provided.")
 
-    try:
-        level = YEAR_LEVELS[year]
-    except KeyError:
-        raise Http404("Invalid year provided. \
-            Can either be year 1, year 2, year 3 or MSC")
+        try:
+            level = YEAR_LEVELS[year]
+        except KeyError:
+            raise Http404("Invalid year provided. \
+                Can either be year 1, year 2, year 3 or MSC")
 
-    modules = Module.objects.filter(module_level=level)
-    return render(request, "core/misc/checkboxes.html", {'modules': modules})
+        modules = Module.objects.filter(module_level=level)
+        context = {'modules': modules}
+        return render(request, "core/misc/checkboxes.html", context)

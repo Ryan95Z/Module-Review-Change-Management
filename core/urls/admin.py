@@ -31,7 +31,11 @@ urlpatterns = [
         AdminProgrammeTutorUpdateView.as_view()), name="update_tutor"),
     url(r'^tutors/(?P<pk>[0-9]+)/delete/$', login_required(
         AdminProgrammeTutorDeleteView.as_view()), name="delete_tutor"),
-    url(r'^tutors/load_modules/$', get_modules, name="ajax_tutor_modules"),
+
+    # url used in ajax request to get the updated checkboxes
+    # for the dynamic form.
+    url(r'^api/tutors/load_modules/$', login_required(
+        FormCheckboxesView.as_view()), name="ajax_tutor_modules"),
 
 
     # reviewer urls

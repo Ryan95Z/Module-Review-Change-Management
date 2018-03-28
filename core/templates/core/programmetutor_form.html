@@ -28,9 +28,28 @@
 					{% endif %}
 				{% endfor %}
 
-				{{ form.modules.label_tag }}
-				{{ form.modules }}
-				{{ form.modules.errors }}
+				
+				<div class="row">
+					<div class="col-md-9">
+						{{ form.modules.label_tag }}
+						<div class="row" id="module_list">
+						
+					
+							{% for choice_id, choice_label in form.modules.field.choices %}
+								
+								<div class="col-md-3">
+									<label for="id_modules_{{ forloop.counter0 }}">
+										<input name="modules" value="{{ choice_id }}" id="id_modules_{{ forloop.counter0 }}" type="checkbox">
+										{{ choice_label }}
+									</label>
+								</div>
+
+							{% endfor %}
+							{{ form.modules.errors }}
+						</div>
+					</div>
+				</div>
+				<br>
 
 				<button type="submit" class="btn btn-primary">{{ form_type }}</button>
 				<a href="{% url 'all_tutors' %}" class="btn btn-danger">Cancel</a>
@@ -48,11 +67,17 @@
 
 				$.ajax({
 					url: url,
+					method: 'POST',
 					data: {
 						'year': year,
 					},
+					dataType: 'html',
+                	beforeSend: function(xhr, settings) {
+                    	// Get the CSRF token. See csrf_ajax.js for more information.
+                    	$.ajaxSettings.beforeSend(xhr, settings);
+                	},
 					success: function(data) {
-						$('#id_modules').html(data);
+						$('#module_list').html(data);
 					}
 				});
 			});
