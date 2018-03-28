@@ -3,7 +3,7 @@ from django.views.generic.detail import DetailView
 from core.views.mixins import LoggedInTestMixin
 from django.shortcuts import render, redirect
 from django.core.exceptions import ObjectDoesNotExist
-from django.forms import formset_factory
+from django.forms import formset_factory, modelformset_factory
 
 from core.models import Module
 from forms.models.tracking_form import ModuleTeaching, ModuleSupport, ModuleAssessment, ModuleSoftware
@@ -16,47 +16,65 @@ class LeaderModuleTrackingForm(View):
     """
     def __init__(self):
         super(LeaderModuleTrackingForm, self).__init__()
-        self.teaching_hours_form = ModuleTeachingHoursForm
-        self.support_form = ModuleSupportForm
-        self.software_form = ModuleSoftwareForm
-        self.assessment_formset = formset_factory(ModuleAssessmentsForm, extra=1, max_num=1)
-        self.software_formset = formset_factory(ModuleSoftwareForm, extra=1, max_num=1)
+        self.assessment_formset = modelformset_factory(ModuleAssessment, form=ModuleAssessmentsForm, extra=1, max_num=1)
+        self.software_formset = modelformset_factory(ModuleSoftware, form=ModuleSoftwareForm, extra=1, max_num=1)
 
     def get(self, request, **kwargs):
         """
         GET method which provides the tracking form
         """
+        # Getting varibales from the url
         module_pk = kwargs.get('pk')
         form_type = kwargs.get('form_type', 'view')
+
+        # Setting flags
+        form_errors = []
         form_exists = True
         edit_form = True if form_type == 'new' else False
 
+        # Gathering existing data. If nothing is found, create empty forms
         try:
-            self.teaching_hours_form, self.support_form = populate_tracking_forms(module_pk)
+            teaching_hours = ModuleTeaching.objects.get(module=module_pk)
+            teaching_hours_form = ModuleTeachingHoursForm(instance=teaching_hours)
         except ObjectDoesNotExist:
-            form_exists = False
+            teaching_hours_form = ModuleTeachingHoursForm()
+            form_errors.append("Teaching Hours")
+  
+        try:
+            support = ModuleSupport.objects.get(module=module_pk)
+            support_form = ModuleSupportForm(instance=support)
+        except ObjectDoesNotExist:
+            support_form = ModuleSupportForm()
+            form_errors.append("Teaching Support")
 
         try:
             assessments = ModuleAssessment.objects.filter(module=module_pk).values()
-            assessment_forms = self.assessment_formset(initial=assessments, prefix='assessment_form')
+            assessment_forms = self.assessment_formset(queryset=assessments, prefix='assessment_form')
         except ObjectDoesNotExist:
-            assessment_forms = self.assessment_formset(None)
+            assessment_forms = self.assessment_formset()
+            form_errors.append("Assessment")
 
         try:
             software = ModuleSoftware.objects.filter(module=module_pk).values()
-            software_forms = self.software_formset(initial=software, prefix='software_form')
+            software_forms = self.software_formset(queryset=software, prefix='software_form')
         except ObjectDoesNotExist:
             software_forms = self.software_formset(None)
-        
+            form_errors.append("Software Requirements")
+
+        print(form_errors)
+
+        if len(form_errors) > 3:
+            form_exists = False
 
         module = Module.objects.get(pk=module_pk)
         context = {
             'edit_form': edit_form,
+            'form_errors': form_errors,
             'form_exists': form_exists,
             'pk': module_pk,
             'module': module, 
-            'teaching_hours_form': self.teaching_hours_form,
-            'support_form': self.support_form,
+            'teaching_hours_form': teaching_hours_form,
+            'support_form': support_form,
             'assessment_forms': assessment_forms,
             'software_forms': software_forms
         }

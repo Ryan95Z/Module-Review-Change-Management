@@ -29,7 +29,9 @@
 <h6>Module Code: {{ module.module_code }} ({{ module.module_name }})</h6><hr>
 
 {% if not form_exists and not edit_form %}
-    There's isnt a description for this module yet. <a href="{% url 'update_module_description' module.module_code %}" >Create one.</a> 
+    <p>There's isnt a description for this module yet. <a href="{% url 'update_module_description' module.module_code %}" >Create one.</a> </p>
+{% elif not form_version_exists %}
+	<p>A Module Description form structure has not been defined.</p>
 {% else %}
 <form action="" method="POST" id="module-description">
 {% csrf_token %}
@@ -103,9 +105,6 @@
 </div>
 <div id="desc-collapse" class="collapse show" aria-labelledby="desc-heading">
 	<div class="card-body">
-		{% if not form_version_exists %}
-		<p>A Module Description form structure has not been defined.</p>
-		{% else %}
 		{% for field in form.visible_fields %}
 		<div class="row">
 			<h6>{{ field.label }}</h6>
@@ -126,7 +125,6 @@
 		</div>
 		<br>
 		{% endfor %}
-		{% endif %}
 	</div>
 </div>
 </div>

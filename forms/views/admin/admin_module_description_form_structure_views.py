@@ -64,7 +64,7 @@ class AdminModuleDescriptionFormModify(View):
             newest_version_fields = FormFieldEntity.objects.get_most_recent_form()
             field_formset = self.field_formset_object(request.GET or None, initial=newest_version_fields, prefix='structure_form')
         except ObjectDoesNotExist :
-            field_formset = self.field_formset_object(request.GET or None)
+            field_formset = self.field_formset_object(request.GET or None, prefix='structure_form')
 
         return render(request, self.template, {'field_formset': field_formset})
 
