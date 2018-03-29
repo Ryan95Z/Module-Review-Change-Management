@@ -47,24 +47,24 @@ class TimelineListView(ListView):
         return context
 
 
-class TimelinePostViews(View):
-    """
-    Base View for making post requests to the
-    timeline.
-    """
-    def get(self, request, *args, **kwargs):
-        """
-        Get method to return user to the timeline,
-        if they attempt to access the view.
-        """
-        return redirect(self._get_url(**kwargs))
+# class TimelinePostViews(View):
+#     """
+#     Base View for making post requests to the
+#     timeline.
+#     """
+#     def get(self, request, *args, **kwargs):
+#         """
+#         Get method to return user to the timeline,
+#         if they attempt to access the view.
+#         """
+#         return redirect(self._get_url(**kwargs))
 
-    def _get_url(self, **kwargs):
-        """
-        Method to get the url once finished processing.
-        """
-        kwargs.pop('pk', '')
-        return reverse('module_timeline', kwargs=kwargs)
+#     def _get_url(self, **kwargs):
+#         """
+#         Method to get the url once finished processing.
+#         """
+#         kwargs.pop('pk', '')
+#         return reverse('module_timeline', kwargs=kwargs)
 
 
 # class TimelineUpdateStatus(TimelinePostViews):

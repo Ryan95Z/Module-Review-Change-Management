@@ -1,6 +1,7 @@
+from abc import ABC, abstractmethod
+from django.db.models import ForeignKey, ManyToManyField
 from timeline.models import TimelineEntry
 from timeline.models.integrate.entry import TLEntry
-from abc import ABC, abstractmethod
 
 
 class BaseEntry(ABC):
@@ -17,7 +18,7 @@ class BaseEntry(ABC):
         pass
 
     @abstractmethod
-    def create_entry(self, parent, entry_type):
+    def create_entry(self, parent, entry_type, status='Draft'):
         pass
 
     def get_module_code(self):
@@ -42,9 +43,18 @@ class InitEntry(BaseEntry):
 
         md = ""
         for field, changes in diff.items():
-            field = field.replace("_", " ")
+            field_str = field.replace("_", " ")
             updated = changes[1]
-            md += "* {}: {}\n".format(field, updated)
+
+            field_type = self.model._meta.get_field(field)
+            if isinstance(field_type, ForeignKey):
+                key_object = field_type.rel.to
+                updated = key_object.objects.get(pk=updated)
+
+            if isinstance(field_type, ManyToManyField):
+                continue
+
+            md += "* {}: {}\n".format(field_str, updated)
         return md
 
     def sum_changes(self):
@@ -53,7 +63,7 @@ class InitEntry(BaseEntry):
             self.module_code()
         )
 
-    def create_entry(self, parent, entry_type):
+    def create_entry(self, parent, entry_type, status='Draft'):
         title = self.model.title()
         changes = self.content()
         module_code = self.get_module_code()
@@ -67,7 +77,8 @@ class InitEntry(BaseEntry):
             object_id=object_id,
             content_object=content_object,
             parent_entry=parent,
-            entry_type=entry_type
+            entry_type=entry_type,
+            status=status
         )
 
 
@@ -87,10 +98,20 @@ class UpdateEntry(BaseEntry):
         diff = self.model.differences()
         md = ""
         for field, changes in diff.items():
-            field = field.replace("_", " ")
+            field_str = field.replace("_", " ")
             original = changes[0]
             updated = changes[1]
-            md += "* {}: {} -> {}\n".format(field, original, updated)
+
+            field_type = self.model._meta.get_field(field)
+            if isinstance(field_type, ForeignKey):
+                key_object = field_type.rel.to
+                original = key_object.objects.get(pk=original)
+                updated = key_object.objects.get(pk=updated)
+
+            if isinstance(field_type, ManyToManyField):
+                continue
+
+            md += "* {}: {} -> {}\n".format(field_str, original, updated)
         return md
 
     def sum_changes(self):
@@ -99,7 +120,7 @@ class UpdateEntry(BaseEntry):
             n_changes, self.model.title()
         )
 
-    def create_entry(self, parent, entry_type):
+    def create_entry(self, parent, entry_type, status='Draft'):
         if not self.have_changes():
             return
 
@@ -116,5 +137,6 @@ class UpdateEntry(BaseEntry):
             object_id=object_id,
             content_object=content_object,
             parent_entry=parent,
-            entry_type=entry_type
+            entry_type=entry_type,
+            status=status,
         )
