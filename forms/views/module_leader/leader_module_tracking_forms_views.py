@@ -10,7 +10,7 @@ from forms.models.tracking_form import ModuleTeaching, ModuleSupport, ModuleAsse
 from forms.forms import ModuleTeachingHoursForm, ModuleSupportForm, ModuleAssessmentsForm, ModuleSoftwareForm
 from forms.utils.tracking_form import populate_tracking_forms
 
-from timeline.utils.timeline.helpers import process_changes
+from timeline.utils.timeline.tracking_form import tracking_to_timeline
 
 class LeaderModuleTrackingForm(View):
     """
@@ -138,7 +138,8 @@ class LeaderModuleTrackingForm(View):
                 software.current_flag = True
                 software.save()
 
-            process_changes(
+            # this makes the timeline
+            tracking_to_timeline(
                 module.module_code,
                 teaching_hours_object,
                 support_object,

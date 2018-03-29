@@ -2,27 +2,6 @@ from timeline.models import TimelineEntry
 from abc import ABC, abstractmethod
 
 
-def process_changes(module_code, *args):
-    entries = []
-    for obj in args:
-        if not isinstance(obj, list):
-            print(obj.is_new)
-            if not obj.is_new:
-                entries.append(BuildTLEntry(obj))
-            else:
-                entries.append(InitEntry(obj))
-        else:
-            for i in obj:
-                print(i.is_new)
-                if not i.is_new:
-                    entries.append(BuildTLEntry(i))
-                else:
-                    entries.append(InitEntry(i))
-
-    p = ParentEntry(module_code, *entries)
-    p.create_master()
-
-
 class BaseEntry(ABC):
     def __init__(self, model):
         self.model = model
@@ -88,9 +67,9 @@ class InitEntry(BaseEntry):
         )
 
 
-class BuildTLEntry(BaseEntry):
+class UpdateEntry(BaseEntry):
     def __init__(self, model):
-        super(BuildTLEntry, self).__init__(model)
+        super(UpdateEntry, self).__init__(model)
 
     def get_differences(self):
         if self.changes is None:
@@ -135,36 +114,3 @@ class BuildTLEntry(BaseEntry):
             parent_entry=parent,
             entry_type='Tracking-Form'
         )
-
-
-class ParentEntry(object):
-    def __init__(self, module_code, *args):
-        self.args = args
-        self.module_code = module_code
-
-    def create_master(self):
-        title = "Changes to tracking form"
-        content = "Changes to tracking form:\n\n"
-        module_code = self.module_code
-        object_id = 0
-        content_object = None
-
-        changes = 0
-
-        for a in self.args:
-            if a.have_changes():
-                content += "* {}\n".format(a.sum_changes())
-                changes += 1
-
-        if changes > 0:
-            master = TimelineEntry.objects.create(
-                title=title,
-                changes=content,
-                module_code=module_code,
-                object_id=object_id,
-                content_object=content_object,
-                entry_type='Tracking-Form'
-            )
-
-            for a in self.args:
-                a.create_entry(master)
