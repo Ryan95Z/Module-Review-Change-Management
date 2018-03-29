@@ -9,9 +9,13 @@ from timeline.utils.notifications.helpers import push_notification
 
 
 class TrackingFormChanges(View):
+    template_name = "timeline/timeline_tracking_changes.html"
+
     def get(self, request, *args, **kwargs):
         module_code = kwargs.get('module_pk')
         pk = kwargs.get('pk')
+
+        parent = TimelineEntry.objects.get(pk=pk)
 
         entires = TimelineEntry.objects.filter(
             module_code=module_code,
@@ -19,9 +23,11 @@ class TrackingFormChanges(View):
         )
 
         context = {
+            'module_code': module_code,
+            'parent': parent,
             'entries': entires
         }
-        return render(request, "timeline/tl_test.html", context)
+        return render(request, self.template_name, context)
 
 
 class TimelineListView(ListView):
