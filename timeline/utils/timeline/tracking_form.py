@@ -65,4 +65,4 @@ class ParentEntry(object):
             )
 
             for a in self.args:
-                a.create_entry(master)
+                a.create_entry(master, 'Tracking-Form')

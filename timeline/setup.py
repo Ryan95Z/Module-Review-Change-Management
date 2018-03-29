@@ -1,6 +1,6 @@
-from core.models import Module
-from timeline.utils.factory import EntryFactory
-from timeline.utils.entries import InitEntry, UpdatedEntry
+# from core.models import Module
+# from timeline.utils.factory import EntryFactory
+# from timeline.utils.entries import InitEntry, UpdatedEntry
 
 
 from timeline.utils.notifications.factory import NotificationFactory
@@ -13,11 +13,11 @@ from timeline.utils.notifications.notices import (DiscussionNotice,
 
 
 # set up the entry factory for module
-INIT = "init" + Module.__name__
-UPDATE = "update" + Module.__name__
+# INIT = "init" + Module.__name__
+# UPDATE = "update" + Module.__name__
 
-EntryFactory.register(InitEntry, INIT, Module)
-EntryFactory.register(UpdatedEntry, UPDATE, Module)
+# EntryFactory.register(InitEntry, INIT, Module)
+# EntryFactory.register(UpdatedEntry, UPDATE, Module)
 
 
 # set the notification factory

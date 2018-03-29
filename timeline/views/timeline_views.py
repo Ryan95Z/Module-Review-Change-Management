@@ -4,7 +4,7 @@ from django.views.generic.list import ListView
 from django.shortcuts import redirect, get_object_or_404, render
 
 from timeline.models import TimelineEntry
-from timeline.utils.changes import process_changes, revert_changes
+# from timeline.utils.changes import process_changes, revert_changes
 from timeline.utils.notifications.helpers import push_notification
 
 
@@ -67,59 +67,59 @@ class TimelinePostViews(View):
         return reverse('module_timeline', kwargs=kwargs)
 
 
-class TimelineUpdateStatus(TimelinePostViews):
-    """
-    View to enable a timeline entry to be updated,
-    which will push the changes in the model it is monitoring.
-    """
+# class TimelineUpdateStatus(TimelinePostViews):
+    # """
+    # View to enable a timeline entry to be updated,
+    # which will push the changes in the model it is monitoring.
+    # """
 
-    def post(self, request, *args, **kwargs):
-        """
-        Post method to take the current entry and
-        move it to the next status. If confirmed from
-        being at status 'Staged', it will make the changes
-        to the model.
-        """
-        entry_pk = kwargs['pk']
+    # def post(self, request, *args, **kwargs):
+    #     """
+    #     Post method to take the current entry and
+    #     move it to the next status. If confirmed from
+    #     being at status 'Staged', it will make the changes
+    #     to the model.
+    #     """
+    #     entry_pk = kwargs['pk']
 
-        # get the current timeline entry.
-        entry = get_object_or_404(TimelineEntry, pk=entry_pk)
+    #     # get the current timeline entry.
+    #     entry = get_object_or_404(TimelineEntry, pk=entry_pk)
 
-        if entry.status == 'Draft':
-            entry.status = 'Staged'
-        elif entry.status == 'Staged':
-            process_changes(entry_pk)
-            entry.status = 'Confirmed'
-        else:
-            pass
-        entry.approved_by = request.user
-        entry.save()
-        push_notification(entry.status, entry=entry, user=request.user)
-        return redirect(self._get_url(**kwargs))
+    #     if entry.status == 'Draft':
+    #         entry.status = 'Staged'
+    #     elif entry.status == 'Staged':
+    #         process_changes(entry_pk)
+    #         entry.status = 'Confirmed'
+    #     else:
+    #         pass
+    #     entry.approved_by = request.user
+    #     entry.save()
+    #     push_notification(entry.status, entry=entry, user=request.user)
+    #     return redirect(self._get_url(**kwargs))
 
 
-class TimelineRevertStage(TimelinePostViews):
-    """
-    View to allow uncommited changes to be pushed
-    back to the previous status before confirmed.
-    Once it is a draft, it will have changes deleted
-    with the entry.
-    """
-    def post(self, request, *args, **kwargs):
-        """
-        Post request to enable the rollback
-        """
-        entry_pk = kwargs['pk']
+# class TimelineRevertStage(TimelinePostViews):
+#     """
+#     View to allow uncommited changes to be pushed
+#     back to the previous status before confirmed.
+#     Once it is a draft, it will have changes deleted
+#     with the entry.
+#     """
+#     def post(self, request, *args, **kwargs):
+#         """
+#         Post request to enable the rollback
+#         """
+#         entry_pk = kwargs['pk']
 
-        entry = get_object_or_404(TimelineEntry, pk=entry_pk)
-        if entry.status == 'Draft':
-            # delete entry as no longer needed
-            revert_changes(entry_pk)
-            entry.delete()
-        elif entry.status == 'Staged':
-            # move the status back to 'Draft'
-            entry.status = 'Draft'
-            entry.save()
-        else:
-            pass
-        return redirect(self._get_url(**kwargs))
+#         entry = get_object_or_404(TimelineEntry, pk=entry_pk)
+#         if entry.status == 'Draft':
+#             # delete entry as no longer needed
+#             revert_changes(entry_pk)
+#             entry.delete()
+#         elif entry.status == 'Staged':
+#             # move the status back to 'Draft'
+#             entry.status = 'Draft'
+#             entry.save()
+#         else:
+#             pass
+#         return redirect(self._get_url(**kwargs))

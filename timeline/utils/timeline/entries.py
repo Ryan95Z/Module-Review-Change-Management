@@ -1,4 +1,5 @@
 from timeline.models import TimelineEntry
+from timeline.models.integrate.entry import TLEntry
 from abc import ABC, abstractmethod
 
 
@@ -16,10 +17,13 @@ class BaseEntry(ABC):
         pass
 
     @abstractmethod
-    def create_entry(self, parent):
+    def create_entry(self, parent, entry_type):
         pass
 
-    def module_code(self):
+    def get_module_code(self):
+        cls = self.model.__class__
+        if not issubclass(cls, TLEntry):
+            return self.model.module_code
         return self.model.module_code()
 
     def title(self):
@@ -49,10 +53,10 @@ class InitEntry(BaseEntry):
             self.module_code()
         )
 
-    def create_entry(self, parent):
+    def create_entry(self, parent, entry_type):
         title = self.model.title()
         changes = self.content()
-        module_code = self.module_code()
+        module_code = self.get_module_code()
         object_id = self.model.pk
         content_object = self.model
 
@@ -63,7 +67,7 @@ class InitEntry(BaseEntry):
             object_id=object_id,
             content_object=content_object,
             parent_entry=parent,
-            entry_type='Tracking-Form'
+            entry_type=entry_type
         )
 
 
@@ -95,13 +99,13 @@ class UpdateEntry(BaseEntry):
             n_changes, self.model.title()
         )
 
-    def create_entry(self, parent):
+    def create_entry(self, parent, entry_type):
         if not self.have_changes():
             return
 
         title = self.model.title()
         changes = self.content()
-        module_code = self.module_code()
+        module_code = self.get_module_code()
         object_id = self.model.pk
         content_object = self.model
 
@@ -112,5 +116,5 @@ class UpdateEntry(BaseEntry):
             object_id=object_id,
             content_object=content_object,
             parent_entry=parent,
-            entry_type='Tracking-Form'
+            entry_type=entry_type
         )

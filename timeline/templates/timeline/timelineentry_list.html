@@ -44,26 +44,6 @@
 									{% endautoescape %}
 								</div>
 								<div class="timeline-actions">
-									<!-- {% if entry.status != 'Confirmed' %}
-									<div class="timeline-approve">
-										<form action="{% url 'approve_entry' module_code entry.id %}" method="POST">
-										{% csrf_token %}
-										{% if entry.status == 'Draft' %}
-											<button type="submit" class="btn btn-sm btn-warning">Approve</button>
-											
-										{% elif entry.status == 'Staged' %}
-											<button type="submit" class="btn btn-sm btn-success">Approve</button>
-										{% endif %}
-										</form>
-									</div>
-									<div class="timeline-cancel">
-										<form action="{% url 'revert_entry' module_code entry.id %}" method="POST">
-											{% csrf_token %}
-											<button class="btn btn-danger btn-sm" type="submit">Cancel</button>
-										</form>
-									</div>
-									{% endif %}
- -->
 									<div class="timeline-meta">
 										{% if entry.status != "Draft" %}
 											{% if entry.approved_by is None %}
