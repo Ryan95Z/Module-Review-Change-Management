@@ -73,4 +73,4 @@ class ModuleAssessment(TLEntry):
         return "Assessment for {}".format(self.module)
 
     def title(self):
-        return "Assessment: {}".format(self.assessment_title)
+        return "Assessment {}".format(self.assessment_title)

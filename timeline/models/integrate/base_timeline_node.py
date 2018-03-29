@@ -9,6 +9,7 @@ class BaseTimelineNode(models.Model):
     to be tracked.
     """
     created = models.DateTimeField(auto_now_add=True)
+    is_new = False
 
     def __init__(self, *args, **kwargs):
         super(BaseTimelineNode, self).__init__(*args, **kwargs)
@@ -48,7 +49,7 @@ class BaseTimelineNode(models.Model):
         """
         return bool(self.differences())
 
-    # def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs):
         # INIT = "init" + self.__class__.__name__
         # UPDATE = "update" + self.__class__.__name__
         """
@@ -60,7 +61,8 @@ class BaseTimelineNode(models.Model):
         # optional kwargs argument that will force the changes
         # to not be placed on the timeline.
         # override_update = kwargs.pop('override_update', False)
-        # if not self.created:
+        if not self.created:
+            self.is_new = True
         #     # create an init entry
         #     super(BaseTimelineNode, self).save(*args, **kwargs)
         #     EntryFactory.makeEntry(INIT, self)
@@ -72,7 +74,7 @@ class BaseTimelineNode(models.Model):
         #     return
 
         # save the changes to database
-        # super(BaseTimelineNode, self).save(*args, **kwargs)
+        super(BaseTimelineNode, self).save(*args, **kwargs)
 
     class Meta:
         abstract = True

@@ -40,4 +40,4 @@ class ModuleSoftware(TLEntry):
         return "Software requirements for {}".format(self.module)
     
     def title(self):
-        return "Software: {}".format(self.software_name)
+        return "Software {}".format(self.software_name)
