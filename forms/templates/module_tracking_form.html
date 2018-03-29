@@ -1,8 +1,13 @@
 {% extends 'core/main.html' %}
 {% load core_tags %}
+{% load static %}
 
 {% block title %}
     {{ module.module_code }}
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'forms/css/tracking_form.css' %}">
 {% endblock %}
 
 {% block main %}
@@ -10,201 +15,342 @@
 <form action="" method="POST" id="tracking-form">
 {% csrf_token %}
 
+<!-- Basic navigation for now -->
 <div class="row">
 	<ul class="nav nav-pills">
-		<li class="nav-item dropdown">
-			<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-				Tracking Form
-			</a>
-			<div class="dropdown-menu">
-				<a class="dropdown-item" href="{% url 'view_module_description' module.module_code %}">Module Description</a>
-				<a class="dropdown-item active" href="#">Tracking Form</a>
-            </div>
-        </li>
-        {% if not edit_form %}
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'new_module_tracking_form' pk=pk %}">New Tracking Form</a>
-        </li>
-        {% else %}
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'view_module_tracking_form' pk=pk %}">Back</a>
-        </li>
-        {% endif %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Tracking Form</a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="{% url 'view_module_description' module.module_code %}">Module Description</a>
+            <a class="dropdown-item active" href="#">Tracking Form</a>
+        </div>
+    </li>
+    {% if not edit_form %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'new_module_tracking_form' pk=pk %}">New Tracking Form</a>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'view_module_tracking_form' pk=pk %}">Back</a>
+    </li>
+    {% endif %}
 	</ul>
 </div>
 
+<!-- The main form -->
 <div class="row">
-	<div class="col-md-12">
-        <h2>Module Description Tracking Form {% if edit_form %} (Edit Mode) {% else %} (View Mode){% endif %}</h2><hr>
-        <h6>Module Code: {{ module.module_code }} ({{ module.module_name }})</h6><hr>
-            {% if not form_exists and not edit_form %}
-            A tracking form for this module does not seem to exist
-            {% else %}
-            <div class="card">
-                <div class="card-header" data-toggle="collapse" data-target="#soc-collapse" id="soc-heading" aria-expanded="true" aria-controls="soc-collapse" style="cursor:pointer">
-                <h6 class="mb-0">
-                    1. Summary of Changes
-                </h6>
-                </div>
-            
-                <div id="soc-collapse" class="collapse show" aria-labelledby="soc-heading">
-                <div class="card-body">
-                    Please indicate where changes to the module description have been proposed by completing the checkbox
-                    and all fields that apply.
+<div class="col-md-12">
+    <h2>Module Description Tracking Form {% if edit_form %} (Edit Mode) {% else %} (View Mode){% endif %}</h2><hr>
+    <h6>Module Code: {{ module.module_code }} ({{ module.module_name }})</h6><hr>
+        {% if not form_exists and not edit_form %}
+        A tracking form for this module does not seem to exist
+        {% else %}
+        <!-- Dynamic form section generated based on the existing module desctiption form -->
+        <div class="card">
+            <div class="card-header" data-toggle="collapse" data-target="#soc-collapse" id="soc-heading" aria-expanded="true" aria-controls="soc-collapse" style="cursor:pointer">
+            <h6 class="mb-0">
+                1. Summary of Changes
+            </h6>
+            </div>
+        
+            <div id="soc-collapse" class="collapse show" aria-labelledby="soc-heading">
+            <div class="card-body">
+                Please indicate where changes to the module description have been proposed by completing the checkbox
+                and all fields that apply.
 
-                    <h3>THIS NEEDS TO BE BASED ON DYNAMIC FIELDS.</h3>
+                <h3>THIS NEEDS TO BE BASED ON DYNAMIC FIELDS.</h3>
+            </div>
+            </div>
+        </div>
+
+        <!-- Methods of teaching section. This section can be generated in a loop, as it just want each
+             form element after the last -->
+        <div class="card">
+            <div class="card-header" id="mot-heading" data-toggle="collapse" data-target="#mot-collapse" aria-expanded="false" aria-controls="mot-collapse" style="cursor:pointer">
+            <h6 class="mb-0">
+                2. Methods of Teaching
+                {% if "Teaching Hours" in form_errors and not edit_form %}
+                    <!-- If no data was found for this section (in view mode), display a badge -->
+                    <span class="badge badge-secondary">Missing Data</span>
+		        {% endif %}
+            </h6>
+            </div>
+            <div id="mot-collapse" class="collapse show" aria-labelledby="mot-heading">
+            <div class="card-body">
+                Please provide accurate figures for each teaching activity. This information will be used for
+                timetabling, workload modelling and the School's KIS return, so it is essential that it is correct. One
+                credit point equates to 10 learning hours. <br><br>
+
+                {{ teaching_hours_form.non_field_errors }}
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label col-form-label-sm"><b>Teaching Method</b></label>
+                    <label class="col-sm-2 col-form-label col-form-label-sm"><b>Indicative Hours</b></label>
                 </div>
+                {% for field in teaching_hours_form %}
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label col-form-label-sm">{{field.label}}</label>
+                    <div class="col-sm-2">
+                        {{ field|add_css_class:"form-control form-control-sm"}}
+                    </div>
+                    <div class="col">
+                        {{ field.errors }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            </div>
+        </div>
+
+        <!-- Teaching support section. Parts of this section collapse based on whether the checkboxes are clicked -->
+        <div class="card">
+            <div class="card-header" id="ts-heading" data-toggle="collapse" data-target="#ts-collapse" aria-expanded="false" aria-controls="ts-collapse" style="cursor:pointer">
+            <h6 class="mb-0">
+                3. Teaching Support
+                {% if "Teaching Support" in form_errors and not edit_form %}
+                    <!-- If no data was found for this section (in view mode), display a badge -->
+                    <span class="badge badge-secondary">Missing Data</span>
+		        {% endif %}
+            </h6>
+            </div>
+            <div id="ts-collapse" class="collapse show" aria-labelledby="ts-heading">
+            <div class="card-body">
+                {{ support_form.non_field_errors }}
+                <div class="form-check">
+                    {{support_form.lab_support_required}}
+                    <label class="form-check-label" for="{{support_form.lab_support_required.id_for_label}}">{{support_form.lab_support_required.label}}</label>
+                </div>
+                <div class="collapse" id="lab_support_collapse">
+                    <div class="form-group">
+                        <label for="{{support_form.lab_support_skills.id_for_label}}">{{support_form.lab_support_skills.label}}</label>
+                        {{support_form.lab_support_skills}}
+                        {{support_form.lab_support_skills.errors}}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{support_form.lab_support_notes.id_for_label}}">{{support_form.lab_support_notes.label}}</label>
+                        {{support_form.lab_support_notes}}
+                        {{support_form.lab_support_notes.errors}}
+                    </div>
+                </div>
+                <div class="form-check">
+                    {{support_form.tutorial_support_required}}
+                    <label class="form-check-label" for="{{support_form.tutorial_support_required.id_for_label}}">{{support_form.tutorial_support_required.label}}</label>
+                </div>
+                <div class="collapse" id="tutorial_support_collapse">
+                    <div class="form-group">
+                        <label for="{{support_form.tutorial_support_skills.id_for_label}}">{{support_form.tutorial_support_skills.label}}</label>
+                        {{support_form.tutorial_support_skills}}
+                        {{support_form.tutorial_support_skills.errors}}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{support_form.tutorial_support_notes.id_for_label}}">{{support_form.tutorial_support_notes.label}}</label>
+                        {{support_form.tutorial_support_notes}}
+                        {{support_form.tutorial_support_skills.errors}}
+                    </div>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-header" id="mot-heading" data-toggle="collapse" data-target="#mot-collapse" aria-expanded="false" aria-controls="mot-collapse" style="cursor:pointer">
-                <h6 class="mb-0">
-                    2. Methods of Teaching
-                </h6>
-                </div>
-                <div id="mot-collapse" class="collapse show" aria-labelledby="mot-heading">
-                <div class="card-body">
-                    Please provide accurate figures for each teaching activity. This information will be used for
-                    timetabling, workload modelling and the School's KIS return, so it is essential that it is correct. One
-                    credit point equates to 10 learning hours. <br><br>
-
-                    {{ teaching_hours_form.non_field_errors }}
-
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label col-form-label-sm"><b>Teaching Method</b></label>
-                        <label class="col-sm-2 col-form-label col-form-label-sm"><b>Indicative Hours</b></label>
-                    </div>
-                    {% for field in teaching_hours_form %}
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label col-form-label-sm">{{field.label}}</label>
-                        <div class="col-sm-2">
-                            {{ field|add_css_class:"form-control form-control-sm"}}
-                        </div>
-                        <div class="col">
-                            {{ field.errors }}
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                </div>
             </div>
-            <div class="card">
-                <div class="card-header" id="ts-heading" data-toggle="collapse" data-target="#ts-collapse" aria-expanded="false" aria-controls="ts-collapse" style="cursor:pointer">
-                <h6 class="mb-0">
-                    3. Teaching Support
-                </h6>
-                </div>
-                <div id="ts-collapse" class="collapse show" aria-labelledby="ts-heading">
-                <div class="card-body">
-                    {{ support_form.non_field_errors }}
-                    {% for field in support_form %}
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label col-form-label-sm">{{field.label}}</label>
-                        <div class="col-sm-6 ">
-                            {{ field }}
-                        </div>
-                        <div class="col">
-                            {{ field.errors }}
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header" id="assessment-heading" data-toggle="collapse" data-target="#assessment-collapse" aria-expanded="false" aria-controls="assessment-collapse" style="cursor:pointer">
+        </div>
+
+        <!-- Assessment section. This utilises the dynamic formset script to enable the user to add an remove assessments -->
+        <div class="card">
+            <div class="card-header" id="assessment-heading" data-toggle="collapse" data-target="#assessment-collapse" aria-expanded="false" aria-controls="assessment-collapse" style="cursor:pointer">
                 <h6 class="mb-0">
                     4. Assessments
+                    {% if "Assessments" in form_errors and not edit_form %}
+                    <!-- If no data was found for this section (in view mode), display a badge -->
+                    <span class="badge badge-secondary">Missing Data</span>
+		        {% endif %}
                 </h6>
-                </div>
-                <div id="assessment-collapse" class="collapse show" aria-labelledby="assessment-heading">
-                <div class="card-body">
+            </div>
+            <div id="assessment-collapse" class="collapse show" aria-labelledby="assessment-heading">
+            <div class="card-body">
+                <p>
                     Please provide data for all exams and assignments below (see guidance note 4). Total weighting
                     must equal 100%. Durations for coursework assessments should be realistic estimates of the time
-                    required to complete the assessment.  <br><br>
+                    required to complete the assessment.
+                </p>
+
+                <div id="assessment_form-dynamic_form">
+                {{ assessment_forms.management_form }}
+                {% for assessment_form in assessment_forms %}
+                <div class="dynamic-row">
+                    {{ assessment_form.assessment_id }}
+                    <span><i class="assessment-number">Assessment {{ forloop.counter }}</i> {% if edit_form %}(<button type="button" name="assessment_form" class="delete-row">remove</button>){%endif%}</span>
                     {{ assessment_form.non_field_errors }}
-                    <div class="form-group row">
-                        <label class="col-sm-1 col-form-label col-form-label-sm">{{assessment_form.assessment_title.label}}</label>
-                        <div class="col ">
-                            {{ assessment_form.assessment_title|add_css_class:"form-control"}}
+                    <div class="form-row">
+                        <div class="form-group col-md-2">
+                            <label for="{{assessment_form.assessment_type.id_for_label}}">{{assessment_form.assessment_type.label}}</label>
+                            {{ assessment_form.assessment_type }}
+                            {{ assessment_form.assessment_type.errors }}
+                        </div>
+                        <div class="form-group col-md-10">
+                            <label for="{{assessment_form.assessment_title.id_for_label}}">{{assessment_form.assessment_title.label}}</label>
+                            {{ assessment_form.assessment_title }}
+                            {{ assessment_form.assessment_title.errors }}
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="col-sm-1 col-form-label col-form-label-sm">{{assessment_form.assessment_type.label}}</label>
-                        <div class="col">
-                            {{ assessment_form.assessment_type|add_css_class:"form-control"}}
+                    <div class="form-row">
+                        <div class="form-group col-md-2">
+                            <label for="{{assessment_form.assessment_weight.id_for_label}}">{{assessment_form.assessment_weight.label}}</label>
+                            {{ assessment_form.assessment_weight }}
+                            {{ assessment_form.assessment_weight.errors }}
                         </div>
-                        <label class="col-sm-auto col-form-label col-form-label-sm">{{assessment_form.assessment_weight.label}}</label>
-                        <div class="col-sm-1">
-                            {{ assessment_form.assessment_weight|add_css_class:"form-control"}}
+                        <div class="form-group col-md-2">
+                            <label for="{{assessment_form.assessment_duration.id_for_label}}">{{assessment_form.assessment_duration.label}}</label>
+                            {{ assessment_form.assessment_duration }}
+                            {{ assessment_form.assessment_duration.errors }}
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-auto col-form-label col-form-label-sm">{{assessment_form.assessment_duration.label}}</label>
-                        <div class="col-sm-1">
-                            {{ assessment_form.assessment_duration|add_css_class:"form-control"}}
+                        <div class="form-group col-md-4">
+                            <label for="{{assessment_form.assessment_hand_out.id_for_label}}">{{assessment_form.assessment_hand_out.label}}</label>
+                            {{ assessment_form.assessment_hand_out }}
+                            {{ assessment_form.assessment_hand_out.errors }}
                         </div>
-                        <label class="col-sm-auto col-form-label col-form-label-sm">{{assessment_form.assessment_hand_out.label}}</label>
-                        <div class="col-sm-auto">
-                            {{ assessment_form.assessment_hand_out|add_css_class:"form-control"}}
-                        </div>
-                        <label class="col-sm-auto col-form-label col-form-label-sm">{{assessment_form.assessment_hand_in.label}}</label>
-                        <div class="col-sm-auto">
-                            {{ assessment_form.assessment_hand_in|add_css_class:"form-control"}}
+                        <div class="form-group col-md-4">
+                            <label for="{{assessment_form.assessment_hand_in.id_for_label}}">{{assessment_form.assessment_hand_in.label}}</label>
+                            {{ assessment_form.assessment_hand_in }}
+                            {{ assessment_form.assessment_hand_in.errors }}
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label col-form-label-sm">{{assessment_form.learning_outcomes_covered.label}}</label>
-                        <div class="col">
-                            {{ assessment_form.learning_outcomes_covered|add_css_class:"form-control"}}
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="{{assessment_form.learning_outcomes_covered.id_for_label}}">{{assessment_form.learning_outcomes_covered.label}}</label>
+                            {{ assessment_form.learning_outcomes_covered }}
+                            {{ assessment_form.learning_outcomes_covered.errors }}
                         </div>
                     </div>
+                    <hr>
                 </div>
+                {% endfor %}
                 </div>
+                {% if edit_form %}
+                <div class="col-md-2 mx-auto"><button type="button" name="assessment_form" class="btn btn-primary btn-sm add-row">Add Another</button></div>
+                {% endif %}
             </div>
-            <div class="card">
-                <div class="card-header" id="swlr-heading" data-toggle="collapse" data-target="#swlr-collapse" aria-expanded="false" aria-controls="swlr-collapse" style="cursor:pointer">
+            </div>
+        </div>
+
+        <!-- Software and lab reqs section. Will also use the dynamic formsets. Should also have an interaction with
+             Waad's code to make intelligent suggestions to the user -->
+        <div class="card">
+            <div class="card-header" id="swlr-heading" data-toggle="collapse" data-target="#swlr-collapse" aria-expanded="false" aria-controls="swlr-collapse" style="cursor:pointer">
                 <h6 class="mb-0">
                     5. Software and Lab Requirements
+                    {% if "Software Requirements" in form_errors and not edit_form %}
+                    <!-- If no data was found for this section (in view mode), display a badge -->
+                    <span class="badge badge-secondary">Missing Data</span>
+		        {% endif %}
                 </h6>
-                </div>
-                <div id="swlr-collapse" class="collapse show" aria-labelledby="swlr-heading">
-                <div class="card-body">
+            </div>
+            <div id="swlr-collapse" class="collapse show" aria-labelledby="swlr-heading">
+            <div class="card-body">
+                <p>
                     Please provide details of the software and labs you will require. You should only list specific
                     applications or version numbers where it is strictly necessary - for example, “text editor” is
-                    sufficient detail if any text editor will do, or “Python” if either of 2.* or 3.* are ok.  <br><br>
-                    {{ software_form.non_field_errors }}
+                    sufficient detail if any text editor will do, or “Python” if either of 2.* or 3.* are ok.
+                </p>
 
-                    <div class="form-group row">
-                        <label class="col-sm-auto col-form-label col-form-label-sm">{{software_form.software_name.label}}</label>
-                        <div class="col-sm-auto ">
-                            {{ software_form.software_name|add_css_class:"form-control"}}
-                            {{ sofwtare_form.software_name.erorrs }}
-                        </div>
-                        <label class="col-sm-auto col-form-label col-form-label-sm">{{software_form.software_version.label}}</label>
-                        <div class="col-sm-1 ">
-                            {{ software_form.software_version|add_css_class:"form-control"}}
-                            {{ sofwtare_form.software_version.erorrs }}
-                        </div>
-                        <label class="col-sm-auto col-form-label col-form-label-sm">{{software_form.software_packages.label}}</label>
-                        <div class="col-sm-auto ">
-                            {{ software_form.software_packages|add_css_class:"form-control"}}
-                            {{ sofwtare_form.software_packages.erorrs }}
-                        </div>
-                    </div>                    
-                </div>
-                </div>
+                <table class="table">
+                    <thead>
+                        <th class="px-1" scope="col">{{software_forms.empty_form.software_name.label}}</th>
+                        <th class="px-1" scope="col">{{software_forms.empty_form.software_version.label}}</th>
+                        <th class="px-1" scope="col">{{software_forms.empty_form.software_packages.label}}</th>
+                        <th class="px-1" scope="col">{{software_forms.empty_form.software_additional_comment.label}}</th>
+                        <th class="px-1" scope="col"></th>
+                    </thead>
+                    <tbody id="software_form-dynamic_form">
+                        {{ software_forms.management_form }}
+                        {% for software_form in software_forms.forms %}
+                        {{ software_form.non_field_errors }}
+                        <tr class="form_row dynamic-row">
+                                {{ software_form.software_id }}
+                            <td class="px-1 py-1">{{ software_form.software_name}}{{ software_form.software_name.errors}}</td>
+                            <td class="px-1 py-1" style="width: 70px">{{ software_form.software_version }}{{ software_form.software_version.errors }}</td>
+                            <td class="px-1 py-1">{{ software_form.software_packages }}{{ software_form.software_packages.errors }}</td>
+                            <td class="px-1 py-1">{{ software_form.software_additional_comment }}{{ software_form.software_additional_comment.errors }}</td>
+                            {% if edit_form %}<td class="text-center px-1 py-1" style="width: 50px"><button type="button" name="software_form" class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>{%endif%}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table> 
+                {% if edit_form %}   
+                <div class="col-md-2 mx-auto"><button type="button" name="software_form" class="btn btn-primary btn-sm add-row">Add Another</button></div> 
+                {% endif %}              
             </div>
-            {% endif %}
-        {% if edit_form %}
-        <button type="submit" disabled class="btn btn-primary btn-lg btn-block">Submit (Disabled for now)</button>
+            </div>
+        </div>
         {% endif %}
-	</div>
+    {% if edit_form %}
+    <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
+    {% endif %}
+</div>
+</div>
+</form>
+
+<!-- Empty form for assessments to allow more to be generated -->
+<div id="assessment_form-empty_form" style="display:none">
+<div class="dynamic-row">
+    <span><i class="assessment-number">Assessment</i> (<button type="button" name="assessment_form" class="delete-row">remove</button>)</span>
+    <div class="form-row">
+        <div class="form-group col-md-2">
+        <label for="{{assessment_forms.empty_form.assessment_type.id_for_label}}">{{assessment_forms.empty_form.assessment_type.label}}</label>
+        {{ assessment_forms.empty_form.assessment_type }}
+        </div>
+        <div class="form-group col-md-10">
+        <label for="{{assessment_forms.empty_form.assessment_title.id_for_label}}">{{assessment_forms.empty_form.assessment_title.label}}</label>
+        {{ assessment_forms.empty_form.assessment_title }}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-2">
+        <label for="{{assessment_forms.empty_form.assessment_weight.id_for_label}}">{{assessment_forms.empty_form.assessment_weight.label}}</label>
+        {{ assessment_forms.empty_form.assessment_weight }}
+        </div>
+        <div class="form-group col-md-2">
+        <label for="{{assessment_forms.empty_form.assessment_duration.id_for_label}}">{{assessment_forms.empty_form.assessment_duration.label}}</label>
+        {{ assessment_forms.empty_form.assessment_duration }}
+        </div>
+        <div class="form-group col-md-4">
+        <label for="{{assessment_forms.empty_form.assessment_hand_out.id_for_label}}">{{assessment_forms.empty_form.assessment_hand_out.label}}</label>
+        {{ assessment_forms.empty_form.assessment_hand_out }}
+        </div>
+        <div class="form-group col-md-4">
+        <label for="{{assessment_forms.empty_form.assessment_hand_in.id_for_label}}">{{assessment_forms.empty_form.assessment_hand_in.label}}</label>
+        {{ assessment_forms.empty_form.assessment_hand_in }}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-12">
+        <label for="{{assessment_forms.empty_form.learning_outcomes_covered.id_for_label}}">{{assessment_forms.empty_form.learning_outcomes_covered.label}}</label>
+        {{ assessment_forms.empty_form.learning_outcomes_covered }}
+        </div>
+    </div>
+    <hr>
+</div>
 </div>
 
-</form>
+<!-- Empty form for software formset -->
+<table style="display:none">
+<tbody id="software_form-empty_form">
+    {{ software_forms.empty_form.non_field_errors }}
+    <tr class="form_row dynamic-row">
+        <td class="px-1 py-1">{{ software_forms.empty_form.software_name}}{{ software_forms.empty_form.software_name.errors}}</td>
+        <td class="px-1 py-1" style="width: 70px">{{ software_forms.empty_form.software_version }}{{ software_forms.empty_form.software_version.errors }}</td>
+        <td class="px-1 py-1">{{ software_forms.empty_form.software_packages }}{{ software_forms.empty_form.software_packages.errors }}</td>
+        <td class="px-1 py-1">{{ software_forms.empty_form.software_additional_comment }}{{ software_forms.empty_form.software_additional_comment.errors }}</td>
+        <td class="text-center px-1 py-1" style="width: 50px"><button type="button" name="software_form" class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
+    </tr>
+</tbody>
+</table>
+
 {% endblock %}
+
+<!-- Loading in the scripts, including the dynamic formset script. 
+     If the form is view only, disable all inputs                 -->
 {% block scripts %}
+    <script type="text/javascript" src="{% static 'forms/js/dynamic_formsets.js' %}"></script>
+    <script type="text/javascript" src="{% static 'forms/js/tracking_form.js' %}"></script>
+
     {% if not edit_form %}
     <script type="text/javascript">
         $("#tracking-form :input").attr("disabled", true)

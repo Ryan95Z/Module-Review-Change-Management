@@ -1,6 +1,10 @@
 from django.db import models
-from core.models import Module
 from django.core.validators import MaxValueValidator
+from timeline.register import timeline_register
+from timeline.models.integrate.entry import TLEntry
+from django.core.exceptions import ObjectDoesNotExist
+
+from core.models import Module
 
 HAND_OUT_IN_OPTIONS = (
     ('1A', 'Autumn Week 1'),
@@ -32,7 +36,19 @@ SEMESTER_OPTIONS = (
     ('Spring Semester', 'Spring Semester'),
 )
 
-class ModuleAssessment(models.Model):
+class ModuleAssessmentManager(models.Manager):
+    """
+    Manager for the ModuleAssessment model
+    """
+    def get_current_assessments(self, module):
+        current_assessments = self.filter(module=module, current_flag=True)
+        if current_assessments:
+            return current_assessments
+        else:
+            raise ObjectDoesNotExist('No assessments with the current_flag exist')
+
+@timeline_register
+class ModuleAssessment(TLEntry):
     """
     Model which represents the assessment details of a module
     """
@@ -46,7 +62,15 @@ class ModuleAssessment(models.Model):
     assessment_hand_in = models.CharField(choices=HAND_OUT_IN_OPTIONS, max_length=15, verbose_name="Hand in week")
     assessment_semester = models.CharField(blank=True, choices=SEMESTER_OPTIONS, max_length=15, verbose_name="Semester")
     learning_outcomes_covered = models.CharField(max_length=500, verbose_name="Learning Outcomes Covered")
-    module_code = models.ForeignKey(Module, on_delete=models.CASCADE)
+
+    archive_flag = models.BooleanField(default=False)
+    staging_flag = models.BooleanField(default=False)
+    current_flag = models.BooleanField(default=False)
+
+    objects = ModuleAssessmentManager()
 
     def __str__(self):
-        return "Assessment for {}".format(self.module_code)
+        return "Assessment for {}".format(self.module)
+
+    def title(self):
+        return "Assessment"

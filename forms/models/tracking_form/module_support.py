@@ -1,8 +1,12 @@
 from django.db import models
+from timeline.register import timeline_register
+from timeline.models.integrate.entry import TLEntry
+
 from core.models import Module
 import json
 
-class ModuleSupport(models.Model):
+@timeline_register
+class ModuleSupport(TLEntry):
     """
     Model which represents the support information related to a module
     """
@@ -17,10 +21,16 @@ class ModuleSupport(models.Model):
     tutorial_support_skills = models.CharField(blank=True, max_length=500, 
         verbose_name="What skills will the tutors require?")
     tutorial_support_notes = models.TextField(blank=True, max_length=1000, verbose_name="Notes")
-    module_code = models.OneToOneField(Module, on_delete=models.CASCADE)
+
+    archive_flag = models.BooleanField(default=False)
+    staging_flag = models.BooleanField(default=False)
+    current_flag = models.BooleanField(default=False)
 
     def __str__(self):
-        return "Support information for {}".format(self.module_code)
+        return "Support information for {}".format(self.module)
+
+    def title(self):
+        return "Module Support"
 
     def lab_support_skills_json(self):
         """
