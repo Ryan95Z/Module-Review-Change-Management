@@ -37,7 +37,7 @@ class ModuleSoftware(TLEntry):
     objects = ModuleSoftwareManager()
 
     def __str__(self):
-        return "Software requirements for {}".format(self.module_code)
+        return "Software requirements for {}".format(self.module)
     
     def title(self):
         return "Software"

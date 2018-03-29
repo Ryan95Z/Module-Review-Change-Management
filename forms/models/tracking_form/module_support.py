@@ -27,7 +27,7 @@ class ModuleSupport(TLEntry):
     current_flag = models.BooleanField(default=False)
 
     def __str__(self):
-        return "Support information for {}".format(self.module_code)
+        return "Support information for {}".format(self.module)
 
     def title(self):
         return "Module Support"

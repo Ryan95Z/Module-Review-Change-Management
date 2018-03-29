@@ -124,10 +124,12 @@
                     <div class="form-group">
                         <label for="{{support_form.lab_support_skills.id_for_label}}">{{support_form.lab_support_skills.label}}</label>
                         {{support_form.lab_support_skills}}
+                        {{support_form.lab_support_skills.errors}}
                     </div>
                     <div class="form-group">
                         <label for="{{support_form.lab_support_notes.id_for_label}}">{{support_form.lab_support_notes.label}}</label>
                         {{support_form.lab_support_notes}}
+                        {{support_form.lab_support_notes.errors}}
                     </div>
                 </div>
                 <div class="form-check">
@@ -138,10 +140,12 @@
                     <div class="form-group">
                         <label for="{{support_form.tutorial_support_skills.id_for_label}}">{{support_form.tutorial_support_skills.label}}</label>
                         {{support_form.tutorial_support_skills}}
+                        {{support_form.tutorial_support_skills.errors}}
                     </div>
                     <div class="form-group">
                         <label for="{{support_form.tutorial_support_notes.id_for_label}}">{{support_form.tutorial_support_notes.label}}</label>
                         {{support_form.tutorial_support_notes}}
+                        {{support_form.tutorial_support_skills.errors}}
                     </div>
                 </div>
             </div>
@@ -171,40 +175,48 @@
                 {{ assessment_forms.management_form }}
                 {% for assessment_form in assessment_forms %}
                 <div class="dynamic-row">
+                    {{ assessment_form.assessment_id }}
                     <span><i class="assessment-number">Assessment {{ forloop.counter }}</i> {% if edit_form %}(<button type="button" name="assessment_form" class="delete-row">remove</button>){%endif%}</span>
                     {{ assessment_form.non_field_errors }}
                     <div class="form-row">
                         <div class="form-group col-md-2">
                             <label for="{{assessment_form.assessment_type.id_for_label}}">{{assessment_form.assessment_type.label}}</label>
                             {{ assessment_form.assessment_type }}
+                            {{ assessment_form.assessment_type.errors }}
                         </div>
                         <div class="form-group col-md-10">
                             <label for="{{assessment_form.assessment_title.id_for_label}}">{{assessment_form.assessment_title.label}}</label>
                             {{ assessment_form.assessment_title }}
+                            {{ assessment_form.assessment_title.errors }}
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-2">
                             <label for="{{assessment_form.assessment_weight.id_for_label}}">{{assessment_form.assessment_weight.label}}</label>
                             {{ assessment_form.assessment_weight }}
+                            {{ assessment_form.assessment_weight.errors }}
                         </div>
                         <div class="form-group col-md-2">
                             <label for="{{assessment_form.assessment_duration.id_for_label}}">{{assessment_form.assessment_duration.label}}</label>
                             {{ assessment_form.assessment_duration }}
+                            {{ assessment_form.assessment_duration.errors }}
                         </div>
                         <div class="form-group col-md-4">
                             <label for="{{assessment_form.assessment_hand_out.id_for_label}}">{{assessment_form.assessment_hand_out.label}}</label>
                             {{ assessment_form.assessment_hand_out }}
+                            {{ assessment_form.assessment_hand_out.errors }}
                         </div>
                         <div class="form-group col-md-4">
                             <label for="{{assessment_form.assessment_hand_in.id_for_label}}">{{assessment_form.assessment_hand_in.label}}</label>
                             {{ assessment_form.assessment_hand_in }}
+                            {{ assessment_form.assessment_hand_in.errors }}
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="{{assessment_form.learning_outcomes_covered.id_for_label}}">{{assessment_form.learning_outcomes_covered.label}}</label>
                             {{ assessment_form.learning_outcomes_covered }}
+                            {{ assessment_form.learning_outcomes_covered.errors }}
                         </div>
                     </div>
                     <hr>
@@ -251,6 +263,7 @@
                         {% for software_form in software_forms.forms %}
                         {{ software_form.non_field_errors }}
                         <tr class="form_row dynamic-row">
+                                {{ software_form.software_id }}
                             <td class="px-1 py-1">{{ software_form.software_name}}{{ software_form.software_name.errors}}</td>
                             <td class="px-1 py-1" style="width: 70px">{{ software_form.software_version }}{{ software_form.software_version.errors }}</td>
                             <td class="px-1 py-1">{{ software_form.software_packages }}{{ software_form.software_packages.errors }}</td>
@@ -268,7 +281,7 @@
         </div>
         {% endif %}
     {% if edit_form %}
-    <button type="submit" disabled class="btn btn-primary btn-lg btn-block">Submit (Disabled for now)</button>
+    <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
     {% endif %}
 </div>
 </div>

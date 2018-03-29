@@ -70,7 +70,7 @@ class ModuleAssessment(TLEntry):
     objects = ModuleAssessmentManager()
 
     def __str__(self):
-        return "Assessment for {}".format(self.module_code)
+        return "Assessment for {}".format(self.module)
 
     def title(self):
-        return "Assessments"
+        return "Assessment"

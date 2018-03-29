@@ -16,7 +16,7 @@ class LeaderModuleTrackingForm(View):
     """
     def __init__(self):
         super(LeaderModuleTrackingForm, self).__init__()
-        self.assessment_formset = modelformset_factory(ModuleAssessment, form=ModuleAssessmentsForm, extra=1, max_num=1)
+        self.assessment_formset = modelformset_factory(ModuleAssessment, form=ModuleAssessmentsForm, extra=1, min_num=1, max_num=1, validate_min=True)
         self.software_formset = modelformset_factory(ModuleSoftware, form=ModuleSoftwareForm, extra=1, max_num=1)
 
     def get(self, request, **kwargs):
@@ -34,6 +34,9 @@ class LeaderModuleTrackingForm(View):
         edit_form = True if form_type == 'new' else False
 
         # Gathering existing data. If nothing is found, create empty forms
+        # For all sections where no data is found, append the section to the
+        # form_errors array. This can be used to alert the user of missing data
+        # in the event that there is a partially filled form
         try:
             teaching_hours = ModuleTeaching.objects.get(module=module, current_flag=True)
             teaching_hours_form = ModuleTeachingHoursForm(instance=teaching_hours)
@@ -52,14 +55,14 @@ class LeaderModuleTrackingForm(View):
             assessments = ModuleAssessment.objects.get_current_assessments(module)
             assessment_forms = self.assessment_formset(queryset=assessments, prefix='assessment_form')
         except ObjectDoesNotExist:
-            assessment_forms = self.assessment_formset()
+            assessment_forms = self.assessment_formset(prefix='assessment_form')
             form_errors.append("Assessments")
 
         try:
             software = ModuleSoftware.objects.get_current_software(module)
             software_forms = self.software_formset(queryset=software, prefix='software_form')
         except ObjectDoesNotExist:
-            software_forms = self.software_formset(None)
+            software_forms = self.software_formset(prefix='software_form')
             form_errors.append("Software Requirements")
 
         # If absolutely no data is found, we set the form_exists flag to false
@@ -85,34 +88,52 @@ class LeaderModuleTrackingForm(View):
         POST method which submits the new tracking form
         """
         module_pk = kwargs.get('pk')
+        module = Module.objects.get(pk=module_pk)
 
-        teaching_hours_form = self.teaching_hours_form(request.POST)
-        support_form = self.support_form(request.POST)
-        assessments_form = self.assessment_form(request.POST)
-        software_form = self.software_form(request.POST)
+        try:
+            teaching_hours = ModuleTeaching.objects.get(module=module, current_flag=True)
+            teaching_hours_form = ModuleTeachingHoursForm(request.POST, instance=teaching_hours)
+        except ObjectDoesNotExist:
+            teaching_hours_form = ModuleTeachingHoursForm(request.POST)
+
+        try:
+            support = ModuleSupport.objects.get(module=module, current_flag=True)
+            support_form = ModuleSupportForm(request.POST, instance=support)
+        except ObjectDoesNotExist:
+            support_form = ModuleSupportForm(request.POST)
+
+        assessment_forms = self.assessment_formset(request.POST, prefix="assessment_form")
+        software_forms = self.software_formset(request.POST, prefix="software_form")
         
         teaching_hours_valid = teaching_hours_form.is_valid()
         support_valid = support_form.is_valid()
-        assessments_valid = assessments_form.is_valid()
-        software_valid = software_form.is_valid()
+        assessments_valid = assessment_forms.is_valid()
+        software_valid = software_forms.is_valid()
 
         if teaching_hours_valid and support_valid and assessments_valid and software_valid:
-            module = Module.objects.get(pk=module_pk)
 
             teaching_hours_object = teaching_hours_form.save(commit=False)
             support_object = support_form.save(commit=False)
-            assessment_object = assessments_form.save(commit=False)
-            software_object = software_form.save(commit=False)
+            assessment_objects = assessment_forms.save(commit=False)
+            software_objects = software_forms.save(commit=False)
 
-            # teaching_hours_object.module_pk = module
-            # support_object.module_pk = module
-            # assessment_object.module_pk = module
-            # software_object.module_pk = module
-            
+            teaching_hours_object.module = module
+            teaching_hours_object.current_flag = True
             teaching_hours_object.save()
+
+            support_object.module = module
+            support_object.current_flag = True
             support_object.save()
-            assessment_object.save()
-            software_object.save()
+
+            for assessment in assessment_objects:
+                assessment.module = module
+                assessment.current_flag = True
+                assessment.save()
+
+            for software in software_objects:
+                software.module = module
+                software.current_flag = True
+                software.save()
 
             return redirect('view_module_tracking_form', pk=module_pk)
         else:
@@ -123,7 +144,7 @@ class LeaderModuleTrackingForm(View):
                 'module': Module.objects.get(pk=module_pk), 
                 'teaching_hours_form': teaching_hours_form,
                 'support_form': support_form,
-                'assessment_form': assessments_form,
-                'software_form': software_form
+                'assessment_forms': assessment_forms,
+                'software_forms': software_forms
             }
             return render(request, 'module_tracking_form.html', context=error_context)
