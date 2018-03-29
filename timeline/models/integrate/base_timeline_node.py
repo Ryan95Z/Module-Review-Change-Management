@@ -48,9 +48,9 @@ class BaseTimelineNode(models.Model):
         """
         return bool(self.differences())
 
-    def save(self, *args, **kwargs):
-        INIT = "init" + self.__class__.__name__
-        UPDATE = "update" + self.__class__.__name__
+    # def save(self, *args, **kwargs):
+        # INIT = "init" + self.__class__.__name__
+        # UPDATE = "update" + self.__class__.__name__
         """
         Override standard save method of any model.
         Enables an entry to be made on the timeline
@@ -59,20 +59,20 @@ class BaseTimelineNode(models.Model):
 
         # optional kwargs argument that will force the changes
         # to not be placed on the timeline.
-        override_update = kwargs.pop('override_update', False)
-        if not self.created:
-            # create an init entry
-            super(BaseTimelineNode, self).save(*args, **kwargs)
-            EntryFactory.makeEntry(INIT, self)
-            return
+        # override_update = kwargs.pop('override_update', False)
+        # if not self.created:
+        #     # create an init entry
+        #     super(BaseTimelineNode, self).save(*args, **kwargs)
+        #     EntryFactory.makeEntry(INIT, self)
+        #     return
 
-        if not override_update:
-            # create an update entry
-            EntryFactory.makeEntry(UPDATE, self)
-            return
+        # if not override_update:
+        #     # create an update entry
+        #     EntryFactory.makeEntry(UPDATE, self)
+        #     return
 
         # save the changes to database
-        super(BaseTimelineNode, self).save(*args, **kwargs)
+        # super(BaseTimelineNode, self).save(*args, **kwargs)
 
     class Meta:
         abstract = True

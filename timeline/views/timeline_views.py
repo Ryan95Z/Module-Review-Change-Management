@@ -1,11 +1,27 @@
 from django.urls import reverse
 from django.views.generic import View
 from django.views.generic.list import ListView
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 
 from timeline.models import TimelineEntry
 from timeline.utils.changes import process_changes, revert_changes
 from timeline.utils.notifications.helpers import push_notification
+
+
+class TrackingFormChanges(View):
+    def get(self, request, *args, **kwargs):
+        module_code = kwargs.get('module_pk')
+        pk = kwargs.get('pk')
+
+        entires = TimelineEntry.objects.filter(
+            module_code=module_code,
+            parent_entry_id=pk
+        )
+
+        context = {
+            'entries': entires
+        }
+        return render(request, "timeline/tl_test.html", context)
 
 
 class TimelineListView(ListView):
@@ -21,7 +37,7 @@ class TimelineListView(ListView):
 
     def get_queryset(self):
         module_id = self.kwargs['module_pk']
-        return self.model.objects.filter(module_code=module_id)
+        return self.model.objects.filter(module_code=module_id, parent_entry=None)
 
     def get_context_data(self, *args, **kwargs):
         context = super(

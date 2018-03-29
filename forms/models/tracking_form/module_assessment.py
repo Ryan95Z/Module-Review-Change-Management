@@ -47,7 +47,7 @@ class ModuleAssessmentManager(models.Manager):
         else:
             raise ObjectDoesNotExist('No assessments with the current_flag exist')
 
-@timeline_register
+# @timeline_register
 class ModuleAssessment(TLEntry):
     """
     Model which represents the assessment details of a module
@@ -73,4 +73,4 @@ class ModuleAssessment(TLEntry):
         return "Assessment for {}".format(self.module)
 
     def title(self):
-        return "Assessment"
+        return "Assessment: {}".format(self.assessment_title)

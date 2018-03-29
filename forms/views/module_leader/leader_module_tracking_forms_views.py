@@ -10,6 +10,8 @@ from forms.models.tracking_form import ModuleTeaching, ModuleSupport, ModuleAsse
 from forms.forms import ModuleTeachingHoursForm, ModuleSupportForm, ModuleAssessmentsForm, ModuleSoftwareForm
 from forms.utils.tracking_form import populate_tracking_forms
 
+from timeline.utils.timeline.helpers import process_changes
+
 class LeaderModuleTrackingForm(View):
     """
     Allows module leaders to view and create tracking forms
@@ -84,6 +86,7 @@ class LeaderModuleTrackingForm(View):
         return render(request, 'module_tracking_form.html', context)
 
     def post(self, request, *args, **kwargs):
+        print("hello World")
         """
         POST method which submits the new tracking form
         """
@@ -104,7 +107,7 @@ class LeaderModuleTrackingForm(View):
 
         assessment_forms = self.assessment_formset(request.POST, prefix="assessment_form")
         software_forms = self.software_formset(request.POST, prefix="software_form")
-        
+
         teaching_hours_valid = teaching_hours_form.is_valid()
         support_valid = support_form.is_valid()
         assessments_valid = assessment_forms.is_valid()
@@ -134,6 +137,14 @@ class LeaderModuleTrackingForm(View):
                 software.module = module
                 software.current_flag = True
                 software.save()
+
+            process_changes(
+                module.module_code,
+                teaching_hours_object,
+                support_object,
+                assessment_objects,
+                software_objects
+            )
 
             return redirect('view_module_tracking_form', pk=module_pk)
         else:

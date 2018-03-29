@@ -16,7 +16,7 @@ class ModuleSoftwareManager(models.Manager):
         else:
             raise ObjectDoesNotExist('No software with the current_flag exists')
 
-@timeline_register
+# @timeline_register
 class ModuleSoftware(TLEntry):
     """
     Model which represents the software requirements for a module
@@ -40,4 +40,4 @@ class ModuleSoftware(TLEntry):
         return "Software requirements for {}".format(self.module)
     
     def title(self):
-        return "Software"
+        return "Software: {}".format(self.software_name)
