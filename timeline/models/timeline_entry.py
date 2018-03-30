@@ -56,6 +56,13 @@ class TimelineEntry(models.Model):
     )
     content_object = GenericForeignKey('content_type', 'object_id')
 
+    revert_object_id = models.CharField(
+        max_length=10,
+        default=0,
+        blank=True,
+        null=True
+    )
+
     # User that requested the changes
     changes_by = models.ForeignKey(
         User,
