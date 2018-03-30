@@ -1,0 +1,16 @@
+.notification-alert:before {
+	content: '';
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	background-color: red;
+	border-radius: 100%;
+	right: 264px;
+	top: 15px;
+	display: block;
+}
+
+@-moz-document url-prefix() { 
+		.notification-alert:before {
+	right: 259px;
+}

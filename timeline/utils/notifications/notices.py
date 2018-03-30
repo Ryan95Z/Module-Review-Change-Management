@@ -324,3 +324,22 @@ class MentionNotice(BaseNotice):
         })
 
         self._create_notification(content, mention_user, url)
+
+
+class ModuleLeaderNotice(BaseNotice):
+    def __init__(self):
+        content_template = "You have been made the module leader of {}"
+        super(ModuleLeaderNotice, self).__init__(
+            content_template=content_template,
+            link_name='/'  # need to think of a better url for this.
+        )
+
+    def create(self, **kwargs):
+        module_code = kwargs['module_code']
+        module_leader = kwargs['module_leader']
+
+        content = self.content_template.format(module_code)
+
+        url = '/'
+
+        self._create_notification(content, module_leader, url)

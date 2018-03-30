@@ -430,6 +430,18 @@ li.list-group-item:focus {
 	text-align: right;
 }
 
+
+.notification-display-snipper{
+		background-color: #cccccc;
+		padding: 10px;
+		height: 300px;
+		overflow-y: scroll;
+	}
+
+.notification-display-snipper li {
+	font-size: 12px;
+}
+
 /* 
 ===========================================
 		Styles for mentions 

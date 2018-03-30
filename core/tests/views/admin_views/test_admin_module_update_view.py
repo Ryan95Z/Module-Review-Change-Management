@@ -15,7 +15,8 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
         self.module = manager.create_module(
                 'CM3301',
                 'Software Engineering Project',
-                40, 'L3',
+                40,
+                'L6',
                 'Autumn Semester',
                 'English',
                 self.user
@@ -55,7 +56,7 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
         data = {
             'module_name': 'Software Engineering',
             'module_credits': 40,
-            'module_level': 'L3',
+            'module_level': 'L6',
             'semester': 'Double Semester',
             'delivery_language': 'English',
             'module_leader': self.user.id

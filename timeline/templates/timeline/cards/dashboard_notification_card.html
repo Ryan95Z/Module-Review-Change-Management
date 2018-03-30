@@ -1,0 +1,37 @@
+{% load static %}
+{% load humanize %}
+
+{% block styles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'timeline/styles.css' %}">
+{% endblock %}
+
+<div class="card">
+	<div class="card-header">
+		Your Notifications
+	</div>
+	<ul class="list-group notification-display-snipper">
+		{% for n in notifications %}
+
+			<li class="list-group-item">
+				{% if n.seen %}
+					<a href="{{ n.link }}" class="notification-link">
+				{% else %}
+					<a href="{% url 'notification_redirect' n.id %}" class="notification-link">
+				{% endif %}
+					
+					<div class="notification">
+						{% if not n.seen %}
+							<span class="notification-alert-inner"></span>
+						{% endif %}
+						<div class="notification-content">
+							{{ n.content }}
+						</div>
+						<span class="notification-time">
+							{{ n.created|naturalday}}
+						</span>
+					</div>
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
+</div>

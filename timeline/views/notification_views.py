@@ -11,6 +11,10 @@ class NotificationHubView(View):
     def get(self, request, *args, **kwargs):
         username = request.user.username
         user_id = request.user.pk
+
+        # remove old notifications
+        self.__remove_old_notifications(username)
+
         unseen = self.model.objects.get_unseen_notifications(username)
         all_notifications = self.model.objects.get_all_notifications(username)
 
@@ -22,6 +26,11 @@ class NotificationHubView(View):
             'watching': watching,
         }
         return render(request, self.template, context)
+
+    def __remove_old_notifications(self, username):
+        notifications = self.model.objects.get_unneeded_notifications(username)
+        if(notifications.count() > 0):
+            notifications.delete()
 
 
 class NotificationRedirectView(View):

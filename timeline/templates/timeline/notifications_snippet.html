@@ -1,3 +1,5 @@
+{% load static %}
+
 <li class="nav-item">
 	<a class="nav-link" href="{% url 'all_notification' %}" data-user="{{ request.session.username }}" id="nav-notification">
 		<i class="fa fa-bell" aria-hidden="true"></i>
@@ -5,61 +7,6 @@
 	</a>
 </li>
 
-<style type="text/css">
-	.notification-alert:before {
-		content: '';
-		position: absolute;
-		width: 10px;
-		height: 10px;
-		background-color: red;
-		border-radius: 100%;
-		right: 264px;
-		top: 15px;
-		display: block;
-	}
-	
-	@-moz-document url-prefix() { 
- 		.notification-alert:before {
-		right: 259px;
-	}
-</style>
+<link rel="stylesheet" type="text/css" href="{% static 'timeline/notifications-snippet.css' %}">
 
-<script type="text/javascript">
-	SPAN_CLASS = "notification-alert"
-
-	jQuery(function($) {
-		$(document).ready( function() {
-			getNotifications();
-
-			setInterval(function(){ 
-				getNotifications(); 
-			}, 60000);
-		});
-
-		function getNotifications() {
-			notification_nav = $('#nav-notification');
-			username = notification_nav.attr('data-user');
-			url = "/timeline/api/notifications/";
-			$.ajax({
-				url: url,
-				data: {
-					'user': username,
-				},
-				type: 'POST',
-				dataType: 'json',
-				beforeSend: function(xhr, settings) {
-                    // Get the CSRF token. See csrf_ajax.js for more information.
-                    $.ajaxSettings.beforeSend(xhr, settings);
-                },
-                success: function(data){
-                	span = notification_nav.children('span');
-                	if (data['has_notifications'] == true) {
-                		span.addClass(SPAN_CLASS);
-                	} else {
-                		span.removeClass(SPAN_CLASS);
-                	}
-                }
-			});
-		}
-	});
-</script>
+<script type="text/javascript" src="{% static 'timeline/js/notifications-snippet.js' %}"></script>
