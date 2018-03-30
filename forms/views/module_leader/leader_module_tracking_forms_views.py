@@ -6,8 +6,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import formset_factory, modelformset_factory
 
 from core.models import Module
-from forms.models.tracking_form import ModuleTeaching, ModuleSupport, ModuleAssessment, ModuleSoftware
-from forms.forms import ModuleTeachingHoursForm, ModuleSupportForm, ModuleAssessmentsForm, ModuleSoftwareForm
+from forms.models.tracking_form import ModuleChangeSummary, ModuleTeaching, ModuleSupport, ModuleAssessment, ModuleSoftware
+from forms.forms import ModuleChangeSummaryForm, ModuleTeachingHoursForm, ModuleSupportForm, ModuleAssessmentsForm, ModuleSoftwareForm
 from forms.utils.tracking_form import populate_tracking_forms
 
 from timeline.utils.timeline.tracking_form import tracking_to_timeline
@@ -40,6 +40,13 @@ class LeaderModuleTrackingForm(View):
         # form_errors array. This can be used to alert the user of missing data
         # in the event that there is a partially filled form
         try:
+            change_summary = ModuleChangeSummary.objects.get(module=module, current_flag=True)
+            change_summary_form = ModuleChangeSummaryForm(instance=change_summary)
+        except ObjectDoesNotExist:
+            change_summary_form = ModuleChangeSummaryForm()
+            form_errors.append("Summary of Changes")
+
+        try:
             teaching_hours = ModuleTeaching.objects.get(module=module, current_flag=True)
             teaching_hours_form = ModuleTeachingHoursForm(instance=teaching_hours)
         except ObjectDoesNotExist:
@@ -68,7 +75,7 @@ class LeaderModuleTrackingForm(View):
             form_errors.append("Software Requirements")
 
         # If absolutely no data is found, we set the form_exists flag to false
-        if len(form_errors) > 3:
+        if len(form_errors) > 4:
             form_exists = False
 
         # Setting the context
@@ -78,6 +85,7 @@ class LeaderModuleTrackingForm(View):
             'form_exists': form_exists,
             'pk': module_pk,
             'module': module,
+            'change_summary_form': change_summary_form,
             'teaching_hours_form': teaching_hours_form,
             'support_form': support_form,
             'assessment_forms': assessment_forms,
@@ -91,6 +99,12 @@ class LeaderModuleTrackingForm(View):
         """
         module_pk = kwargs.get('pk')
         module = Module.objects.get(pk=module_pk)
+
+        try:
+            change_summary = ModuleChangeSummary.objects.get(module=module, current_flag=True)
+            change_summary_form = ModuleChangeSummaryForm(request.POST, instance=change_summary)
+        except ObjectDoesNotExist:
+            change_summary_form = ModuleChangeSummaryForm(request.POST)
 
         try:
             teaching_hours = ModuleTeaching.objects.get(module=module, current_flag=True)
@@ -107,17 +121,23 @@ class LeaderModuleTrackingForm(View):
         assessment_forms = self.assessment_formset(request.POST, prefix="assessment_form")
         software_forms = self.software_formset(request.POST, prefix="software_form")
 
+        change_summary_valid = change_summary_form.is_valid()
         teaching_hours_valid = teaching_hours_form.is_valid()
         support_valid = support_form.is_valid()
         assessments_valid = assessment_forms.is_valid()
         software_valid = software_forms.is_valid()
 
-        if teaching_hours_valid and support_valid and assessments_valid and software_valid:
+        if change_summary_valid and teaching_hours_valid and support_valid and assessments_valid and software_valid:
 
+            change_summary_object = change_summary_form.save(commit=False)
             teaching_hours_object = teaching_hours_form.save(commit=False)
             support_object = support_form.save(commit=False)
             assessment_objects = assessment_forms.save(commit=False)
             software_objects = software_forms.save(commit=False)
+
+            change_summary_object.module = module
+            change_summary_object.current_flag = True
+            change_summary_form.save()
 
             teaching_hours_object.module = module
             teaching_hours_object.current_flag = True
@@ -141,6 +161,7 @@ class LeaderModuleTrackingForm(View):
             tracking_to_timeline(
                 module.module_code,
                 request.user,
+                change_summary_object,
                 teaching_hours_object,
                 support_object,
                 assessment_objects,
@@ -154,6 +175,7 @@ class LeaderModuleTrackingForm(View):
                 'form_exists': True,
                 'pk': module_pk,
                 'module': Module.objects.get(pk=module_pk), 
+                'change_summary_form': change_summary_form,
                 'teaching_hours_form': teaching_hours_form,
                 'support_form': support_form,
                 'assessment_forms': assessment_forms,

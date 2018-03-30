@@ -9,6 +9,17 @@ class ModuleChangeSummaryForm(forms.ModelForm):
     class Meta:
         model = ModuleChangeSummary
         exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number')
+        widgets = {
+            'changes_to_outcomes': CheckboxInput(attrs={'data-toggle':'collapse', 'data-target':'#changes_to_outcomes_collapse'}),
+            'changes_to_outcomes_desc': Textarea(attrs={'rows':'2', 'class':'form-control form-control-sm'}),
+            'changes_to_teaching': CheckboxInput(attrs={'data-toggle':'collapse', 'data-target':'#changes_to_teaching_collapse'}),
+            'changes_to_teaching_desc': Textarea(attrs={'rows':'2', 'class':'form-control form-control-sm'}),
+            'changes_to_assessments': CheckboxInput(attrs={'data-toggle':'collapse', 'data-target':'#changes_to_assessments_collapse'}),
+            'changes_to_assessments_desc': Textarea(attrs={'rows':'2', 'class':'form-control form-control-sm'}),
+            'changes_other': CheckboxInput(attrs={'data-toggle':'collapse', 'data-target':'#changes_other_collapse'}),
+            'changes_other_desc': Textarea(attrs={'rows':'2', 'class':'form-control form-control-sm'}),
+            'changes_rationale': Textarea(attrs={'rows':'2', 'class':'form-control form-control-sm'})
+        }
 
 class ModuleTeachingHoursForm(forms.ModelForm):
     """

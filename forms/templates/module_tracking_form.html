@@ -45,20 +45,77 @@
         {% if not form_exists and not edit_form %}
         A tracking form for this module does not seem to exist
         {% else %}
-        <!-- Dynamic form section generated based on the existing module desctiption form -->
+        <!-- Summary of changes section. -->
         <div class="card">
             <div class="card-header" data-toggle="collapse" data-target="#soc-collapse" id="soc-heading" aria-expanded="true" aria-controls="soc-collapse" style="cursor:pointer">
             <h6 class="mb-0">
                 1. Summary of Changes
+                {% if "Summary of Changes" in form_errors and not edit_form %}
+                <!-- If no data was found for this section (in view mode), display a badge -->
+                <span class="badge badge-secondary">Missing Data</span>
+                {% endif %}
             </h6>
             </div>
         
             <div id="soc-collapse" class="collapse show" aria-labelledby="soc-heading">
             <div class="card-body">
-                Please indicate where changes to the module description have been proposed by completing the checkbox
-                and all fields that apply.
-
-                <h3>THIS NEEDS TO BE BASED ON DYNAMIC FIELDS.</h3>
+                <p>Please indicate where changes to the module description have been proposed by completing the checkbox
+                and all fields that apply.</p>
+                
+                {{ change_summary_form.non_field_errors }}
+                <div class="form-check">
+                    {{change_summary_form.changes_to_outcomes}}
+                    <label class="form-check-label" for="{{change_summary_form.changes_to_outcomes.id_for_label}}">{{change_summary_form.changes_to_outcomes.label}}</label>
+                </div>
+                <div class="collapse" id="changes_to_outcomes_collapse">
+                    <div class="form-group">
+                        <label for="{{change_summary_form.changes_to_outcomes_desc.id_for_label}}">Brief Description of Changes</label>
+                        {{change_summary_form.changes_to_outcomes_desc}}
+                        {{change_summary_form.changes_to_outcomes_desc.errors}}
+                    </div>
+                </div>
+                <hr>
+                <div class="form-check">
+                    {{change_summary_form.changes_to_teaching}}
+                    <label class="form-check-label" for="{{change_summary_form.changes_to_teaching.id_for_label}}">{{change_summary_form.changes_to_teaching.label}}</label>
+                </div>
+                <div class="collapse" id="changes_to_teaching_collapse">
+                    <div class="form-group">
+                        <label for="{{change_summary_form.changes_to_teaching_desc.id_for_label}}">Brief Description of Changes</label>
+                        {{change_summary_form.changes_to_teaching_desc}}
+                        {{change_summary_form.changes_to_teaching_desc.errors}}
+                    </div>
+                </div>
+                <hr>
+                <div class="form-check">
+                    {{change_summary_form.changes_to_assessments}}
+                    <label class="form-check-label" for="{{change_summary_form.changes_to_assessments.id_for_label}}">{{change_summary_form.changes_to_assessments.label}}</label>
+                </div>
+                <div class="collapse" id="changes_to_assessments_collapse">
+                    <div class="form-group">
+                        <label for="{{change_summary_form.changes_to_assessments_desc.id_for_label}}">Brief Description of Changes</label>
+                        {{change_summary_form.changes_to_assessments_desc}}
+                        {{change_summary_form.changes_to_assessments_desc.errors}}
+                    </div>
+                </div>
+                <hr>
+                <div class="form-check">
+                    {{change_summary_form.changes_other}}
+                    <label class="form-check-label" for="{{change_summary_form.changes_other.id_for_label}}">{{change_summary_form.changes_other.label}}</label>
+                </div>
+                <div class="collapse" id="changes_other_collapse">
+                    <div class="form-group">
+                        <label for="{{change_summary_form.changes_other_desc.id_for_label}}">Brief Description of Changes</label>
+                        {{change_summary_form.changes_other_desc}}
+                        {{change_summary_form.changes_other_desc.errors}}
+                    </div>
+                </div> 
+                <hr>
+                <div class="form-group">
+                    <label for="{{change_summary_form.changes_rationale.id_for_label}}">{{change_summary_form.changes_rationale.label}}</label>
+                    {{change_summary_form.changes_rationale}}
+                    {{change_summary_form.changes_rationale.errors}}
+                </div>
             </div>
             </div>
         </div>
@@ -77,9 +134,9 @@
             </div>
             <div id="mot-collapse" class="collapse show" aria-labelledby="mot-heading">
             <div class="card-body">
-                Please provide accurate figures for each teaching activity. This information will be used for
+                <p>Please provide accurate figures for each teaching activity. This information will be used for
                 timetabling, workload modelling and the School's KIS return, so it is essential that it is correct. One
-                credit point equates to 10 learning hours. <br><br>
+                credit point equates to 10 learning hours.</p>
 
                 {{ teaching_hours_form.non_field_errors }}
 
