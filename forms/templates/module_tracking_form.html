@@ -47,7 +47,7 @@
         {% else %}
         <!-- Summary of changes section. -->
         <div class="card">
-            <div class="card-header" data-toggle="collapse" data-target="#soc-collapse" id="soc-heading" aria-expanded="true" aria-controls="soc-collapse" style="cursor:pointer">
+            <div class="card-header"  id="soc-heading">
             <h6 class="mb-0">
                 1. Summary of Changes
                 {% if "Summary of Changes" in form_errors and not edit_form %}
@@ -57,7 +57,6 @@
             </h6>
             </div>
         
-            <div id="soc-collapse" class="collapse show" aria-labelledby="soc-heading">
             <div class="card-body">
                 <p>Please indicate where changes to the module description have been proposed by completing the checkbox
                 and all fields that apply.</p>
@@ -117,13 +116,12 @@
                     {{change_summary_form.changes_rationale.errors}}
                 </div>
             </div>
-            </div>
         </div>
 
         <!-- Methods of teaching section. This section can be generated in a loop, as it just want each
              form element after the last -->
         <div class="card">
-            <div class="card-header" id="mot-heading" data-toggle="collapse" data-target="#mot-collapse" aria-expanded="false" aria-controls="mot-collapse" style="cursor:pointer">
+            <div class="card-header" id="mot-heading">
             <h6 class="mb-0">
                 2. Methods of Teaching
                 {% if "Teaching Hours" in form_errors and not edit_form %}
@@ -132,7 +130,6 @@
 		        {% endif %}
             </h6>
             </div>
-            <div id="mot-collapse" class="collapse show" aria-labelledby="mot-heading">
             <div class="card-body">
                 <p>Please provide accurate figures for each teaching activity. This information will be used for
                 timetabling, workload modelling and the School's KIS return, so it is essential that it is correct. One
@@ -156,12 +153,11 @@
                 </div>
                 {% endfor %}
             </div>
-            </div>
         </div>
 
         <!-- Teaching support section. Parts of this section collapse based on whether the checkboxes are clicked -->
         <div class="card">
-            <div class="card-header" id="ts-heading" data-toggle="collapse" data-target="#ts-collapse" aria-expanded="false" aria-controls="ts-collapse" style="cursor:pointer">
+            <div class="card-header" id="ts-heading">
             <h6 class="mb-0">
                 3. Teaching Support
                 {% if "Teaching Support" in form_errors and not edit_form %}
@@ -170,7 +166,6 @@
 		        {% endif %}
             </h6>
             </div>
-            <div id="ts-collapse" class="collapse show" aria-labelledby="ts-heading">
             <div class="card-body">
                 {{ support_form.non_field_errors }}
                 <div class="form-check">
@@ -206,12 +201,11 @@
                     </div>
                 </div>
             </div>
-            </div>
         </div>
 
         <!-- Assessment section. This utilises the dynamic formset script to enable the user to add an remove assessments -->
         <div class="card">
-            <div class="card-header" id="assessment-heading" data-toggle="collapse" data-target="#assessment-collapse" aria-expanded="false" aria-controls="assessment-collapse" style="cursor:pointer">
+            <div class="card-header" id="assessment-heading">
                 <h6 class="mb-0">
                     4. Assessments
                     {% if "Assessments" in form_errors and not edit_form %}
@@ -220,13 +214,10 @@
 		        {% endif %}
                 </h6>
             </div>
-            <div id="assessment-collapse" class="collapse show" aria-labelledby="assessment-heading">
             <div class="card-body">
-                <p>
-                    Please provide data for all exams and assignments below (see guidance note 4). Total weighting
-                    must equal 100%. Durations for coursework assessments should be realistic estimates of the time
-                    required to complete the assessment.
-                </p>
+                <p>Please provide data for all exams and assignments below (see guidance note 4). Total weighting
+                must equal 100%. Durations for coursework assessments should be realistic estimates of the time
+                required to complete the assessment.</p>
 
                 <div id="assessment_form-dynamic_form">
                 {{ assessment_forms.management_form }}
@@ -284,13 +275,12 @@
                 <div class="col-md-2 mx-auto"><button type="button" name="assessment_form" class="btn btn-primary btn-sm add-row">Add Another</button></div>
                 {% endif %}
             </div>
-            </div>
         </div>
 
         <!-- Software and lab reqs section. Will also use the dynamic formsets. Should also have an interaction with
              Waad's code to make intelligent suggestions to the user -->
         <div class="card">
-            <div class="card-header" id="swlr-heading" data-toggle="collapse" data-target="#swlr-collapse" aria-expanded="false" aria-controls="swlr-collapse" style="cursor:pointer">
+            <div class="card-header" id="swlr-heading">
                 <h6 class="mb-0">
                     5. Software and Lab Requirements
                     {% if "Software Requirements" in form_errors and not edit_form %}
@@ -299,7 +289,6 @@
 		        {% endif %}
                 </h6>
             </div>
-            <div id="swlr-collapse" class="collapse show" aria-labelledby="swlr-heading">
             <div class="card-body">
                 <p>
                     Please provide details of the software and labs you will require. You should only list specific
@@ -333,7 +322,6 @@
                 {% if edit_form %}   
                 <div class="col-md-2 mx-auto"><button type="button" name="software_form" class="btn btn-primary btn-sm add-row">Add Another</button></div> 
                 {% endif %}              
-            </div>
             </div>
         </div>
         {% endif %}
