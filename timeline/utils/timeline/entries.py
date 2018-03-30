@@ -1,15 +1,20 @@
+import re
 from abc import ABC, abstractmethod
 from django.db.models import ForeignKey, ManyToManyField
 from timeline.models import TimelineEntry
 from timeline.models.integrate.entry import TLEntry
+
+INIT = "init"
+UPDATE = "update"
 
 
 class BaseEntry(ABC):
     """
     Base entry class for generating timeline entries
     """
-    def __init__(self, model):
+    def __init__(self, model, entry_varient):
         self.model = model
+        self.entry_varient = entry_varient
 
         # if model differences() method is called
         # results will be stored here.
@@ -77,6 +82,7 @@ class BaseEntry(ABC):
         entry_type = kwargs.get('entry_type', 'Generic')
         status = kwargs.get('status', 'Draft')
         requested_by = kwargs.get('requested_by', None)
+        revert_id = kwargs.get('revert', 0)
 
         # if there are not changes, then prevents an
         # entry being made
@@ -99,7 +105,8 @@ class BaseEntry(ABC):
             parent_entry=parent,
             entry_type=entry_type,
             status=status,
-            changes_by=requested_by
+            changes_by=requested_by,
+            revert_object_id=revert_id
         )
 
     def get_module_code(self):
@@ -121,13 +128,28 @@ class BaseEntry(ABC):
         """
         return self.model.title()
 
+    def type_of_entry(self):
+        return self.entry_varient
+
+    def get_original_data(self):
+        base = self.model.base
+        clean_base = {k: base[k] for k in base if not re.match('^[A-Za-z]+\_id$', k)}
+        try:
+            del clean_base['id']
+        except KeyError:
+            pass
+        return clean_base
+
+    def model_class_object(self):
+        return self.model.__class__
+
 
 class InitEntry(BaseEntry):
     """
     Creates timeline entries of models that have just been created.
     """
     def __init__(self, model):
-        super(InitEntry, self).__init__(model)
+        super(InitEntry, self).__init__(model, INIT)
 
     def have_changes(self):
         """
@@ -195,7 +217,7 @@ class InitEntry(BaseEntry):
 
 class UpdateEntry(BaseEntry):
     def __init__(self, model):
-        super(UpdateEntry, self).__init__(model)
+        super(UpdateEntry, self).__init__(model, UPDATE)
 
     def get_differences(self):
         if self.changes is None:

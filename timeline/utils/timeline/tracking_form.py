@@ -1,5 +1,6 @@
 from timeline.models import TimelineEntry
 from timeline.utils.timeline.factory import EntryFactory
+from timeline.utils.timeline.entries import UPDATE
 
 
 def tracking_to_timeline(module_code, changes_by, *args):
@@ -53,7 +54,7 @@ class ProcessTrackingForm(object):
         """
         entries = self.prepare()
         parent = ParentEntry(module_code, changes_by, *entries)
-        parent.create_master()
+        parent.create_parent_entry()
 
 
 class ParentEntry(object):
@@ -66,7 +67,7 @@ class ParentEntry(object):
         self.module_code = module_code
         self.changes_by = changes_by
 
-    def create_master(self):
+    def create_parent_entry(self):
         """
         Method that creates the parent entry with
         a number of children entries.
@@ -92,7 +93,7 @@ class ParentEntry(object):
             return None
 
         # make the parent entry
-        master = TimelineEntry.objects.create(
+        parent = TimelineEntry.objects.create(
             title=title,
             changes=content,
             module_code=module_code,
@@ -102,10 +103,30 @@ class ParentEntry(object):
             entry_type='Tracking-Form'
         )
 
-        # create the children entires
+        self.__generate_child_entries(parent)
+        return parent
+
+    def __generate_child_entries(self, parent):
         for model in self.args:
-            model.create_entry(
-                parent=master,
-                entry_type='Tracking-Form'
-            )
-        return master
+            if model.type_of_entry() == UPDATE:
+                base = model.get_original_data()
+                cls = model.model_class_object()
+
+                del base['module']
+                base['current_flag'] = False
+                base['archive_flag'] = True
+                base['version_number'] += 1
+                base['module_id'] = model.get_module_code()
+
+                if model.have_changes():
+                    copy = cls.objects.create(**base)
+                    model.create_entry(
+                        parent=parent,
+                        entry_type='Tracking-Form',
+                        revert=copy.pk
+                    )
+            else:
+                model.create_entry(
+                    parent=parent,
+                    entry_type='Tracking-Form'
+                )
