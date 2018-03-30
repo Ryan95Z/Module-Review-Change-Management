@@ -50,21 +50,27 @@ class ParentEntry(object):
 
         changes = 0
 
-        for a in self.args:
-            if a.have_changes():
-                content += "* {}\n".format(a.sum_changes())
+        for model in self.args:
+            if model.have_changes():
+                content += "* {}\n".format(model.sum_changes())
                 changes += 1
 
-        if changes > 0:
-            master = TimelineEntry.objects.create(
-                title=title,
-                changes=content,
-                module_code=module_code,
-                object_id=object_id,
-                content_object=content_object,
-                changes_by=self.changes_by,
+        if changes < 1:
+            return None
+
+        master = TimelineEntry.objects.create(
+            title=title,
+            changes=content,
+            module_code=module_code,
+            object_id=object_id,
+            content_object=content_object,
+            changes_by=self.changes_by,
+            entry_type='Tracking-Form'
+        )
+
+        for model in self.args:
+            model.create_entry(
+                parent=master,
                 entry_type='Tracking-Form'
             )
-
-            for a in self.args:
-                a.create_entry(parent=master, entry_type='Tracking-Form')
+        return master

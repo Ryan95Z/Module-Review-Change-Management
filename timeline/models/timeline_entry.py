@@ -41,12 +41,28 @@ class TimelineEntry(models.Model):
     )
 
     # attributes for generic relation
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, blank=True, null=True)
-    object_id = models.CharField(max_length=10, default=0, blank=True, null=True)
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+
+    object_id = models.CharField(
+        max_length=10,
+        default=0,
+        blank=True,
+        null=True
+    )
     content_object = GenericForeignKey('content_type', 'object_id')
 
     # User that requested the changes
-    changes_by = models.ForeignKey(User, related_name='changesby', blank=True, null=True)
+    changes_by = models.ForeignKey(
+        User,
+        related_name='changesby',
+        blank=True,
+        null=True
+    )
 
     # User that approved the changes
     approved_by = models.ForeignKey(User, blank=True, null=True)
