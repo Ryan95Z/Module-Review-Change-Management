@@ -8,7 +8,7 @@ from django.forms import formset_factory, modelformset_factory
 from core.models import Module
 from forms.models.tracking_form import ModuleChangeSummary, ModuleTeaching, ModuleSupport, ModuleAssessment, ModuleReassessment, ModuleSoftware
 from forms.forms import ModuleChangeSummaryForm, ModuleTeachingHoursForm, ModuleSupportForm, ModuleAssessmentsForm, ModuleReassessmentForm, ModuleSoftwareForm
-from forms.utils.tracking_form import populate_tracking_forms
+from forms.utils.tracking_form import get_unbound_forms
 
 from timeline.utils.timeline.tracking_form import tracking_to_timeline
 
@@ -31,67 +31,38 @@ class LeaderModuleTrackingForm(View):
         form_type = kwargs.get('form_type', 'view')
 
         # Setting flags
-        form_errors = []
         form_exists = True
         edit_form = True if form_type == 'new' else False
 
-        # Gathering existing data. If nothing is found, create empty forms
-        # For all sections where no data is found, append the section to the
-        # form_errors array. This can be used to alert the user of missing data
-        # in the event that there is a partially filled form
-        try:
-            change_summary = ModuleChangeSummary.objects.get(module=module, current_flag=True)
-            change_summary_form = ModuleChangeSummaryForm(instance=change_summary)
-        except ObjectDoesNotExist:
-            change_summary_form = ModuleChangeSummaryForm()
-            form_errors.append("Summary of Changes")
+        # Gathering existing data and creating the forms. If no value is found for the model filter, None is returned to the instance
+        change_summary_form = ModuleChangeSummaryForm(instance=ModuleChangeSummary.objects.filter(module=module, current_flag=True).first())
+        teaching_hours_form = ModuleTeachingHoursForm(instance=ModuleTeaching.objects.filter(module=module, current_flag=True).first())
+        support_form = ModuleSupportForm(instance=ModuleSupport.objects.filter(module=module, current_flag=True).first())
+        reassessment_form = ModuleReassessmentForm(instance=ModuleReassessment.objects.filter(module=module, current_flag=True).first())
+        assessment_forms = self.assessment_formset(prefix='assessment_form', queryset=ModuleAssessment.objects.filter(module=module, current_flag=True))
+        software_forms = self.software_formset(prefix='software_form', queryset=ModuleSoftware.objects.filter(module=module, current_flag=True))
 
-        try:
-            teaching_hours = ModuleTeaching.objects.get(module=module, current_flag=True)
-            teaching_hours_form = ModuleTeachingHoursForm(instance=teaching_hours)
-        except ObjectDoesNotExist:
-            teaching_hours_form = ModuleTeachingHoursForm()
-            form_errors.append("Teaching Hours")
-  
-        try:
-            support = ModuleSupport.objects.get(module=module, current_flag=True)
-            support_form = ModuleSupportForm(instance=support)
-        except ObjectDoesNotExist:
-            support_form = ModuleSupportForm()
-            form_errors.append("Teaching Support")
+        # Get a list of all the unbound forms 
+        unbound_forms = get_unbound_forms(
+            change_summary = change_summary_form,
+            teaching_hours = teaching_hours_form,
+            support = support_form,
+            assessment = assessment_forms,
+            reassessment = reassessment_form,
+            software = software_forms
+        )
 
-        try:
-            assessments = ModuleAssessment.objects.get_current_assessments(module)
-            assessment_forms = self.assessment_formset(queryset=assessments, prefix='assessment_form')
-        except ObjectDoesNotExist:
-            assessment_forms = self.assessment_formset(prefix='assessment_form')
-            form_errors.append("Assessments")
-
-        try:
-            reassessment = ModuleReassessment.objects.get(module=module, current_flag=True)
-            reassessment_form = ModuleReassessmentForm(instance=reassessment)
-        except ObjectDoesNotExist:
-            reassessment_form = ModuleReassessmentForm()
-            form_errors.append("Reassessment")
-
-        try:
-            software = ModuleSoftware.objects.get_current_software(module)
-            software_forms = self.software_formset(queryset=software, prefix='software_form')
-        except ObjectDoesNotExist:
-            software_forms = self.software_formset(prefix='software_form')
-            form_errors.append("Software Requirements")
-
-        # If absolutely no data is found, we set the form_exists flag to false
-        if len(form_errors) > 5:
+        # If absolutely no forms are abound, we assume that one doesn't exist, and set the form_exists flag to False
+        if len(unbound_forms) >= 6:
             form_exists = False
 
         # Setting the context
         context = {
             'edit_form': edit_form,
-            'form_errors': form_errors,
             'form_exists': form_exists,
             'pk': module_pk,
             'module': module,
+            'unbound_forms': unbound_forms,
             'change_summary_form': change_summary_form,
             'teaching_hours_form': teaching_hours_form,
             'support_form': support_form,
@@ -108,41 +79,26 @@ class LeaderModuleTrackingForm(View):
         module_pk = kwargs.get('pk')
         module = Module.objects.get(pk=module_pk)
 
-        try:
-            change_summary = ModuleChangeSummary.objects.get(module=module, current_flag=True)
-            change_summary_form = ModuleChangeSummaryForm(request.POST, instance=change_summary)
-        except ObjectDoesNotExist:
-            change_summary_form = ModuleChangeSummaryForm(request.POST)
-
-        try:
-            teaching_hours = ModuleTeaching.objects.get(module=module, current_flag=True)
-            teaching_hours_form = ModuleTeachingHoursForm(request.POST, instance=teaching_hours)
-        except ObjectDoesNotExist:
-            teaching_hours_form = ModuleTeachingHoursForm(request.POST)
-
-        try:
-            support = ModuleSupport.objects.get(module=module, current_flag=True)
-            support_form = ModuleSupportForm(request.POST, instance=support)
-        except ObjectDoesNotExist:
-            support_form = ModuleSupportForm(request.POST)
-
-        try:
-            reassessment = ModuleReassessment.objects.get(module=module, current_flag=True)
-            reassessment_form = ModuleReassessmentForm(request.POST, instance=reassessment)
-        except ObjectDoesNotExist:
-            reassessment_form = ModuleReassessmentForm(request.POST)
-
-        assessment_forms = self.assessment_formset(request.POST, prefix="assessment_form")
+        # Gathering all of the POST data and putting it into its forms. Supply instance data if it exists
+        change_summary_form = ModuleChangeSummaryForm(request.POST, instance=ModuleChangeSummary.objects.filter(module=module, current_flag=True).first())
+        teaching_hours_form = ModuleTeachingHoursForm(request.POST, instance=ModuleTeaching.objects.filter(module=module, current_flag=True).first())
+        support_form = ModuleSupportForm(request.POST, instance=ModuleSupport.objects.filter(module=module, current_flag=True).first())
+        reassessment_form = ModuleReassessmentForm(request.POST, instance=ModuleReassessment.objects.filter(module=module, current_flag=True).first())
+        assessment_forms = self.assessment_formset(request.POST, prefix="assessment_form") # Doesn't need instance because there is an id associated with each form
         software_forms = self.software_formset(request.POST, prefix="software_form")
 
-        change_summary_valid = change_summary_form.is_valid()
-        teaching_hours_valid = teaching_hours_form.is_valid()
-        support_valid = support_form.is_valid()
-        assessments_valid = assessment_forms.is_valid()
-        reassessment_valid = reassessment_form.is_valid()
-        software_valid = software_forms.is_valid()
+        # Run all of the validation
+        valid = [
+            change_summary_form.is_valid(),
+            teaching_hours_form.is_valid(),
+            support_form.is_valid(),
+            assessment_forms.is_valid(),
+            reassessment_form.is_valid(),
+            software_forms.is_valid()
+        ]
 
-        if change_summary_valid and teaching_hours_valid and support_valid and assessments_valid and reassessment_valid and software_valid:
+        # If all forms are valid, save to the database
+        if all(valid):
 
             change_summary_object = change_summary_form.save(commit=False)
             teaching_hours_object = teaching_hours_form.save(commit=False)

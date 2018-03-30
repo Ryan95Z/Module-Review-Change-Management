@@ -50,7 +50,7 @@
             <div class="card-header"  id="soc-heading">
             <h6 class="mb-0">
                 1. Summary of Changes
-                {% if "Summary of Changes" in form_errors and not edit_form %}
+                {% if "change_summary" in unbound_forms and not edit_form %}
                 <!-- If no data was found for this section (in view mode), display a badge -->
                 <span class="badge badge-secondary">Missing Data</span>
                 {% endif %}
@@ -124,7 +124,7 @@
             <div class="card-header" id="mot-heading">
             <h6 class="mb-0">
                 2. Methods of Teaching
-                {% if "Teaching Hours" in form_errors and not edit_form %}
+                {% if "teaching_hours" in unbound_forms and not edit_form %}
                     <!-- If no data was found for this section (in view mode), display a badge -->
                     <span class="badge badge-secondary">Missing Data</span>
 		        {% endif %}
@@ -160,7 +160,7 @@
             <div class="card-header" id="ts-heading">
             <h6 class="mb-0">
                 3. Teaching Support
-                {% if "Teaching Support" in form_errors and not edit_form %}
+                {% if "support" in unbound_forms and not edit_form %}
                     <!-- If no data was found for this section (in view mode), display a badge -->
                     <span class="badge badge-secondary">Missing Data</span>
 		        {% endif %}
@@ -208,7 +208,7 @@
             <div class="card-header" id="assessment-heading">
                 <h6 class="mb-0">
                     4. Assessments
-                    {% if "Assessments" in form_errors and not edit_form %}
+                    {% if "assessment" in unbound_forms and not edit_form %}
                     <!-- If no data was found for this section (in view mode), display a badge -->
                     <span class="badge badge-secondary">Missing Data</span>
 		        {% endif %}
@@ -302,7 +302,7 @@
             <div class="card-header" id="swlr-heading">
                 <h6 class="mb-0">
                     5. Software and Lab Requirements
-                    {% if "Software Requirements" in form_errors and not edit_form %}
+                    {% if "software" in unbound_forms and not edit_form %}
                     <!-- If no data was found for this section (in view mode), display a badge -->
                     <span class="badge badge-secondary">Missing Data</span>
 		        {% endif %}
