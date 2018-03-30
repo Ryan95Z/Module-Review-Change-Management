@@ -1,6 +1,14 @@
 from django import forms
 from django.forms import TextInput, Textarea, NumberInput, Select, CheckboxInput, HiddenInput
-from forms.models import ModuleTeaching, ModuleAssessment, ModuleExam, ModuleSupport, ModuleSoftware
+from forms.models import ModuleChangeSummary, ModuleTeaching, ModuleAssessment, ModuleExam, ModuleSupport, ModuleSoftware
+
+class ModuleChangeSummaryForm(forms.ModelForm):
+    """
+    Form which handles a tracking form Summary of Changes
+    """
+    class Meta:
+        model = ModuleChangeSummary
+        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number')
 
 class ModuleTeachingHoursForm(forms.ModelForm):
     """
@@ -8,7 +16,7 @@ class ModuleTeachingHoursForm(forms.ModelForm):
     """
     class Meta:
         model = ModuleTeaching
-        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag')
+        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number')
 
 class ModuleSupportForm(forms.ModelForm):
     """
@@ -16,7 +24,7 @@ class ModuleSupportForm(forms.ModelForm):
     """
     class Meta:
         model = ModuleSupport
-        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag')
+        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number')
         widgets = {
             'lab_support_required': CheckboxInput(attrs={'data-toggle':'collapse', 'data-target':'#lab_support_collapse'}),
             'lab_support_skills': TextInput(attrs={'class':'form-control form-control-sm'}),
@@ -44,7 +52,7 @@ class ModuleAssessmentsForm(forms.ModelForm):
     """
     class Meta:
         model = ModuleAssessment
-        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag')
+        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number')
         widgets = {
             'assessment_id': HiddenInput(),
             'assessment_title': TextInput(attrs={'class':'form-control form-control-sm'}),
@@ -63,7 +71,7 @@ class ModuleSoftwareForm(forms.ModelForm):
     """
     class Meta:
         model = ModuleSoftware
-        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag')
+        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number')
         widgets = {
             'software_id': HiddenInput(),
             'software_name': TextInput(attrs={'class':'form-control form-control-sm'}),

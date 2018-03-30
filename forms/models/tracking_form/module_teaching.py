@@ -22,6 +22,7 @@ class ModuleTeaching(TLEntry):
     archive_flag = models.BooleanField(default=False)
     staging_flag = models.BooleanField(default=False)
     current_flag = models.BooleanField(default=False)
+    version_number = models.IntegerField(default=1)
 
     def __str__(self):
         return "Teaching hours for {}".format(self.module)
