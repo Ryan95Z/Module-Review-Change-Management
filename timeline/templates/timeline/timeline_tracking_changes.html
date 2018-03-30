@@ -1,0 +1,65 @@
+{% extends 'core/main.html' %}
+{% load timeline_tags %}
+
+{% block title %}
+	Changes to {{ module_code }} Tracking Form
+{% endblock %}
+
+{% block main %}
+	<div class="row">
+		<div class="col-md-12">
+			<a href="{% url 'module_timeline' module_code %}">
+            	<i class="fa fa-arrow-left" aria-hidden="true"></i>
+            		Back to Timeline
+        	</a>
+		</div>
+	</div>
+
+	<h1>
+		Changes to {{ module_code }} Tracking Form
+	</h1>
+	<hr>
+
+	<div class="card">
+  		<h5 class="card-header">Details of change</h5>
+		<div class="card-body">
+			<p class="card-text">
+			 	<strong>Date changes were requested</strong>: {{ parent.created }}
+			</p>
+			<p class="card-text">
+				<strong>Requested by</strong>:
+				<ul>
+					<li>Username: {{ parent.requester_username }}</li>
+					<li>Name: {{ parent.requester_name }}</a></li>
+				</ul>
+			</p>
+
+			<p class="card-text">
+				<strong>Approved by:</strong> <em>TODO</em>
+			</p>
+		</div>
+	</div>
+	<br>
+
+	<hr>
+
+
+	{% for e in entries %}
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card">
+  					<div class="card-header">
+    					{{ e.title }}
+  					</div>
+		  			<div class="card-body">
+			  			{% autoescape off %}
+							{{ e.changes|covert_markdown }}
+						{% endautoescape %}
+		  			</div>
+				</div>
+			</div>
+		</div>
+		<br>
+	{% endfor %}
+{% endblock %}

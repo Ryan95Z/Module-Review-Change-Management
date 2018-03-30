@@ -1,10 +1,9 @@
 from django.db import models
-from timeline.register import timeline_register
 from timeline.models.integrate.entry import TLEntry
 
 from core.models import Module
 
-@timeline_register
+
 class ModuleTeaching(TLEntry):
     """
     Model which represents teaching information related to a module

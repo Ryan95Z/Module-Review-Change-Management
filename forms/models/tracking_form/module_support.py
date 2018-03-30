@@ -1,11 +1,10 @@
 from django.db import models
-from timeline.register import timeline_register
 from timeline.models.integrate.entry import TLEntry
 
 from core.models import Module
 import json
 
-@timeline_register
+
 class ModuleSupport(TLEntry):
     """
     Model which represents the support information related to a module

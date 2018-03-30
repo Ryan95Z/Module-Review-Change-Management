@@ -27,7 +27,7 @@ class TimelineListViewTest(TimelineViewTestCase):
         # ensure there is two entries for the module.
         # One for creating the module, and another entry
         # that is created from the super class.
-        self.assertEquals(len(context['object_list']), 2)
+        self.assertEquals(len(context['object_list']), 1)
         self.assertTrue(context['block_pagination'])
 
     def test_get_timeline_list_view_not_logged_in(self):

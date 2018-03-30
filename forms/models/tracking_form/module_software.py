@@ -1,7 +1,6 @@
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 
-from timeline.register import timeline_register
 from timeline.models.integrate.entry import TLEntry
 from core.models import Module
 
@@ -16,7 +15,7 @@ class ModuleSoftwareManager(models.Manager):
         else:
             raise ObjectDoesNotExist('No software with the current_flag exists')
 
-@timeline_register
+
 class ModuleSoftware(TLEntry):
     """
     Model which represents the software requirements for a module
@@ -40,4 +39,4 @@ class ModuleSoftware(TLEntry):
         return "Software requirements for {}".format(self.module)
     
     def title(self):
-        return "Software"
+        return "Software {}".format(self.software_name)

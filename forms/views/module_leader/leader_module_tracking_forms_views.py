@@ -10,6 +10,8 @@ from forms.models.tracking_form import ModuleTeaching, ModuleSupport, ModuleAsse
 from forms.forms import ModuleTeachingHoursForm, ModuleSupportForm, ModuleAssessmentsForm, ModuleSoftwareForm
 from forms.utils.tracking_form import populate_tracking_forms
 
+from timeline.utils.timeline.tracking_form import tracking_to_timeline
+
 class LeaderModuleTrackingForm(View):
     """
     Allows module leaders to view and create tracking forms
@@ -75,7 +77,7 @@ class LeaderModuleTrackingForm(View):
             'form_errors': form_errors,
             'form_exists': form_exists,
             'pk': module_pk,
-            'module': module, 
+            'module': module,
             'teaching_hours_form': teaching_hours_form,
             'support_form': support_form,
             'assessment_forms': assessment_forms,
@@ -104,7 +106,7 @@ class LeaderModuleTrackingForm(View):
 
         assessment_forms = self.assessment_formset(request.POST, prefix="assessment_form")
         software_forms = self.software_formset(request.POST, prefix="software_form")
-        
+
         teaching_hours_valid = teaching_hours_form.is_valid()
         support_valid = support_form.is_valid()
         assessments_valid = assessment_forms.is_valid()
@@ -134,6 +136,16 @@ class LeaderModuleTrackingForm(View):
                 software.module = module
                 software.current_flag = True
                 software.save()
+
+            # this makes the timeline
+            tracking_to_timeline(
+                module.module_code,
+                request.user,
+                teaching_hours_object,
+                support_object,
+                assessment_objects,
+                software_objects
+            )
 
             return redirect('view_module_tracking_form', pk=module_pk)
         else:

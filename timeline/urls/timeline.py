@@ -1,9 +1,9 @@
 from django.conf.urls import url, include
 from django.contrib.auth.decorators import login_required
-from timeline.views import (TimelineListView, TimelineUpdateStatus,
-                            TimelineRevertStage, DiscussionView,
+from timeline.views import (TimelineListView, DiscussionView,
                             DiscussionUpdateView, DiscussionDeleteView,
-                            NotificationHubView, NotificationRedirectView)
+                            NotificationHubView, NotificationRedirectView,
+                            TrackingFormChanges)
 
 urlpatterns = [
     url(r'api/', include('timeline.urls.api')),
@@ -26,12 +26,15 @@ urlpatterns = [
         TimelineListView.as_view()), name="module_timeline"),
 
     # url for moving a timeline enrty up the workflow process
-    url(r'(?P<module_pk>[A-Za-z0-9]+)/approve/(?P<pk>[0-9]+)/$',
-        login_required(TimelineUpdateStatus.as_view()), name="approve_entry"),
+    # url(r'(?P<module_pk>[A-Za-z0-9]+)/approve/(?P<pk>[0-9]+)/$',
+    #     login_required(TimelineUpdateStatus.as_view()), name="approve_entry"),
 
     # url for moving a timeline entry down the workflow process
-    url(r'(?P<module_pk>[A-Za-z0-9]+)/revert/(?P<pk>[0-9]+)/$',
-        login_required(TimelineRevertStage.as_view()), name="revert_entry"),
+    # url(r'(?P<module_pk>[A-Za-z0-9]+)/revert/(?P<pk>[0-9]+)/$',
+    #     login_required(TimelineRevertStage.as_view()), name="revert_entry"),
+
+    url(r'(?P<module_pk>[A-Za-z0-9]+)/changes/(?P<pk>[0-9]+)/$',
+        login_required(TrackingFormChanges.as_view()), name="changes"),
 
     ##############################
     # Discussion URLs

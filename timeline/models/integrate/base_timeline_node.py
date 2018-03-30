@@ -1,6 +1,5 @@
 from django.db import models
 from django.forms.models import model_to_dict
-from timeline.utils.factory import EntryFactory
 
 
 class BaseTimelineNode(models.Model):
@@ -9,6 +8,7 @@ class BaseTimelineNode(models.Model):
     to be tracked.
     """
     created = models.DateTimeField(auto_now_add=True)
+    is_new = False
 
     def __init__(self, *args, **kwargs):
         super(BaseTimelineNode, self).__init__(*args, **kwargs)
@@ -49,29 +49,8 @@ class BaseTimelineNode(models.Model):
         return bool(self.differences())
 
     def save(self, *args, **kwargs):
-        INIT = "init" + self.__class__.__name__
-        UPDATE = "update" + self.__class__.__name__
-        """
-        Override standard save method of any model.
-        Enables an entry to be made on the timeline
-        each time a model instance is created or updated.
-        """
-
-        # optional kwargs argument that will force the changes
-        # to not be placed on the timeline.
-        override_update = kwargs.pop('override_update', False)
         if not self.created:
-            # create an init entry
-            super(BaseTimelineNode, self).save(*args, **kwargs)
-            EntryFactory.makeEntry(INIT, self)
-            return
-
-        if not override_update:
-            # create an update entry
-            EntryFactory.makeEntry(UPDATE, self)
-            return
-
-        # save the changes to database
+            self.is_new = True
         super(BaseTimelineNode, self).save(*args, **kwargs)
 
     class Meta:

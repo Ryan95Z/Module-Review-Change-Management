@@ -1,7 +1,9 @@
-from timeline.models import Notification, Watcher
 from django.views.generic import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
+from core.models import User
+from timeline.models import Notification
+from timeline.utils.notifications.helpers import WatcherWrapper
 
 
 class NotificationHubView(View):
@@ -19,7 +21,10 @@ class NotificationHubView(View):
         all_notifications = self.model.objects.get_all_notifications(username)
 
         # get all the modules the user is watching
-        watching = Watcher.objects.get(user=user_id).watching.all()
+        user = User.objects.get(pk=user_id)
+        watcher = WatcherWrapper(user)
+        watching = watcher.modules()
+
         context = {
             'unseen': unseen,
             'all': all_notifications,
