@@ -45,10 +45,24 @@ class TimelineEntry(models.Model):
     object_id = models.CharField(max_length=10, default=0, blank=True, null=True)
     content_object = GenericForeignKey('content_type', 'object_id')
 
+    # User that requested the changes
+    changes_by = models.ForeignKey(User, related_name='changesby', blank=True, null=True)
+
+    # User that approved the changes
     approved_by = models.ForeignKey(User, blank=True, null=True)
 
     def __str__(self):
         return "{}@{}".format(self.title, self.created)
+
+    def requester_username(self):
+        if self.changes_by is None:
+            return None
+        return self.changes_by.username
+
+    def requester_name(self):
+        if self.changes_by is None:
+            return None
+        return self.changes_by.get_full_name()
 
     def approver_username(self):
         """

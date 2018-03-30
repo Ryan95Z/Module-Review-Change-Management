@@ -2,9 +2,9 @@ from timeline.models import TimelineEntry
 from timeline.utils.timeline.factory import EntryFactory
 
 
-def tracking_to_timeline(module_code, *args):
+def tracking_to_timeline(module_code, changes_by, *args):
     processer = ProcessTrackingForm(*args)
-    return processer.create_entries(module_code)
+    return processer.create_entries(module_code, changes_by)
 
 
 class ProcessTrackingForm(object):
@@ -29,16 +29,17 @@ class ProcessTrackingForm(object):
             entries.append(EntryFactory.makeEntry(entry, m))
         return entries
 
-    def create_entries(self, module_code):
+    def create_entries(self, module_code, changes_by):
         entries = self.prepare()
-        parent = ParentEntry(module_code, *entries)
+        parent = ParentEntry(module_code, changes_by, *entries)
         parent.create_master()
 
 
 class ParentEntry(object):
-    def __init__(self, module_code, *args):
+    def __init__(self, module_code, changes_by, *args):
         self.args = args
         self.module_code = module_code
+        self.changes_by = changes_by
 
     def create_master(self):
         title = "Changes to tracking form"
@@ -61,8 +62,9 @@ class ParentEntry(object):
                 module_code=module_code,
                 object_id=object_id,
                 content_object=content_object,
+                changes_by=self.changes_by,
                 entry_type='Tracking-Form'
             )
 
             for a in self.args:
-                a.create_entry(master, 'Tracking-Form')
+                a.create_entry(parent=master, entry_type='Tracking-Form')

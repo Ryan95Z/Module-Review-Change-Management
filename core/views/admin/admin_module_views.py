@@ -56,7 +56,7 @@ class AdminModuleCreateView(AdminTestMixin, CreateView):
         # before sending success url, connect the user
         # to recieve notifiations
         obj = self.object
-        publish_changes(obj)
+        publish_changes(obj, self.request.user)
         watcher = WatcherWrapper(obj.module_leader)
         # add the module created to thier list
         watcher.add_module(obj)
@@ -84,7 +84,7 @@ class AdminModuleUpdateView(AdminTestMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         response = super(
             AdminModuleUpdateView, self).post(request, *args, **kwargs)
-        publish_changes(self.object)
+        publish_changes(self.object, request.user)
         return response
 
     def get_success_url(self):

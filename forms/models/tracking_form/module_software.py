@@ -1,7 +1,6 @@
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 
-from timeline.register import timeline_register
 from timeline.models.integrate.entry import TLEntry
 from core.models import Module
 

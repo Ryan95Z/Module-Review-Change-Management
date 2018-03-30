@@ -77,7 +77,7 @@ class LeaderModuleTrackingForm(View):
             'form_errors': form_errors,
             'form_exists': form_exists,
             'pk': module_pk,
-            'module': module, 
+            'module': module,
             'teaching_hours_form': teaching_hours_form,
             'support_form': support_form,
             'assessment_forms': assessment_forms,
@@ -86,7 +86,6 @@ class LeaderModuleTrackingForm(View):
         return render(request, 'module_tracking_form.html', context)
 
     def post(self, request, *args, **kwargs):
-        print("hello World")
         """
         POST method which submits the new tracking form
         """
@@ -141,6 +140,7 @@ class LeaderModuleTrackingForm(View):
             # this makes the timeline
             tracking_to_timeline(
                 module.module_code,
+                request.user,
                 teaching_hours_object,
                 support_object,
                 assessment_objects,

@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.validators import MaxValueValidator
-from timeline.register import timeline_register
 from timeline.models.integrate.entry import TLEntry
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -47,7 +46,7 @@ class ModuleAssessmentManager(models.Manager):
         else:
             raise ObjectDoesNotExist('No assessments with the current_flag exist')
 
-# @timeline_register
+
 class ModuleAssessment(TLEntry):
     """
     Model which represents the assessment details of a module

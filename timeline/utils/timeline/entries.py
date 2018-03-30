@@ -17,9 +17,32 @@ class BaseEntry(ABC):
     def content(self):
         pass
 
-    @abstractmethod
-    def create_entry(self, parent, entry_type, status='Draft'):
-        pass
+    def create_entry(self, **kwargs):
+        parent = kwargs.get('parent', None)
+        entry_type = kwargs.get('entry_type', 'Generic')
+        status = kwargs.get('status', 'Draft')
+        requested_by = kwargs.get('requested_by', None)
+
+        if not self.have_changes():
+            return None
+
+        title = self.model.title()
+        changes = self.content()
+        module_code = self.get_module_code()
+        object_id = self.model.pk
+        content_object = self.model
+
+        return TimelineEntry.objects.create(
+            title=title,
+            changes=changes,
+            module_code=module_code,
+            object_id=object_id,
+            content_object=content_object,
+            parent_entry=parent,
+            entry_type=entry_type,
+            status=status,
+            changes_by=requested_by
+        )
 
     def get_module_code(self):
         cls = self.model.__class__
@@ -60,25 +83,7 @@ class InitEntry(BaseEntry):
     def sum_changes(self):
         return "{} has been created for {}".format(
             self.model.title(),
-            self.module_code()
-        )
-
-    def create_entry(self, parent, entry_type, status='Draft'):
-        title = self.model.title()
-        changes = self.content()
-        module_code = self.get_module_code()
-        object_id = self.model.pk
-        content_object = self.model
-
-        return TimelineEntry.objects.create(
-            title=title,
-            changes=changes,
-            module_code=module_code,
-            object_id=object_id,
-            content_object=content_object,
-            parent_entry=parent,
-            entry_type=entry_type,
-            status=status
+            self.get_module_code()
         )
 
 
@@ -118,25 +123,4 @@ class UpdateEntry(BaseEntry):
         n_changes = len(self.get_differences())
         return "There are {} changes to {}".format(
             n_changes, self.model.title()
-        )
-
-    def create_entry(self, parent, entry_type, status='Draft'):
-        if not self.have_changes():
-            return
-
-        title = self.model.title()
-        changes = self.content()
-        module_code = self.get_module_code()
-        object_id = self.model.pk
-        content_object = self.model
-
-        return TimelineEntry.objects.create(
-            title=title,
-            changes=changes,
-            module_code=module_code,
-            object_id=object_id,
-            content_object=content_object,
-            parent_entry=parent,
-            entry_type=entry_type,
-            status=status,
         )
