@@ -64,6 +64,11 @@ class TimelineEntry(models.Model):
             return None
         return self.changes_by.get_full_name()
 
+    def requester_id(self):
+        if self.changes_by is None:
+            return None
+        return self.changes_by.pk
+
     def approver_username(self):
         """
         Method to get the approver's username.
