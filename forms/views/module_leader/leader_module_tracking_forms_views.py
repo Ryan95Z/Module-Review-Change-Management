@@ -6,8 +6,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import formset_factory, modelformset_factory
 
 from core.models import Module
-from forms.models.tracking_form import ModuleChangeSummary, ModuleTeaching, ModuleSupport, ModuleAssessment, ModuleSoftware
-from forms.forms import ModuleChangeSummaryForm, ModuleTeachingHoursForm, ModuleSupportForm, ModuleAssessmentsForm, ModuleSoftwareForm
+from forms.models.tracking_form import ModuleChangeSummary, ModuleTeaching, ModuleSupport, ModuleAssessment, ModuleReassessment, ModuleSoftware
+from forms.forms import ModuleChangeSummaryForm, ModuleTeachingHoursForm, ModuleSupportForm, ModuleAssessmentsForm, ModuleReassessmentForm, ModuleSoftwareForm
 from forms.utils.tracking_form import populate_tracking_forms
 
 from timeline.utils.timeline.tracking_form import tracking_to_timeline
@@ -68,6 +68,13 @@ class LeaderModuleTrackingForm(View):
             form_errors.append("Assessments")
 
         try:
+            reassessment = ModuleReassessment.objects.get(module=module, current_flag=True)
+            reassessment_form = ModuleReassessmentForm(instance=reassessment)
+        except ObjectDoesNotExist:
+            reassessment_form = ModuleReassessmentForm()
+            form_errors.append("Reassessment")
+
+        try:
             software = ModuleSoftware.objects.get_current_software(module)
             software_forms = self.software_formset(queryset=software, prefix='software_form')
         except ObjectDoesNotExist:
@@ -75,7 +82,7 @@ class LeaderModuleTrackingForm(View):
             form_errors.append("Software Requirements")
 
         # If absolutely no data is found, we set the form_exists flag to false
-        if len(form_errors) > 4:
+        if len(form_errors) > 5:
             form_exists = False
 
         # Setting the context
@@ -89,6 +96,7 @@ class LeaderModuleTrackingForm(View):
             'teaching_hours_form': teaching_hours_form,
             'support_form': support_form,
             'assessment_forms': assessment_forms,
+            'reassessment_form': reassessment_form,
             'software_forms': software_forms
         }
         return render(request, 'module_tracking_form.html', context)
@@ -118,6 +126,12 @@ class LeaderModuleTrackingForm(View):
         except ObjectDoesNotExist:
             support_form = ModuleSupportForm(request.POST)
 
+        try:
+            reassessment = ModuleReassessment.objects.get(module=module, current_flag=True)
+            reassessment_form = ModuleReassessmentForm(request.POST, instance=reassessment)
+        except ObjectDoesNotExist:
+            reassessment_form = ModuleReassessmentForm(request.POST)
+
         assessment_forms = self.assessment_formset(request.POST, prefix="assessment_form")
         software_forms = self.software_formset(request.POST, prefix="software_form")
 
@@ -125,14 +139,16 @@ class LeaderModuleTrackingForm(View):
         teaching_hours_valid = teaching_hours_form.is_valid()
         support_valid = support_form.is_valid()
         assessments_valid = assessment_forms.is_valid()
+        reassessment_valid = reassessment_form.is_valid()
         software_valid = software_forms.is_valid()
 
-        if change_summary_valid and teaching_hours_valid and support_valid and assessments_valid and software_valid:
+        if change_summary_valid and teaching_hours_valid and support_valid and assessments_valid and reassessment_valid and software_valid:
 
             change_summary_object = change_summary_form.save(commit=False)
             teaching_hours_object = teaching_hours_form.save(commit=False)
             support_object = support_form.save(commit=False)
             assessment_objects = assessment_forms.save(commit=False)
+            reassessment_object = reassessment_form.save(commit=False)
             software_objects = software_forms.save(commit=False)
 
             change_summary_object.module = module
@@ -146,6 +162,10 @@ class LeaderModuleTrackingForm(View):
             support_object.module = module
             support_object.current_flag = True
             support_object.save()
+
+            reassessment_object.module = module
+            reassessment_object.current_flag = True
+            reassessment_object.save()
 
             for assessment in assessment_objects:
                 assessment.module = module
@@ -165,6 +185,7 @@ class LeaderModuleTrackingForm(View):
                 teaching_hours_object,
                 support_object,
                 assessment_objects,
+                reassessment_object,
                 software_objects
             )
 
@@ -179,6 +200,7 @@ class LeaderModuleTrackingForm(View):
                 'teaching_hours_form': teaching_hours_form,
                 'support_form': support_form,
                 'assessment_forms': assessment_forms,
+                'reassessment_form': reassessment_form,
                 'software_forms': software_forms
             }
             return render(request, 'module_tracking_form.html', context=error_context)

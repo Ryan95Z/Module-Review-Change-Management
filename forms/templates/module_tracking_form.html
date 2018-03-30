@@ -273,7 +273,26 @@
                 </div>
                 {% if edit_form %}
                 <div class="col-md-2 mx-auto"><button type="button" name="assessment_form" class="btn btn-primary btn-sm add-row">Add Another</button></div>
+                <hr>
                 {% endif %}
+
+                {{ reassessment_form.non_field_errors }}
+                <div class="form-check">
+                    {{reassessment_form.reassessment_requested}}
+                    <label class="form-check-label" for="{{reassessment_form.reassessment_requested.id_for_label}}">{{reassessment_form.reassessment_requested.label}}</label>
+                </div>
+                <div class="collapse" id="reassessment_collapse">
+                    <div class="form-group">
+                        <label for="{{reassessment_form.reassessment_new_method.id_for_label}}">{{reassessment_form.reassessment_new_method.label}}</label>
+                        {{reassessment_form.reassessment_new_method}}
+                        {{reassessment_form.reassessment_new_method.errors}}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{reassessment_form.reassessment_rationale.id_for_label}}">{{reassessment_form.reassessment_rationale.label}}</label>
+                        {{reassessment_form.reassessment_rationale}}
+                        {{reassessment_form.reassessment_rationale.errors}}
+                    </div>
+                </div>
             </div>
         </div>
 

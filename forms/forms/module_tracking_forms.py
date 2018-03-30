@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import TextInput, Textarea, NumberInput, Select, CheckboxInput, HiddenInput
-from forms.models import ModuleChangeSummary, ModuleTeaching, ModuleAssessment, ModuleExam, ModuleSupport, ModuleSoftware
+from forms.models import ModuleChangeSummary, ModuleTeaching, ModuleAssessment, ModuleReassessment, ModuleSupport, ModuleSoftware
 
 class ModuleChangeSummaryForm(forms.ModelForm):
     """
@@ -74,6 +74,19 @@ class ModuleAssessmentsForm(forms.ModelForm):
             'assessment_hand_in': Select(attrs={'class':'form-control form-control-sm'}),
             'assessment_semester': Select(attrs={'class':'form-control form-control-sm'}),
             'learning_outcomes_covered': Textarea(attrs={'rows': '2', 'class':'form-control form-control-sm'}),
+        }
+
+class ModuleReassessmentForm(forms.ModelForm):
+    """
+    Form which handles module reassessment details
+    """
+    class Meta:
+        model = ModuleReassessment
+        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number')
+        widgets = {
+            'reassessment_requested': CheckboxInput(attrs={'data-toggle':'collapse', 'data-target':'#reassessment_collapse'}),
+            'reassessment_new_method': TextInput(attrs={'class':'form-control form-control-sm'}),
+            'reassessment_rationale': Textarea(attrs={'rows':'2', 'class':'form-control form-control-sm'}),
         }
 
 class ModuleSoftwareForm(forms.ModelForm):

@@ -38,6 +38,8 @@ $(document).ready(function(){
     var changes_other_checked = $('#id_changes_other').is(':checked')
     var lab_support_required = $('#id_lab_support_required').is(':checked')
     var tutorial_support_required = $('#id_tutorial_support_required').is(':checked')
+    var reassessment_requested = $('#id_reassessment_requested').is(':checked')
+
     if(changes_to_outcomes_checked) {
         $('#changes_to_outcomes_collapse').addClass('show')
     }
@@ -55,5 +57,8 @@ $(document).ready(function(){
     }
     if(tutorial_support_required) {
         $('#tutorial_support_collapse').addClass('show')
+    }
+    if(reassessment_requested) {
+        $('#reassessment_collapse').addClass('show')
     }
 })
