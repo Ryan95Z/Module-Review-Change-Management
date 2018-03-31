@@ -106,24 +106,30 @@
 <div id="desc-collapse" class="collapse show" aria-labelledby="desc-heading">
 	<div class="card-body">
 		{% for field in form.visible_fields %}
-		<div class="row">
-			<h6>{{ field.label }}</h6>
+		<div class="form-row">
 			{% if field|widget_type == 'RadioSelect' %} 
-			</div><div class="row">
+			<div class="form-group col-md-12">
 				<!-- We render the elements manually if it isn't a textual input/select -->
 				<!-- The radio boxes are contained within their own row to avoid inline problems -->
-				{% for radio in field %}
-				<div class="form-check form-check-inline">
-				<label for="{{ radio.id_for_label }}" class="form-check-label">
-					{{ radio.tag }} {{ radio.choice_label }}
-				</label>
+				<label for="{{field.id_for_label}}">{{field.label}}</label>
+				<div class="form-group my-0">
+					{% for radio in field %}
+					<div class="form-check form-check-inline my-0">
+					<label for="{{ radio.id_for_label }}" class="form-check-label px-0">
+						{{ radio.tag }} {{ radio.choice_label }}
+					</label>
+					</div>
+					{% endfor %}
 				</div>
-				{% endfor %}
+			</div>
 			{% else %}
-			{{ field }}
+			<div class="form-group col-md-12">
+				<label for="{{field.id_for_label}}">{{field.label}}</label>
+				{{ field }}
+			</div>
 			{% endif %}
 		</div>
-		<br>
+		<hr class="my-2" style="margin-left:-20px; margin-right:-20px">
 		{% endfor %}
 	</div>
 </div>
