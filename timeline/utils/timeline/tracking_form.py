@@ -12,6 +12,16 @@ def tracking_to_timeline(module_code, changes_by, *args):
     return processer.create_entries(module_code, changes_by)
 
 
+def get_form_version_number(parent_id):
+    entry = TimelineEntry.objects.filter(parent_entry_id=parent_id).first()
+    revert = entry.revert_object_id
+    model = entry.content_object.__class__
+    try:
+        return model.objects.get(pk=revert).version_number
+    except model.DoesNotExist:
+        return 1
+
+
 class ProcessTrackingForm(object):
     """
     Class that will process the models and generate
@@ -115,16 +125,15 @@ class ParentEntry(object):
                 del base['module']
                 base['current_flag'] = False
                 base['archive_flag'] = True
-                base['version_number'] += 1
+                base['version_number'] = base['copy_number']
                 base['module_id'] = model.get_module_code()
 
-                if model.have_changes():
-                    copy = cls.objects.create(**base)
-                    model.create_entry(
-                        parent=parent,
-                        entry_type='Tracking-Form',
-                        revert=copy.pk
-                    )
+                copy = cls.objects.create(**base)
+                model.create_entry(
+                    parent=parent,
+                    entry_type='Tracking-Form',
+                    revert=copy.pk
+                )
             else:
                 model.create_entry(
                     parent=parent,

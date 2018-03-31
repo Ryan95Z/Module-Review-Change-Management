@@ -109,28 +109,40 @@ class LeaderModuleTrackingForm(View):
 
             change_summary_object.module = module
             change_summary_object.current_flag = True
+            if not change_summary_object.is_new:
+                change_summary_object.copy_number += 1
             change_summary_form.save()
 
             teaching_hours_object.module = module
             teaching_hours_object.current_flag = True
+            if not teaching_hours_object.is_new:
+                teaching_hours_object.copy_number += 1
             teaching_hours_object.save()
 
             support_object.module = module
             support_object.current_flag = True
+            if not support_object.is_new:
+                support_object.copy_number += 1
             support_object.save()
 
             reassessment_object.module = module
             reassessment_object.current_flag = True
+            if not reassessment_object.is_new:
+                reassessment_object.copy_number += 1
             reassessment_object.save()
 
             for assessment in assessment_objects:
                 assessment.module = module
                 assessment.current_flag = True
+                if not assessment.is_new:
+                    assessment.copy_number += 1
                 assessment.save()
 
             for software in software_objects:
                 software.module = module
                 software.current_flag = True
+                if not software.is_new:
+                    software.copy_number += 1
                 software.save()
 
             # this makes the timeline
