@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from core.models import Module
 from forms.models import ModuleDescriptionFormVersion, FormFieldEntity
-from forms.forms import FieldEntityForm
+from forms.forms import FieldEntityForm, ModuleDescriptionForm
 
 class AdminModuleDescriptionFormStructure(View):
     """
@@ -15,11 +15,13 @@ class AdminModuleDescriptionFormStructure(View):
         try:
             newest_version = ModuleDescriptionFormVersion.objects.get_most_recent()
             newest_version_fields = FormFieldEntity.objects.get_most_recent_form()
+            newest_version_preview = ModuleDescriptionForm()
             all_versions = ModuleDescriptionFormVersion.objects.get_version_list()
             context = {
                 'form_exists': True,
                 'form_version': newest_version,
                 'form_fields': newest_version_fields,
+                'form_preview': newest_version_preview,
                 'all_versions': all_versions
             }
         except ObjectDoesNotExist:
@@ -35,11 +37,13 @@ class AdminModuleDescriptionFormStructureOld(View):
             version_pk = self.kwargs['pk']
             chosen_version = ModuleDescriptionFormVersion.objects.get(pk=version_pk)
             chosen_version_fields = FormFieldEntity.objects.get_form(version_pk)
+            chosen_version_preview = ModuleDescriptionForm(md_version=version_pk)
             all_versions = ModuleDescriptionFormVersion.objects.get_version_list()
             context = {
                 'form_exists': True,
                 'form_version': chosen_version,
                 'form_fields': chosen_version_fields,
+                'form_preview': chosen_version_preview,
                 'all_versions': all_versions
             }
         except ObjectDoesNotExist:

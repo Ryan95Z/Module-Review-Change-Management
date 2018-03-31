@@ -2,6 +2,19 @@ from django import template
 
 register = template.Library()
 
+@register.filter()
+def addstr(field, value):
+    """
+    Safely concatenates a value to the end of the field
+    """
+    return str(field) + str(value)
+
+@register.filter()
+def get(object, index):
+    """
+    Retrieve an object with the given object using a string
+    """
+    return object[index]
 
 @register.filter()
 def add_css_class(field, css_class: str):
