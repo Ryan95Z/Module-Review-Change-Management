@@ -8,7 +8,7 @@ class ModuleChangeSummaryForm(forms.ModelForm):
     """
     class Meta:
         model = ModuleChangeSummary
-        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number')
+        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number', 'copy_number')
         widgets = {
             'changes_to_outcomes': CheckboxInput(attrs={'data-toggle':'collapse', 'data-target':'#changes_to_outcomes_collapse'}),
             'changes_to_outcomes_desc': Textarea(attrs={'rows':'2', 'class':'form-control form-control-sm'}),
@@ -27,7 +27,7 @@ class ModuleTeachingHoursForm(forms.ModelForm):
     """
     class Meta:
         model = ModuleTeaching
-        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number')
+        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number', 'copy_number')
 
 class ModuleSupportForm(forms.ModelForm):
     """
@@ -35,7 +35,7 @@ class ModuleSupportForm(forms.ModelForm):
     """
     class Meta:
         model = ModuleSupport
-        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number')
+        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number', 'copy_number')
         widgets = {
             'lab_support_required': CheckboxInput(attrs={'data-toggle':'collapse', 'data-target':'#lab_support_collapse'}),
             'lab_support_skills': TextInput(attrs={'class':'form-control form-control-sm'}),
@@ -63,7 +63,7 @@ class ModuleAssessmentsForm(forms.ModelForm):
     """
     class Meta:
         model = ModuleAssessment
-        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number')
+        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number', 'copy_number')
         widgets = {
             'assessment_id': HiddenInput(),
             'assessment_title': TextInput(attrs={'class':'form-control form-control-sm'}),
@@ -82,7 +82,7 @@ class ModuleReassessmentForm(forms.ModelForm):
     """
     class Meta:
         model = ModuleReassessment
-        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number')
+        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number', 'copy_number')
         widgets = {
             'reassessment_requested': CheckboxInput(attrs={'data-toggle':'collapse', 'data-target':'#reassessment_collapse'}),
             'reassessment_new_method': TextInput(attrs={'class':'form-control form-control-sm'}),
@@ -95,7 +95,7 @@ class ModuleSoftwareForm(forms.ModelForm):
     """
     class Meta:
         model = ModuleSoftware
-        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number')
+        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number', 'copy_number')
         widgets = {
             'software_id': HiddenInput(),
             'software_name': TextInput(attrs={'class':'form-control form-control-sm'}),

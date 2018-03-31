@@ -66,6 +66,7 @@ class ModuleAssessment(TLEntry):
     staging_flag = models.BooleanField(default=False)
     current_flag = models.BooleanField(default=False)
     version_number = models.IntegerField(default=1)
+    copy_number = models.IntegerField(default=1)
 
     objects = ModuleAssessmentManager()
 

@@ -20,7 +20,7 @@ class ModuleReassessment(TLEntry):
     staging_flag = models.BooleanField(default=False)
     current_flag = models.BooleanField(default=False)
     version_number = models.IntegerField(default=1)
-
+    copy_number = models.IntegerField(default=1)
     def __str__(self):
         return "Reassessment details for {}".format(self.module)
 

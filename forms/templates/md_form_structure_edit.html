@@ -69,9 +69,12 @@
 </table>
 
 <!-- Form controls -->
-<a class="btn btn-danger btn-sm" role="button" href="{% url 'module_description_form_structure' %}">Cancel</a>
-<input type="button" name="structure_form" class="btn btn-primary btn-sm add-row" value="Add Row">
-<button type="submit" class="btn btn-primary btn-sm">Submit</button>
+<div class="col-md-6 mx-auto px-0 text-center">
+    <a class="btn btn-danger btn-sm" role="button" href="{% url 'module_description_form_structure' %}">Cancel</a>
+    <button type="button" name="structure_form" class="btn btn-primary btn-sm add-row">Add Row</button>
+    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+</div>
+
 </form>
 
 <!-- Empty form which is used to generate new rows in the form -->
