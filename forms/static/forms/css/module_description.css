@@ -1,0 +1,5 @@
+/* Horizontal rule ignores default container padding */
+hr {
+    margin-left: -20px;
+    margin-right: -20px;
+}

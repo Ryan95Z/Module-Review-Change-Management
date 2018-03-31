@@ -1,8 +1,13 @@
 {% extends 'core/main.html' %}
+{% load static %}
 {% load core_tags %}
 
 {% block title %}
 	{{ module.module_code }}
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'forms/css/module_description.css' %}">
 {% endblock %}
 
 {% block main %}
@@ -129,7 +134,7 @@
 			</div>
 			{% endif %}
 		</div>
-		<hr class="my-2" style="margin-left:-20px; margin-right:-20px">
+		<hr class="my-2">
 		{% endfor %}
 	</div>
 </div>
