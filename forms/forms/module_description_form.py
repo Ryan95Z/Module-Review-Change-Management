@@ -14,7 +14,7 @@ class ModuleDescriptionForm(forms.Form):
         # we need to create. If there is no version, get the most recent one
         if 'md_version' in kwargs:
             self.md_version = kwargs.pop('md_version')
-            self.form_entities = FormFieldEntity.objects.get_form(self.md_version)
+            self.form_entities = FormFieldEntity.objects.get_form_dict(self.md_version)
         else:
             self.md_version = ModuleDescriptionFormVersion.objects.get_most_recent().module_description_version
             self.form_entities = FormFieldEntity.objects.get_most_recent_form()
