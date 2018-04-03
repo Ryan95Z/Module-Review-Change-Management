@@ -7,7 +7,7 @@
         {% for module in my_modules %}
             <li class="list-group-item" style="height: 35px; padding: 5px 15px;">
                 <a href="{% url 'view_module_description' pk=module.module_code %}">
-                    {{ module.module_name }}
+                    {{ module.pk }}: {{ module.module_name }}
                 </a>
             </li>
         {% endfor %}
