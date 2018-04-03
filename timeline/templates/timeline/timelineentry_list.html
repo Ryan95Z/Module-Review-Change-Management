@@ -39,17 +39,22 @@
 							</div>
 							<div class="entry-{{ entry.status|lower }}">
 								<div class="timeline-content">
+									<p>The following changes were made by: {{ entry.requester_username }}</p>									
 									{% autoescape off %}
 									{{ entry.changes|covert_markdown }}
 									{% endautoescape %}
 								</div>
 								<div class="timeline-actions">
+									{% if entry.entry_type == "Tracking-Form" %}
+										<a class="btn btn-info btn-sm" href="{% url 'changes' module_code entry.pk %}">See Changes</a>
+									{% endif %}
+
 									<div class="timeline-meta">
 										{% if entry.status != "Draft" %}
 											{% if entry.approved_by is None %}
 												<span>Approved By: System</span>
 											{% else %}
-												<span>Approved By: {{ entry.approved_by.username }}</span>
+												<span>Approved By: {{ entry.approver_username }}</span>
 											{% endif %}
 											{% else %}
 												<span>Not approved</span>
@@ -61,9 +66,6 @@
 											</a>
 										</span>
 									</div>
-									{% if entry.entry_type == "Tracking-Form" %}
-									<a href="{% url 'changes' module_code entry.pk %}">See Changes</a>
-									{% endif %}
 								</div>
 							</div>
 						</div>

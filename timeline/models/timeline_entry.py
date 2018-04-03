@@ -108,5 +108,10 @@ class TimelineEntry(models.Model):
             return None
         return self.approved_by.get_full_name()
 
+    def approver_id(self):
+        if self.approved_by is None:
+            return None
+        return self.approved_by.pk
+
     class Meta:
         ordering = ['-created']

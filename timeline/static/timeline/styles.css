@@ -120,7 +120,8 @@
 	padding: 6px 10px 1px 10px;
 }
 
-.timeline ul > .timeline-item .timeline-entry .timeline-header h5 {
+.timeline ul > .timeline-item .timeline-entry .timeline-header h5,
+.timeline-entry-local .timeline-header h5 {
 	font-size: 25px;
 }
 
@@ -131,11 +132,13 @@
 	float: right;
 }
 
-.timeline ul > .timeline-item .timeline-entry .timeline-content {
+.timeline ul > .timeline-item .timeline-entry .timeline-content,
+.timeline-entry-local .timeline-content {
 	padding: 10px 20px;
 }
 
-.timeline ul > .timeline-item .timeline-entry .timeline-actions {
+.timeline ul > .timeline-item .timeline-entry .timeline-actions,
+.timeline-entry-local .timeline-actions {
 	padding: 5px 10px;
 }
 
