@@ -8,11 +8,11 @@ class BaseTimelineNode(models.Model):
     to be tracked.
     """
     created = models.DateTimeField(auto_now_add=True)
-    is_new = False
 
     def __init__(self, *args, **kwargs):
         super(BaseTimelineNode, self).__init__(*args, **kwargs)
         self.base = model_to_dict(self)
+        self.is_new = False
 
     def title(self):
         """
