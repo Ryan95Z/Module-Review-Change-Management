@@ -24,29 +24,24 @@ class AbstractModuleDescriptionWrapper(ABC):
     """
     Abstract Module Description Class
     """
-    def __init__(self, module, module_description_master=False):
+    def __init__(self, module, module_description_master):
         self.module = module 
         self.module_description_master=module_description_master
-
-        if self.module_description_master:
-            self.form = FormFieldEntity.objects.get_form(module_description_master.form_version.pk)
-            self.values_queryset = ModuleDescriptionEntry.objects.get_full_description(self.module_description_master)
+        self.form = FormFieldEntity.objects.get_form(module_description_master.form_version.pk)
+        self.values_queryset = ModuleDescriptionEntry.objects.get_full_description(self.module_description_master)
 
     def get_data_with_labels(self):
-        if self.module_description_master:
-            data = {}
-            for field in self.form:
-                field_id = field.entity_id
-                field_label = field.entity_label
-                field_type = field.entity_type
-                if field_type in ("text-input", "text-area", "multi-choice", "radio-buttons"):
-                    field_data = self.values_queryset.get(field_id=field_id).string_entry
-                elif field_type in ("check-boxes"):
-                    field_data = self.values_queryset.get(field_id=field_id).boolean_entry
-                data[field_label] = field_data
-            return data
-        else:
-            return "There is no module description for this module"
+        data = {}
+        for field in self.form:
+            field_id = field.entity_id
+            field_label = field.entity_label
+            field_type = field.entity_type
+            if field_type in ("text-input", "text-area", "multi-choice", "radio-buttons"):
+                field_data = self.values_queryset.get(field_id=field_id).string_entry
+            elif field_type in ("check-boxes"):
+                field_data = self.values_queryset.get(field_id=field_id).boolean_entry
+            data[field_label] = field_data
+        return data
 
 class ModuleDescriptionWrapper(AbstractModuleDescriptionWrapper):
     """
@@ -61,8 +56,5 @@ class CurrentModuleDescriptionWrapper(AbstractModuleDescriptionWrapper):
     The most recent Module Description for a given module
     """
     def __init__(self, module):
-        try:
-            current_module_description = ModuleDescription.objects.get_most_recent(module)
-            super(CurrentModuleDescriptionWrapper, self).__init__(module, current_module_description)
-        except ObjectDoesNotExist:
-            super(CurrentModuleDescriptionWrapper, self).__init__(module)
+        current_module_description = ModuleDescription.objects.get_most_recent(module)
+        super(CurrentModuleDescriptionWrapper, self).__init__(module, current_module_description)
