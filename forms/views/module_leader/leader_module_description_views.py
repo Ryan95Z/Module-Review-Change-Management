@@ -5,7 +5,7 @@ from django.views import View
 from core.models import Module
 from forms.forms import ModuleDetailForm, ModuleDescriptionForm
 from forms.models import ModuleDescription, ModuleDescriptionEntry, ModuleDescriptionFormVersion, FormFieldEntity
-from forms.utils.module_description import md_to_form
+from forms.utils.module_description import *
 
 class LeaderModuleDescriptionView(View):
     """
@@ -41,9 +41,8 @@ class LeaderModuleDescriptionView(View):
         # Retrieve the most recent description for this module, and
         # the form version it used. Convert it to form format.
         try:
-            current_description = ModuleDescriptionEntry.objects.get_last_description(module)
-            version_used = ModuleDescription.objects.get_most_recent(module).form_version
-            existing_form = md_to_form(current_description)
+            current_description = CurrentModuleDescriptionWrapper(module)
+            version_used = current_description.form_master
         except ObjectDoesNotExist:
             form_exists = False
 
@@ -52,7 +51,7 @@ class LeaderModuleDescriptionView(View):
         # most recent form if the user is in edit mode.
         if form_version_exists and form_exists and version_used == newest_form_version:
             new_form_version = False
-            module_description_form = ModuleDescriptionForm(initial=existing_form)
+            module_description_form = current_description.get_form()
         else:
             if not form_version_exists:
                 new_form_version = False
@@ -62,7 +61,7 @@ class LeaderModuleDescriptionView(View):
                 module_description_form = ModuleDescriptionForm()
             else: 
                 new_form_version = True
-                module_description_form = ModuleDescriptionForm(md_version=version_used.pk, initial=existing_form)
+                module_description_form = current_description.get_form()
 
         # Set the context with the form, and the user chosen stuff
         context = {
@@ -79,9 +78,7 @@ class LeaderModuleDescriptionView(View):
     def post(self, request, **kwargs):
         """
         When the form is posted, this function creates a new instance
-        of the description for this module. Currently, it will create
-        an entirely new version every time the form is submitted, 
-        however I plan to change this later.
+        of the description for this module.
         """
         module = Module.objects.get(pk=self.kwargs.get('pk'))
 
