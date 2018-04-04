@@ -17,6 +17,11 @@ class ModuleDescriptionEntryManager(models.Manager):
                 module_description_id=md_id,
                 field_id=field_id,
                 string_entry=entry)
+        elif isinstance(entry, bool):
+            return self.create(
+                module_description_id=md_id,
+                field_id=field_id,
+                boolean_entry=entry)
         elif isinstance(entry, int):
             return self.create(
                 module_description_id=md_id,

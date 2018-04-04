@@ -46,7 +46,7 @@ class FormFieldEntity(models.Model):
         ("text-area", "Text Area"),
         ("multi-choice", "Select Box"),
         ("radio-buttons", "Radio Buttons"),
-        ("check-boxes", "Check Boxes")
+        ("check-box", "Check Box")
     )
 
     entity_id = models.AutoField(primary_key=True)

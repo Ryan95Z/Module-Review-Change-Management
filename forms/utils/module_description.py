@@ -23,7 +23,7 @@ class AbstractModuleDescriptionWrapper(ABC):
             field_type = field.entity_type
             if field_type in ("text-input", "text-area", "multi-choice", "radio-buttons"):
                 field_data = self.values_queryset.get(field_id=field_id).string_entry
-            elif field_type in ("check-boxes"):
+            elif field_type in ("check-box"):
                 field_data = self.values_queryset.get(field_id=field_id).boolean_entry
             data[field_label] = field_data
         return data
@@ -34,7 +34,10 @@ class AbstractModuleDescriptionWrapper(ABC):
             field = entry.field_id
             id_for_form = "field_entity_" + str(field.pk)
             field_type = field.entity_type
-            form_data[id_for_form] = entry.string_entry
+            if field_type in ("text-input", "text-area", "multi-choice", "radio-buttons"):
+                 form_data[id_for_form] = entry.string_entry
+            elif field_type in ("check-box"):
+                 form_data[id_for_form] = entry.boolean_entry
         if post_data:
             return ModuleDescriptionForm(post_data, md_version=self.form_master.pk, initial=form_data)
         else:

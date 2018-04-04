@@ -104,7 +104,7 @@ class LeaderModuleDescriptionView(View):
             # Remove the form version from the cleaned data, as we don't need it
             del module_description_form.cleaned_data['form_version']
 
-            md = ModuleDescription.objects.create_new(module, form_version)            
+            md = ModuleDescription.objects.create_new(module, form_version)         
             for field, value in module_description_form.cleaned_data.items():
                 # We only want the field id, so we strip 'field_entity_'
                 field_entity = FormFieldEntity.objects.get(pk=field.strip('field_entity_'))

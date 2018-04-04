@@ -52,11 +52,11 @@ class ModuleDescriptionForm(forms.Form):
                     label=e.get('entity_label'),
                     required=e.get('entity_required')
                 )
-            elif entity_type == "check-boxes":
+            elif entity_type == "check-box":
                 self.fields['field_entity_%s' % e.get('entity_id')] = forms.BooleanField(
                     widget=forms.CheckboxInput,
                     label=e.get('entity_label'),
-                    required=e.get('entity_required')
+                    required=False
                 )
 
         # Set the form_version. 
