@@ -28,6 +28,10 @@ class ModuleDescriptionEntryManager(models.Manager):
         last_description = ModuleDescription.objects.get_most_recent(module)
         return ModuleDescriptionEntry.objects.filter(module_description_id=last_description)
 
+    # Returns the values for a module description given it's id
+    def get_full_description(self, module_description):
+        return self.filter(module_description_id=module_description)
+    
 class ModuleDescriptionEntry(models.Model):
     """
     Represents the answer to a single field within a module description
@@ -39,4 +43,3 @@ class ModuleDescriptionEntry(models.Model):
     integer_entry = models.IntegerField(null=True)
 
     objects = ModuleDescriptionEntryManager()
-

@@ -16,7 +16,7 @@
 
 <p class="text-center mb-0">Form Iteration <b>{{ form_version.pk }}</b> (<a href="#" data-toggle="modal" data-target="#olderVersionsModal">view an older version</a>)</p>
 <p class="text-center mb-0">Created: <b>{{ form_version.creation_date }}</b></p> 
-<div class="col-md-2 mx-auto px-0"><a href="{% url 'change_module_description_structure' %}" class="btn btn-primary btn-sm">Update Form Structure</a></div>
+<p class="text-center mb-0"><a href="{% url 'change_module_description_structure' %}" class="btn btn-primary btn-sm">Update Form Structure</a></p>
 
 <hr>
 {% for field in form_fields %}
@@ -25,21 +25,27 @@
     {% with "field_entity_"|addstr:field.entity_id as form_preview_id %}
     <form action="" method="">
         {% with form_preview|get:form_preview_id as form_preview_field %}
-        <div class="form-group mb-0">
-            <label for="{{form_preview_field.id_for_label}}">{{form_preview_field.label}}</label>
+        <div class="form-row mb-0">
 			{% if form_preview_field|widget_type == 'RadioSelect' %} 
-			</div><div class="form-group mb-0">
+			<div class="form-group col-md-12">
 				<!-- We render the elements manually if it isn't a textual input/select -->
 				<!-- The radio boxes are contained within their own row to avoid inline problems -->
-				{% for radio in form_preview_field %}
-				<div class="form-check form-check-inline">
-				<label for="{{ radio.id_for_label }}" class="form-check-label">
-					{{ radio.tag }} {{ radio.choice_label }}
-				</label>
+				<label for="{{form_preview_field.id_for_label}}">{{form_preview_field.label}}</label>
+				<div class="form-group my-0">
+					{% for radio in form_preview_field %}
+					<div class="form-check form-check-inline my-0">
+					<label for="{{ radio.id_for_label }}" class="form-check-label px-0">
+						{{ radio.tag }} {{ radio.choice_label }}
+					</label>
+					</div>
+					{% endfor %}
 				</div>
-				{% endfor %}
+			</div>
 			{% else %}
-			{{ form_preview_field }}
+			<div class="form-group col-md-12">
+				<label for="{{form_preview_field.id_for_label}}">{{form_preview_field.label}}</label>
+				{{ form_preview_field }}
+			</div>
 			{% endif %}
         </div>
         {% endwith %}

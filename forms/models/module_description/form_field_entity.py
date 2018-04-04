@@ -17,7 +17,7 @@ class FormFieldEntityManager(models.Manager):
         ).order_by('entity_order').values()
         return newest_version_fields
 
-    def get_form(self, version_id):
+    def get_form_dict(self, version_id):
         """
         Returns a queryset of the fields which make up a given form version, in order.
         """
@@ -25,6 +25,16 @@ class FormFieldEntityManager(models.Manager):
         chosen_version_fields = self.filter(
             module_description_version=version
         ).order_by('entity_order').values()
+        return chosen_version_fields
+
+    def get_form(self, version_id):
+        """
+        Returns a queryset of the fields which make up a given form version, in order.
+        """
+        version = ModuleDescriptionFormVersion.objects.get(pk=version_id)
+        chosen_version_fields = self.filter(
+            module_description_version=version
+        ).order_by('entity_order')
         return chosen_version_fields
 
 class FormFieldEntity(models.Model):
