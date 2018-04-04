@@ -8,7 +8,6 @@ def tracking_to_timeline(module_code, changes_by, *args):
     Helper function that contains the process to create timeline
     entries for the tracking form.
     """
-    print(args)
     processer = ProcessTrackingForm(*args)
     return processer.create_entries(module_code, changes_by)
 
