@@ -8,6 +8,7 @@ def tracking_to_timeline(module_code, changes_by, *args):
     Helper function that contains the process to create timeline
     entries for the tracking form.
     """
+    print(args)
     processer = ProcessTrackingForm(*args)
     return processer.create_entries(module_code, changes_by)
 
@@ -120,6 +121,7 @@ class ParentEntry(object):
         """
         Private class to generate the timeline child entries.
         """
+        current_version = self.args[0].model.copy_number
         for model in self.args:
             if model.type_of_entry() == UPDATE:
                 base = model.get_original_data()
@@ -130,7 +132,7 @@ class ParentEntry(object):
                 del base['module']
                 base['current_flag'] = False
                 base['archive_flag'] = True
-                base['version_number'] = base['copy_number']
+                base['version_number'] = current_version
                 base['module_id'] = model.get_module_code()
 
                 # create a copy of the model
