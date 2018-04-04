@@ -150,3 +150,5 @@ class ParentEntry(object):
                     parent=parent,
                     entry_type='Tracking-Form'
                 )
+            model.model.copy_number = current_version
+            model.model.save()
