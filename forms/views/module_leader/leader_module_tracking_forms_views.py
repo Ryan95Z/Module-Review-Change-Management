@@ -131,19 +131,31 @@ class LeaderModuleTrackingForm(View):
                 reassessment_object.copy_number += 1
             reassessment_object.save()
 
+            # For Timeline to work, the assessment objects list needs to include all objects, not just edited/new ones.
+            # So I work out which weren't edited and add them to the list of objects at the end
+            current_assessments = ModuleAssessment.objects.filter(module=module, current_flag=True)
             for assessment in assessment_objects:
+                current_assessments = current_assessments.exclude(pk=assessment.pk)
                 assessment.module = module
                 assessment.current_flag = True
                 if not assessment.is_new:
                     assessment.copy_number += 1
                 assessment.save()
+            for unedited_assessment in current_assessments:
+                assessment_objects.append(unedited_assessment)
 
+            # For Timeline to work, the software objects list needs to include all objects, not just edited/new ones.
+            # So I work out which weren't edited and add them to the list of objects at the end
+            current_software = ModuleSoftware.objects.filter(module=module, current_flag=True)
             for software in software_objects:
+                current_software = current_software.exclude(pk=software.pk)
                 software.module = module
                 software.current_flag = True
                 if not software.is_new:
                     software.copy_number += 1
                 software.save()
+            for unedited_software in current_software:
+                software_objects.append(unedited_software)
 
             # this makes the timeline
             tracking_to_timeline(
