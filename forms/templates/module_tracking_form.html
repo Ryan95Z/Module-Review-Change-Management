@@ -223,7 +223,7 @@
                 {{ assessment_forms.management_form }}
                 {% for assessment_form in assessment_forms %}
                 <div class="dynamic-row">
-                    {{ assessment_form.assessment_id }}
+                    {{ assessment_form.assessment_id|add_css_class:"dynamic-row-id" }}
                     <span><i class="assessment-number">Assessment {{ forloop.counter }}</i> {% if edit_form %}(<button type="button" name="assessment_form" class="delete-row">remove</button>){%endif%}</span>
                     {{ assessment_form.non_field_errors }}
                     <div class="form-row">
@@ -328,7 +328,7 @@
                         {% for software_form in software_forms.forms %}
                         {{ software_form.non_field_errors }}
                         <tr class="form_row dynamic-row">
-                                {{ software_form.software_id }}
+                                {{ software_form.software_id|add_css_class:"dynamic-row-id" }}
                             <td class="px-1 py-1">{{ software_form.software_name}}{{ software_form.software_name.errors}}</td>
                             <td class="px-1 py-1" style="width: 70px">{{ software_form.software_version }}{{ software_form.software_version.errors }}</td>
                             <td class="px-1 py-1">{{ software_form.software_packages }}{{ software_form.software_packages.errors }}</td>
@@ -354,6 +354,7 @@
 <!-- Empty form for assessments to allow more to be generated -->
 <div id="assessment_form-empty_form" style="display:none">
 <div class="dynamic-row">
+    {{ assessment_forms.empty_form.assessment_id|add_css_class:"dynamic-row-id" }}
     <span><i class="assessment-number">Assessment</i> (<button type="button" name="assessment_form" class="delete-row">remove</button>)</span>
     <div class="form-row">
         <div class="form-group col-md-2">
@@ -398,6 +399,7 @@
 <tbody id="software_form-empty_form">
     {{ software_forms.empty_form.non_field_errors }}
     <tr class="form_row dynamic-row">
+        {{ software_forms.empty_form.software_id|add_css_class:"dynamic-row-id"}}
         <td class="px-1 py-1">{{ software_forms.empty_form.software_name}}{{ software_forms.empty_form.software_name.errors}}</td>
         <td class="px-1 py-1" style="width: 70px">{{ software_forms.empty_form.software_version }}{{ software_forms.empty_form.software_version.errors }}</td>
         <td class="px-1 py-1">{{ software_forms.empty_form.software_packages }}{{ software_forms.empty_form.software_packages.errors }}</td>

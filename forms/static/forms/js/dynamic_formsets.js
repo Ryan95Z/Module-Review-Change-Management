@@ -1,9 +1,16 @@
+var deleted_records = []
+
 // Takes a given elemenet, id prefix (for regex) and a new index
 // and replaces all instances of child elements with the updated id
 function updateIndex(element, prefix, newIndex) {
     var regex = new RegExp('(' + prefix + '-\\d+)');
     var replacement = prefix + "-" + newIndex;
     if(element.id) element.id = element.id.replace(regex, replacement)
+    if(element.id.endsWith("id")) {
+        if(!element.value && deleted_records.length > 0) {
+            element.value = deleted_records.pop()
+        }
+    }
     if(element.name) element.name = element.name.replace(regex, replacement)
 }
 // Loops through each row and updates it's indexes so that they
@@ -11,9 +18,11 @@ function updateIndex(element, prefix, newIndex) {
 function recalculateIndexes(formPrefix) {
     var formRows = $('#'+formPrefix+'-dynamic_form .dynamic-row');
     for(var i=0, rowCount=formRows.length; i<rowCount; i++) {
+        formRow = $(formRows.get(i))
         $(formRows.get(i)).find(':input').each(function() {
             updateIndex(this, formPrefix, i)
         })
+
     }
 }
 // This function manages the order column. It updates
@@ -49,6 +58,8 @@ function createFormRow(formPrefix) {
 }
 // Removes a row and updates ids
 function deleteFormRow(deleteButton, formPrefix) {
+    row_id = deleteButton.closest(".dynamic-row").find(".dynamic-row-id").val()
+    if(row_id) deleted_records.push(row_id)
     var total_forms = $('#id_'+formPrefix+'-TOTAL_FORMS').val();
     $('#id_'+formPrefix+'-TOTAL_FORMS').val(total_forms - 1);
     deleteButton.closest(".dynamic-row").remove()
