@@ -27,15 +27,25 @@
 			 	<strong>Date changes were requested</strong>: {{ parent.created }}
 			</p>
 			<p class="card-text">
-				<strong>Requested by</strong>:
-				<ul>
-					<li>Username: {{ parent.requester_username }}</li>
-					<li>Name: {{ parent.requester_name }}</a></li>
-				</ul>
+				<strong>Status of changes:</strong>  {{ parent.status }}
+			</p>
+			<p class="card-text">
+				<strong>Requested by</strong>: 
+				<a href="{% url 'user_profile' parent.requester_id %}">
+					{{ parent.requester_name }}
+				</a>
 			</p>
 
 			<p class="card-text">
-				<strong>Approved by:</strong> <em>TODO</em>
+				<strong>Approved by:</strong> 
+				{% if parent.status == 'Draft' %}
+					Not Approved
+				{% else %}
+					<a href="{% url 'user_profile' parent.approver_id %}">
+						{{ parent.approver_name }}
+					</a>
+				{% endif %}
+				
 			</p>
 		</div>
 	</div>
