@@ -8,7 +8,7 @@ from django.forms import formset_factory, modelformset_factory
 from core.models import Module
 from forms.models.tracking_form import ModuleChangeSummary, ModuleTeaching, ModuleSupport, ModuleAssessment, ModuleReassessment, ModuleSoftware
 from forms.forms import ModuleChangeSummaryForm, ModuleTeachingHoursForm, ModuleSupportForm, ModuleAssessmentsForm, ModuleReassessmentForm, ModuleSoftwareForm
-from forms.utils.tracking_form import get_unbound_forms
+from forms.utils.tracking_form import *
 
 from timeline.utils.timeline.tracking_form import tracking_to_timeline, get_form_version_number
 
@@ -140,17 +140,14 @@ class LeaderModuleTrackingForm(View):
             # For Timeline to work, the assessment objects list needs to include all objects, not just edited/new ones.
             # So I work out which weren't edited and add them to the list of objects at the end
             for cleaned_data in assessment_forms.cleaned_data:
-                obj = cleaned_data["assessment_id"]
+                obj = cleaned_data.get("assessment_id", None)
                 if not obj in assessment_objects and not obj == None:
                     assessment_objects.append(obj)
             current_assessments = ModuleAssessment.objects.filter(module=module, current_flag=True)
             for assessment in current_assessments:
                 if not assessment in assessment_objects:
-                    assessment.current_flag = False
-                    assessment.archive_flag = True
-                    assessment.save()
+                    assessment.delete()
             
-
             for software in software_objects:
                 software.module = module
                 software.current_flag = True
@@ -160,15 +157,13 @@ class LeaderModuleTrackingForm(View):
             # For Timeline to work, the software objects list needs to include all objects, not just edited/new ones.
             # So I work out which weren't edited and add them to the list of objects at the end
             for cleaned_data in software_forms.cleaned_data:
-                obj = cleaned_data["software_id"]
+                obj = cleaned_data.get("software_id", None)
                 if not obj in software_objects and not obj == None:
                     software_objects.append(obj)
             current_software = ModuleSoftware.objects.filter(module=module, current_flag=True)
             for software in current_software:
                 if not software in software_objects:
-                    software.current_flag = False
-                    software.archive_flag = True
-                    software.save()
+                    software.delete()
         
             # this makes the timeline
             tracking_to_timeline(
