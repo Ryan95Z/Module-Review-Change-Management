@@ -88,7 +88,7 @@ class StagedTrackingFormWrapper(AbstractTrackingFormWrapper):
 
 class ArchivedTrackingFormWrapper(AbstractTrackingFormWrapper):
 
-    def __init__(self, version_number):
+    def __init__(self, module, version_number):
         self.version_number = version_number
         super(TrackingFormWrapper, self).__init__(module)
     
