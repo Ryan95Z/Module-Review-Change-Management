@@ -47,6 +47,20 @@
 								<div class="timeline-actions">
 									{% if entry.entry_type == "Tracking-Form" %}
 										<a class="btn btn-info btn-sm" href="{% url 'changes' module_code entry.pk %}">See Changes</a>
+
+										{% if entry.status != 'Confirmed' %}
+										<form action="{% url 'approve_entry' module_code entry.pk %}" style="display: inline;" method="POST">
+											{% csrf_token %}
+											<button class="btn btn-sm btn-success" type="submit">Confirm</button>
+										</form>
+										{% endif %}
+
+										{% if entry.status == 'Staged' %}
+										<form action="{% url 'revert_entry' module_code entry.pk %}" method="POST" style="display: inline;">
+											{% csrf_token %}
+											<button class="btn btn-sm btn-danger">Cancel</button>
+										</form>
+										{% endif %}
 									{% endif %}
 
 									<div class="timeline-meta">
