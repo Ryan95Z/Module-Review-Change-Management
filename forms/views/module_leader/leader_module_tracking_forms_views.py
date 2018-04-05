@@ -108,32 +108,37 @@ class LeaderModuleTrackingForm(View):
             software_objects = software_forms.save(commit=False)
 
             change_summary_object.module = module
-            change_summary_object.current_flag = True
+            change_summary_object.current_flag = False
+            change_summary_object.staging_flag = True
             if not change_summary_object.is_new:
                 change_summary_object.copy_number += 1
             change_summary_form.save()
 
             teaching_hours_object.module = module
-            teaching_hours_object.current_flag = True
+            teaching_hours_object.current_flag = False
+            teaching_hours_object.staging_flag = True
             if not teaching_hours_object.is_new:
                 teaching_hours_object.copy_number += 1
             teaching_hours_object.save()
 
             support_object.module = module
-            support_object.current_flag = True
+            support_object.current_flag = False
+            support_object.staging_flag = True
             if not support_object.is_new:
                 support_object.copy_number += 1
             support_object.save()
 
             reassessment_object.module = module
-            reassessment_object.current_flag = True
+            reassessment_object.current_flag = False
+            reassessment_object.staging_flag = True
             if not reassessment_object.is_new:
                 reassessment_object.copy_number += 1
             reassessment_object.save()
 
             for assessment in assessment_objects:
                 assessment.module = module
-                assessment.current_flag = True
+                assessment.current_flag = False
+                assessment.staging_flag = True
                 if not assessment.is_new:
                     assessment.copy_number += 1
                 assessment.save()
@@ -142,6 +147,9 @@ class LeaderModuleTrackingForm(View):
             for cleaned_data in assessment_forms.cleaned_data:
                 obj = cleaned_data.get("assessment_id", None)
                 if not obj in assessment_objects and not obj == None:
+                    obj.current_flag=False
+                    obj.staging_flag=True
+                    obj.save()
                     assessment_objects.append(obj)
             current_assessments = ModuleAssessment.objects.filter(module=module, current_flag=True)
             for assessment in current_assessments:
@@ -150,7 +158,8 @@ class LeaderModuleTrackingForm(View):
             
             for software in software_objects:
                 software.module = module
-                software.current_flag = True
+                software.current_flag = False
+                software.staging_flag = True
                 if not software.is_new:
                     software.copy_number += 1
                 software.save()
@@ -159,6 +168,9 @@ class LeaderModuleTrackingForm(View):
             for cleaned_data in software_forms.cleaned_data:
                 obj = cleaned_data.get("software_id", None)
                 if not obj in software_objects and not obj == None:
+                    obj.current_flag=False
+                    obj.staging_flag=True
+                    obj.save()
                     software_objects.append(obj)
             current_software = ModuleSoftware.objects.filter(module=module, current_flag=True)
             for software in current_software:
