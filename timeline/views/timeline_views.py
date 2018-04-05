@@ -2,9 +2,12 @@ from django.urls import reverse
 from django.views.generic import View
 from django.views.generic.list import ListView
 from django.shortcuts import redirect, get_object_or_404, render
+from core.models import Module
 
 from timeline.models import TimelineEntry
 from timeline.utils.notifications.helpers import push_notification
+
+from forms.utils.tracking_form import StagedTrackingFormWrapper
 
 
 class TrackingFormChanges(View):
@@ -94,6 +97,11 @@ class TimelineUpdateStatus(TimelinePostViews):
             entry.status = 'Staged'
         elif entry.status == 'Staged':
             entry.status = 'Confirmed'
+
+            # update the tracking form data
+            module = Module.objects.get(module_code=entry.module_code)
+            form = StagedTrackingFormWrapper(module)
+            form.change_to_current()
         else:
             pass
         entry.approved_by = request.user
