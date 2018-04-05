@@ -130,3 +130,20 @@ h1 > .h-sub-action{
 		width: 140px;
 	}
 }
+
+/* profile styles */
+.profile-avater {
+	position: relative;
+	width: 200px;
+	height: 200px;
+	border-radius: 100%;
+	background-color: #b3b3b3;
+	text-align: center;
+}
+
+.profile-avater > .fa{
+	position: relative;
+	margin: 0 auto;
+	top: 25%;
+	font-size: 6em;
+}
