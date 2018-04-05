@@ -8,10 +8,17 @@ INIT = "init"
 UPDATE = "update"
 
 
+MODEL_ID_REGEX = '(^[A-Za-z]+\_id$)|(^id$)'
+
+
 class BaseEntry(ABC):
     """
     Base entry class for generating timeline entries
     """
+
+    ignore = ('archive_flag', 'staging_flag', 'current_flag', 'version_number',
+              'copy_number')
+
     def __init__(self, model, entry_varient):
         self.model = model
         self.entry_varient = entry_varient
@@ -133,15 +140,16 @@ class BaseEntry(ABC):
 
     def get_original_data(self):
         base = self.model.base
-        clean_base = {k: base[k] for k in base if not re.match('^[A-Za-z]+\_id$', k)}
-        try:
-            del clean_base['id']
-        except KeyError:
-            pass
-        return clean_base
+        return {k: base[k] for k in base if not re.match(MODEL_ID_REGEX, k)}
 
     def model_class_object(self):
         return self.model.__class__
+
+    def _clean_changes(self):
+        changes = self.model.differences()
+        for e in self.ignore:
+            changes.pop(e, None)
+        return {k: changes[k] for k in changes if not re.match(MODEL_ID_REGEX, k)}
 
 
 class InitEntry(BaseEntry):
@@ -171,7 +179,7 @@ class InitEntry(BaseEntry):
         """
 
         # get the changes
-        diff = self.model.differences()
+        diff = self._clean_changes()
 
         md = ""
         # loop through each field and generate
@@ -221,7 +229,7 @@ class UpdateEntry(BaseEntry):
 
     def get_differences(self):
         if self.changes is None:
-            self.changes = self.model.differences()
+            self.changes = self._clean_changes()
         return self.changes
 
     def have_changes(self):
@@ -242,7 +250,7 @@ class UpdateEntry(BaseEntry):
             string      The markdown for entry content.
         """
 
-        diff = self.model.differences()
+        diff = self.get_differences()
         md = ""
 
         # loop through each field, then generate
