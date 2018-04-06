@@ -46,7 +46,10 @@ class TimelineListView(ListView):
 
     def get_queryset(self):
         module_id = self.kwargs['module_pk']
-        return self.model.objects.filter(module_code=module_id, parent_entry=None)
+        return self.model.objects.filter(
+            module_code=module_id,
+            parent_entry=None
+        )
 
     def get_context_data(self, *args, **kwargs):
         context = super(
@@ -125,13 +128,13 @@ class TimelineRevertStage(TimelinePostViews):
         entry_pk = kwargs['pk']
 
         entry = get_object_or_404(TimelineEntry, pk=entry_pk)
-        revert_changes(entry)
-        # if entry.status == 'Draft':
-        #     pass
-        # elif entry.status == 'Staged':
-        #     # move the status back to 'Draft'
-        #     entry.status = 'Draft'
-        #     entry.save()
-        # else:
-        #     pass
+        if entry.status == 'Draft':
+            # remove the changes as it is no longer needed
+            revert_changes(entry)
+        elif entry.status == 'Staged':
+            # move the status back to 'Draft'
+            entry.status = 'Draft'
+            entry.save()
+        else:
+            pass
         return redirect(self._get_url(**kwargs))
