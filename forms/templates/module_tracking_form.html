@@ -56,11 +56,11 @@
                 {% endif %}
             </h6>
             </div>
-        
+
             <div class="card-body">
                 <p>Please indicate where changes to the module description have been proposed by completing the checkbox
                 and all fields that apply.</p>
-                
+
                 {{ change_summary_form.non_field_errors }}
                 <div class="form-check">
                     {{change_summary_form.changes_to_outcomes}}
@@ -108,7 +108,7 @@
                         {{change_summary_form.changes_other_desc}}
                         {{change_summary_form.changes_other_desc.errors}}
                     </div>
-                </div> 
+                </div>
                 <hr>
                 <div class="form-group">
                     <label for="{{change_summary_form.changes_rationale.id_for_label}}">{{change_summary_form.changes_rationale.label}}</label>
@@ -333,15 +333,29 @@
                             <td class="px-1 py-1" style="width: 70px">{{ software_form.software_version }}{{ software_form.software_version.errors }}</td>
                             <td class="px-1 py-1">{{ software_form.software_packages }}{{ software_form.software_packages.errors }}</td>
                             <td class="px-1 py-1">{{ software_form.software_additional_comment }}{{ software_form.software_additional_comment.errors }}</td>
-                            {% if edit_form %}<td class="text-center px-1 py-1" style="width: 50px"><button type="button" name="software_form" class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>{%endif%}
+                            {% if edit_form %}<td class="text-center px-1 py-1" style="width: 50px"><button  type="button" name="software_form" class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>{%endif%}
                         </tr>
                         {% endfor %}
                     </tbody>
-                </table> 
-                {% if edit_form %}   
-                <div class="col-md-2 mx-auto"><button type="button" name="software_form" class="btn btn-primary btn-sm add-row">Add Another</button></div> 
-                {% endif %}              
+                </table>
+                {% if edit_form %}
+                <!-- add id='add-button' -->
+                <div class="col-md-2 mx-auto"><button id='add-button' type="button" name="software_form" class="btn btn-primary btn-sm add-row">Add Another</button></div>
+                {% endif %}
             </div>
+
+            <!-- search - waad part -->
+            <div class="card-body">
+              <p>
+                  OR Search for list of softwares currently used by other modules.
+                  - You should only type specific applications name. e.g. “Python”.
+              </p>
+              {{ softwareSearch_form}}
+              <div id='search-results'></div>
+              <br>
+              <button id='software-search-button' type="submit" class="btn btn-primary">Search</button>
+            </div>
+            <!-- end search -->
         </div>
         {% endif %}
     {% if edit_form %}
@@ -411,12 +425,14 @@
 
 {% endblock %}
 
-<!-- Loading in the scripts, including the dynamic formset script. 
+<!-- Loading in the scripts, including the dynamic formset script.
      If the form is view only, disable all inputs                 -->
 {% block scripts %}
     <script type="text/javascript" src="{% static 'forms/js/dynamic_formsets.js' %}"></script>
     <script type="text/javascript" src="{% static 'forms/js/tracking_form.js' %}"></script>
-
+    <!-- software search js -->
+    <script type="text/javascript" src="{% static 'forms/js/search.js' %}"></script>
+    <!-- end software search js -->
     {% if not edit_form %}
     <script type="text/javascript">
         $("#tracking-form :input").attr("disabled", true)
