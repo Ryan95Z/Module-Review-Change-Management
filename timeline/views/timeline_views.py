@@ -6,6 +6,7 @@ from core.models import Module
 
 from timeline.models import TimelineEntry
 from timeline.utils.notifications.helpers import push_notification
+from timeline.utils.timeline.changes import revert_changes
 
 from forms.utils.tracking_form import StagedTrackingFormWrapper
 
@@ -124,12 +125,13 @@ class TimelineRevertStage(TimelinePostViews):
         entry_pk = kwargs['pk']
 
         entry = get_object_or_404(TimelineEntry, pk=entry_pk)
-        if entry.status == 'Draft':
-            pass
-        elif entry.status == 'Staged':
-            # move the status back to 'Draft'
-            entry.status = 'Draft'
-            entry.save()
-        else:
-            pass
+        revert_changes(entry)
+        # if entry.status == 'Draft':
+        #     pass
+        # elif entry.status == 'Staged':
+        #     # move the status back to 'Draft'
+        #     entry.status = 'Draft'
+        #     entry.save()
+        # else:
+        #     pass
         return redirect(self._get_url(**kwargs))

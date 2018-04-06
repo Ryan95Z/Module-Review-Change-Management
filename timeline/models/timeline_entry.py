@@ -113,5 +113,17 @@ class TimelineEntry(models.Model):
             return None
         return self.approved_by.pk
 
+    def objct_class_in_entry(self):
+        return self.content_object.__class__
+
+    def get_revert_object(self):
+        cls = self.objct_class_in_entry()
+        obj = None
+        try:
+            obj = cls.objects.get(pk=self.revert_object_id)
+        except cls.DoesNotExist:
+            pass
+        return obj
+
     class Meta:
         ordering = ['-created']

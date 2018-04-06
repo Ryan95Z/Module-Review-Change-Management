@@ -13,6 +13,10 @@ def tracking_to_timeline(module_code, changes_by, *args):
 
 
 def get_form_version_number(parent_id):
+    """
+    Helper function that gets the version number of the form
+    that it is archived at this entry.
+    """
     entry = TimelineEntry.objects.filter(parent_entry_id=parent_id).first()
     revert = entry.revert_object_id
     model = entry.content_object.__class__
