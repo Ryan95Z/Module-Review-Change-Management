@@ -25,6 +25,8 @@ urlpatterns = [
     url(r'^admin/', include('core.urls.admin')),
     url(r'^admin/', include('forms.urls.admin')),
     url(r'^module_leader/', include('forms.urls.module_leader')),
+    
+    url(r'^module_leader/', include('recommenderSystem.urls.moduleLeader')),
     url(r'^user/', include('core.urls.user')),
     url(r'^modules', include('core.urls.module_leader')),
 
