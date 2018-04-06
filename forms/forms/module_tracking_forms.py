@@ -54,9 +54,9 @@ class ModuleSupportForm(forms.ModelForm):
         if data.get('tutorial_support_required') == True:
             if data.get('tutorial_support_skills') == '':
                 self.add_error('tutorial_support_skills', 'Must be filled if support is required')
-                
+
         return data
-        
+
 class ModuleAssessmentsForm(forms.ModelForm):
     """
     Form which handles module assessment details
@@ -102,4 +102,16 @@ class ModuleSoftwareForm(forms.ModelForm):
             'software_version': TextInput(attrs={'class':'form-control form-control-sm'}),
             'software_packages': TextInput(attrs={'class':'form-control form-control-sm'}),
             'software_additional_comment': TextInput(attrs={'class':'form-control form-control-sm'}),
+        }
+# add the search form for software recommendations - waad part
+class ModuleSoftwareSearchForm(forms.ModelForm):
+    """
+    Form which suggest/recommend module software requirements
+    """
+    class Meta:
+        model = ModuleSoftware
+        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number', 'copy_number', 'software_version', 'software_packages', 'software_additional_comment', 'software_tags')
+        widgets = {
+            'software_id': HiddenInput(),
+            'software_name': TextInput(attrs={'class':'form-control form-control-sm'}),
         }
