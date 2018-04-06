@@ -1,4 +1,5 @@
 from django.views import View
+from django.http import HttpResponse
 from django.views.generic.detail import DetailView
 from core.views.mixins import LoggedInTestMixin
 from django.shortcuts import render, redirect
@@ -7,7 +8,7 @@ from django.forms import formset_factory, modelformset_factory
 
 from core.models import Module
 from forms.models.tracking_form import ModuleChangeSummary, ModuleTeaching, ModuleSupport, ModuleAssessment, ModuleReassessment, ModuleSoftware
-from forms.forms import ModuleChangeSummaryForm, ModuleTeachingHoursForm, ModuleSupportForm, ModuleAssessmentsForm, ModuleReassessmentForm, ModuleSoftwareForm
+from forms.forms import ModuleChangeSummaryForm, ModuleTeachingHoursForm, ModuleSupportForm, ModuleAssessmentsForm, ModuleReassessmentForm, ModuleSoftwareForm, ModuleSoftwareSearchForm
 from forms.utils.tracking_form import *
 
 from timeline.utils.timeline.tracking_form import tracking_to_timeline, get_form_version_number
@@ -41,19 +42,21 @@ class LeaderModuleTrackingForm(View):
         reassessment_form = ModuleReassessmentForm(instance=ModuleReassessment.objects.filter(module=module, current_flag=True).first())
         assessment_forms = self.assessment_formset(prefix='assessment_form', queryset=ModuleAssessment.objects.filter(module=module, current_flag=True))
         software_forms = self.software_formset(prefix='software_form', queryset=ModuleSoftware.objects.filter(module=module, current_flag=True))
+        softwareSearch_form = ModuleSoftwareSearchForm(instance=ModuleSoftware.objects.filter(module=module, current_flag=True).first())
 
-        # Get a list of all the unbound forms 
+        # Get a list of all the unbound forms
         unbound_forms = get_unbound_forms(
             change_summary = change_summary_form,
             teaching_hours = teaching_hours_form,
             support = support_form,
             assessment = assessment_forms,
             reassessment = reassessment_form,
-            software = software_forms
+            software = software_forms,
+            softwareSearch = softwareSearch_form
         )
 
         # If absolutely no forms are abound, we assume that one doesn't exist, and set the form_exists flag to False
-        if len(unbound_forms) >= 6:
+        if len(unbound_forms) >= 7:
             form_exists = False
 
         # Setting the context
@@ -68,7 +71,8 @@ class LeaderModuleTrackingForm(View):
             'support_form': support_form,
             'assessment_forms': assessment_forms,
             'reassessment_form': reassessment_form,
-            'software_forms': software_forms
+            'software_forms': software_forms,
+            'softwareSearch_form': softwareSearch_form
         }
         return render(request, 'module_tracking_form.html', context)
 
@@ -86,6 +90,7 @@ class LeaderModuleTrackingForm(View):
         reassessment_form = ModuleReassessmentForm(request.POST, instance=ModuleReassessment.objects.filter(module=module, current_flag=True).first())
         assessment_forms = self.assessment_formset(request.POST, prefix="assessment_form") # Doesn't need instance because there is an id associated with each form
         software_forms = self.software_formset(request.POST, prefix="software_form")
+        softwareSearch_form = ModuleSoftwareSearchForm(request.POST, instance=ModuleSoftware.objects.filter(module=module, current_flag=True).first())
 
         # Run all of the validation
         valid = [
@@ -94,7 +99,8 @@ class LeaderModuleTrackingForm(View):
             support_form.is_valid(),
             assessment_forms.is_valid(),
             reassessment_form.is_valid(),
-            software_forms.is_valid()
+            software_forms.is_valid(),
+            softwareSearch_form.is_valid()
         ]
 
         # If all forms are valid, save to the database
@@ -155,7 +161,7 @@ class LeaderModuleTrackingForm(View):
             for assessment in current_assessments:
                 if not assessment in assessment_objects:
                     assessment.delete()
-            
+
             for software in software_objects:
                 software.module = module
                 software.current_flag = False
@@ -176,7 +182,7 @@ class LeaderModuleTrackingForm(View):
             for software in current_software:
                 if not software in software_objects:
                     software.delete()
-        
+
             # this makes the timeline
             tracking_to_timeline(
                 module.module_code,
@@ -195,16 +201,17 @@ class LeaderModuleTrackingForm(View):
                 'edit_form': True,
                 'form_exists': True,
                 'pk': module_pk,
-                'module': Module.objects.get(pk=module_pk), 
+                'module': Module.objects.get(pk=module_pk),
                 'change_summary_form': change_summary_form,
                 'teaching_hours_form': teaching_hours_form,
                 'support_form': support_form,
                 'assessment_forms': assessment_forms,
                 'reassessment_form': reassessment_form,
-                'software_forms': software_forms
+                'software_forms': software_forms,
+                'softwareSearch_form': softwareSearch_form
             }
             return render(request, 'module_tracking_form.html', context=error_context)
-    
+
 class LeaderModuleTrackingFormArchive(View):
     def __init__(self):
         super(LeaderModuleTrackingFormArchive, self).__init__()
@@ -231,15 +238,17 @@ class LeaderModuleTrackingFormArchive(View):
         reassessment_form = ModuleReassessmentForm(instance=ModuleReassessment.objects.filter(module=module, copy_number=version).first())
         assessment_forms = self.assessment_formset(prefix='assessment_form', queryset=ModuleAssessment.objects.filter(module=module, copy_number=version))
         software_forms = self.software_formset(prefix='software_form', queryset=ModuleSoftware.objects.filter(module=module, copy_number=version))
+        softwareSearch_form = ModuleSoftwareSearchForm(instance=ModuleSoftware.objects.filter(module=module, copy_number=version).first())
 
-        # Get a list of all the unbound forms 
+        # Get a list of all the unbound forms
         unbound_forms = get_unbound_forms(
             change_summary = change_summary_form,
             teaching_hours = teaching_hours_form,
             support = support_form,
             assessment = assessment_forms,
             reassessment = reassessment_form,
-            software = software_forms
+            software = software_forms,
+            softwareSearch = softwareSearch_form
         )
 
         # If absolutely no forms are abound, we assume that one doesn't exist, and set the form_exists flag to False
@@ -258,6 +267,27 @@ class LeaderModuleTrackingFormArchive(View):
             'support_form': support_form,
             'assessment_forms': assessment_forms,
             'reassessment_form': reassessment_form,
-            'software_forms': software_forms
+            'software_forms': software_forms,
+            'softwareSearch_form': softwareSearch_form
         }
         return render(request, 'module_tracking_form.html', context)
+
+# software search form view - waad part
+def software_search_ajax(request):
+    # Get the search term
+    search_term = request.GET.get('search_term')
+
+    items = ModuleSoftware.objects.filter(software_name__icontains=search_term)
+    # use json module to return a JSON object to the frontend of each row matching the search term
+    return HttpResponse(json.dumps({
+        'results': [
+        {
+            'software': x.software_name,
+            'module': x.module.module_name,
+            'module_id': x.module_id,
+
+            'package': x.software_packages,
+            'version': x.software_version
+        } for x in items]
+        }
+    ))
