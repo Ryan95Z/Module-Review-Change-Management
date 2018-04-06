@@ -1,14 +1,11 @@
 from django.views import View
 from django.http import HttpResponse
-from django.views.generic.detail import DetailView
-from core.views.mixins import LoggedInTestMixin
 from django.shortcuts import render, redirect
-from django.core.exceptions import ObjectDoesNotExist
-from django.forms import formset_factory, modelformset_factory
 
 from core.models import Module
 from forms.models.tracking_form import ModuleChangeSummary, ModuleTeaching, ModuleSupport, ModuleAssessment, ModuleReassessment, ModuleSoftware
-from forms.forms import ModuleChangeSummaryForm, ModuleTeachingHoursForm, ModuleSupportForm, ModuleAssessmentsForm, ModuleReassessmentForm, ModuleSoftwareForm, ModuleSoftwareSearchForm
+from forms.forms import ModuleChangeSummaryForm, ModuleTeachingHoursForm, ModuleSupportForm, ModuleAssessmentsForm, ModuleReassessmentForm, ModuleSoftwareForm
+from recommenderSystem.forms import ModuleSoftwareSearchForm
 from forms.utils.tracking_form import *
 
 from timeline.utils.timeline.tracking_form import tracking_to_timeline, get_form_version_number
