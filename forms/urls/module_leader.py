@@ -11,9 +11,6 @@ Contains all of the urls that are only for module leaders. Includes
 """
 
 urlpatterns = [
-    # software recommender urls
-    url(r'^software-search/$', login_required(
-        software_search_ajax), name='software_search'),
     # urls for module description forms
     url(r'^modules/(?P<pk>[A-Za-z0-9]+)/description/view/$', login_required(
         LeaderModuleDescriptionView.as_view()), name='view_module_description'),
