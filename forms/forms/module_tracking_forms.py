@@ -103,15 +103,3 @@ class ModuleSoftwareForm(forms.ModelForm):
             'software_packages': TextInput(attrs={'class':'form-control form-control-sm'}),
             'software_additional_comment': TextInput(attrs={'class':'form-control form-control-sm'}),
         }
-# add the search form for software recommendations - waad part
-class ModuleSoftwareSearchForm(forms.ModelForm):
-    """
-    Form which suggest/recommend module software requirements
-    """
-    class Meta:
-        model = ModuleSoftware
-        exclude = ('module', 'archive_flag', 'staging_flag', 'current_flag', 'version_number', 'copy_number', 'software_version', 'software_packages', 'software_additional_comment', 'software_tags')
-        widgets = {
-            'software_id': HiddenInput(),
-            'software_name': TextInput(attrs={'class':'form-control form-control-sm'}),
-        }
