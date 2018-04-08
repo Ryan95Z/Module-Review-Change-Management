@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'core',
     'forms',
     'timeline',
+    'dataGeneration',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
