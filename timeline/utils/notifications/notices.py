@@ -15,6 +15,12 @@ class BaseNotice(ABC):
 
             link_name           Name of the django url
         """
+        if len(content_template) < 1:
+            raise ValueError("content_template cannot be empty")
+
+        if len(link_name) < 1:
+            raise ValueError("link_name cannot be empty")
+
         # public instance variables
         self.content_template = content_template
         self.link_name = link_name
