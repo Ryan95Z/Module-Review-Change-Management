@@ -35,4 +35,9 @@ urlpatterns = [
 
     # timeline urls
     url(r'timeline/', include('timeline.urls.timeline')),
+
+    # labSheet URLs
+    url(r'^dataGeneration/', include('dataGeneration.urls.labSheetUrl')),
+    # moduleSheet URLs
+    url(r'^dataGeneration/', include('dataGeneration.urls.moduleSheetUrl')),
 ]
