@@ -27,6 +27,9 @@ class BaseEntry(ABC):
         # results will be stored here.
         self.changes = None
 
+    def __eq__(self, other):
+        return self.model == other.model and self.entry_varient == other.entry_varient
+
     @abstractmethod
     def have_changes(self):
         """

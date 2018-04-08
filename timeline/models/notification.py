@@ -165,11 +165,5 @@ class Notification(models.Model):
         """
         return self.recipient.username
 
-    def recipient_id(self):
-        """
-        Method to get recipient's id
-        """
-        return self.recipient.id
-
     class Meta:
         ordering = ['-created']
