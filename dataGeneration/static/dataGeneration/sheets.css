@@ -1,0 +1,32 @@
+table, th, td{
+  border: 2px solid black
+}
+
+.table{
+  margin-top: 10px;
+}
+
+th{background-color: #cccccc}
+.tabledata{
+  background-color: white;
+}
+h2{
+  color: black;
+  font-size: 42px;
+  height: 75px;
+  margin-top: 6px;
+  margin-left: 21px;
+  font-family: serif;
+  font-weight: bold;
+
+
+}
+
+.btn:hover {
+  cursor: pointer;
+}
+
+.btn{margin-top: -145px;
+  margin-left: 470px;
+
+}
