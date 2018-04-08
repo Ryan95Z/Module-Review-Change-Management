@@ -1,0 +1,47 @@
+{% extends 'core/main.html' %}
+{% load static %}
+
+
+{% block title %}
+	Lab Organisation Sheet
+{% endblock %}
+
+{% block styles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'dataGeneration/sheets.css' %}">
+{% endblock %}
+
+{% block main %}
+<h2>Lab Organisation Sheet</h2>
+<form action="{% url 'labSheetDownload' %}">
+	<input type="submit" value="Download as CSV" class="btn btn-primary btn-md"/>
+</form>
+<div class="container">
+<div class="table table-hover table-responsive">
+    {% if modules %}
+  <table>
+  	<th> Module Code </th>
+		<th> Module Name</th>
+    <th> Software Required </th>
+    <th> Version of Software Rquired</th>
+    <th> Indicative Hours for Practical Workshops </th>
+		<th> Skills of the Tutor Required </th>
+
+      {% for module in modules %}
+		<tr class="tabledata">
+			<td>{{module.module_code}}</td>
+			<td>{{module.module_name}} </td>
+      <td>{{module.software_name}} </td>
+      <td>{{module.software_version}}</td>
+      <td>{{module.indicative_hours}}</td>
+			<td>{{module.skills}}</td>
+			{% endfor %}
+		</tr>
+
+  </table>
+	  {% else %}
+	<p> no recordes </p>
+	  {% endif %}
+</div>
+</div>
+
+{% endblock %}
