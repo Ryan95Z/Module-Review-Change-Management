@@ -177,9 +177,18 @@ class ReplyNotice(BaseNotice):
             user            User object
             parent          Parent discussion model
         """
-        discussion = kwargs['discussion']
-        user = kwargs['user']
-        parent = kwargs['parent']
+        discussion = kwargs.get('discussion', None)
+        user = kwargs.get('user', None)
+        parent = kwargs.get('parent', None)
+
+        if discussion is None:
+            raise ValueError("discussion keyword should not be None")
+
+        if user is None:
+            raise ValueError("user keyword should not be None")
+
+        if parent is None:
+            raise ValueError("parent keyword should not be None")
 
         # get the author of the post that recieved
         # the reply. This will be the user that recieves the notification.

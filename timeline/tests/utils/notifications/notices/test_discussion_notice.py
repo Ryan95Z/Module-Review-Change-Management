@@ -1,6 +1,6 @@
 from .base_notice_test import BaseTestNotification
 from django.urls import reverse
-from timeline.models import Discussion, TimelineEntry, Notification
+from timeline.models import Discussion, TimelineEntry
 from timeline.utils.notifications.notices import DiscussionNotice
 from timeline.utils.notifications.helpers import WatcherWrapper
 
@@ -12,7 +12,6 @@ class TestDiscussionNotice(BaseTestNotification):
     def setUp(self):
         super(TestDiscussionNotice, self).setUp()
         self.notice = DiscussionNotice()
-        self.model = Notification
 
         # create test timeline entry
         self.entry = TimelineEntry.objects.create(
