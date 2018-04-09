@@ -119,8 +119,14 @@ class DiscussionNotice(BaseNotice):
             discussion      Discussion model
             user            User object
         """
-        discussion = kwargs['discussion']
-        user = kwargs['user']
+        discussion = kwargs.get('discussion', None)
+        user = kwargs.get('user', None)
+
+        if discussion is None:
+            raise ValueError("discussion object must not be None")
+
+        if user is None:
+            raise ValueError("user object must not be None")
 
         # get the timeline entry assocaited with posted comment
         entry = discussion.entry
