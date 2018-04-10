@@ -7,5 +7,5 @@ from recommenderSystem.views import *
 urlpatterns = [
     # software recommender urls
     url(r'^software-search/$', login_required(
-        software_search_ajax), name='software_search'),
+        searchBar.as_view()), name='software_search'),
 ]
