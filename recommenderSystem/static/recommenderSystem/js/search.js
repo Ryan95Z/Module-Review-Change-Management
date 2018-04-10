@@ -14,7 +14,6 @@ function getLastInputRow() {
       return last; //return the last empty row if found.
     }
     else {
-
       return getLastInputRow(); //if no empty row was found previously, then a new row was created so now return the last one
     }
   }
@@ -26,12 +25,15 @@ function getLastInputRow() {
       */
       e.preventDefault()
       var search_term = $("#id_software_name").val();
-      $("#search-results").html("<br> <div class='row'>" +
-        "<div class='col-md-3'>Software</div>" +
-        "<div class='col-md-3'>Module</div>" +
-        "<div class='col-md-3'>Package</div>" +
-        "<div class='col-md-3'>Version</div>" +
-        "</div>");
+      $("#search-results").html(
+        "<br> <table class='table'>" + "<thead class='thead-light'>" + "<tr>" +
+        "<th scope='col' style='font-weight: bold; text-align: left;'>Software</th>" +
+        "<th scope='col' style='font-weight: bold; text-align: left;'>Module name</th>" +
+        "<th scope='col' style='font-weight: bold; text-align: left;'>Package</th>" +
+        "<th scope='col' style='font-weight: bold; text-align: left;'>Version</th>" +
+        "</tr>" +
+        "<thead>" +
+        "</table>");
       // this is the request to the backend
       $.get('/module_leader/software-search/?search_term=' + search_term, function (response) {
         /* for each result, add a row */
@@ -40,13 +42,19 @@ function getLastInputRow() {
           $("#search-results").html("<div class='alert alert-danger'>No results founds</div>");
         }
         items.results.forEach(function (item) {
-          var row = $("<div class='row'>" +
-            "<div class='col-md-3'>" + item.software + "</div>" +
-            "<div class='col-md-3'>" + item.module + "</div>" +
-            "<div class='col-md-3'>" + item.package + "</div>" +
-            "<div class='col-md-3'>" + item.version + "</div>" +
-            "</div>");
+          var row = $("<table class='table table-hover table-bordered'  style='border-left: 6px solid black;'>" +
+          "<tbody>" + "<tr>" +
+            "<th width='20%' scope='col' style='font-weight: bold; text-transform: uppercase;' id='s_name'>" + item.software + "</th>" +
+            "<th width='30%' scope='col' style='background-color: #f0f3f5; '>" + item.module + "</th>" +
+            "<th width='20%' scope='col' style='font-weight: bold;'>" + item.package + "</th>" +
+            "<th width='20%' scope='col' style='font-weight: bold; color:red; background-color: #f0f3f5; '>" + item.version + "</th>" +
+            "</tr>" +
+            "</tbody>" +
+            "</table>");
             $("#search-results").append(row);
+            $("tbody").hover(function(){
+              $(this).css("cursor", "pointer");
+            });
             row.click(function () {
               /* when a row is clicked, find the last empty row of data to enter */
               inputRow = getLastInputRow();
@@ -56,9 +64,11 @@ function getLastInputRow() {
                 /* insert values into the columns */
                 $(this).val(arr[counter]);
                 counter++;
+                $(this).css("background", "#f7e0da");
               })
+              // alert user that selected option is added
+              alert("Option is added");
             })
-
         })
       })
     })
