@@ -234,7 +234,11 @@ class TLEntryNotice(BaseNotice):
         kwargs expected:
             entry      Timeline entry that has been added
         """
-        entry = kwargs['entry']
+        entry = kwargs.get('entry', None)
+
+        if entry is None:
+            raise ValueError("entry keyword should not be None")
+
         module_code = entry.module_code
         content = self.content_template.format(module_code)
 

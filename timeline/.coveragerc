@@ -1,0 +1,14 @@
+[run]
+omit =
+	# omit all migrations
+	*migrations*
+
+	*/tests/*
+
+	*/admin/*
+
+	*/setup.py
+
+	*/apps.py
+
+	*/__init__.py

@@ -17,7 +17,7 @@ def revert_changes(parent_entry):
         parent_entry_id=parent_entry.pk
     ))
 
-    if len(children) < 0:
+    if len(children) < 1:
         return False
 
     # get the latest version number for the timeline
