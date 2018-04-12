@@ -12,3 +12,5 @@ omit =
 	*/apps.py
 
 	*/__init__.py
+
+	*/utils/timeline/tracking_form.py

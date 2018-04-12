@@ -1,13 +1,20 @@
 from core.tests.common_test_utils import LoggedInTestCase, ModuleTestCase
+from timeline.utils.timeline.tracking_form import get_form_version_number
 from timeline.models import TimelineEntry
-from timeline.utils.timeline.changes import revert_changes
 from forms.models.tracking_form import ModuleTeaching
 
 
-class TestRevertChanges(LoggedInTestCase, ModuleTestCase):
+class TestGetFormVersionNumber(LoggedInTestCase, ModuleTestCase):
+    """
+    Test case for the function get_form_version_number
+    """
     def setUp(self):
-        super(TestRevertChanges, self).setUp()
-        self.master = ModuleTeaching(**{
+        super(TestGetFormVersionNumber, self).setUp()
+
+        self.function = get_form_version_number
+        self.model = TimelineEntry
+
+        self.master = ModuleTeaching.objects.create(**{
             "module": self.module,
             "teaching_lectures": 45,
             "teaching_tutorials": 3,
@@ -24,9 +31,8 @@ class TestRevertChanges(LoggedInTestCase, ModuleTestCase):
             "version_number": 1,
             "copy_number": 3
         })
-        self.master.save()
 
-        self.prev = ModuleTeaching(**{
+        self.prev = ModuleTeaching.objects.create(**{
             "module": self.module,
             "teaching_lectures": 8,
             "teaching_tutorials": 8,
@@ -43,9 +49,8 @@ class TestRevertChanges(LoggedInTestCase, ModuleTestCase):
             "version_number": 2,
             "copy_number": 1
         })
-        self.prev.save()
 
-        self.current = ModuleTeaching(**{
+        self.current = ModuleTeaching.objects.create(**{
             "module": self.module,
             "teaching_lectures": 45,
             "teaching_tutorials": 84,
@@ -63,79 +68,38 @@ class TestRevertChanges(LoggedInTestCase, ModuleTestCase):
             "copy_number": 2
         })
 
-        self.current.save()
-
-        self.parent_entry = TimelineEntry(**{
+        self.parent_entry = self.model.objects.create(**{
             "title": "Changes to tracking form",
-            "changes": "Changes to tracking form:\n\n* There are 1 changes to Module Teaching\n* There are 2 changes to Assessment test4\n* There are 1 changes to Software tet\n",
+            "changes": "Changes have been made",
             "created": "2018-04-11T16:58:40.999Z",
             "last_modified": "2018-04-11T16:58:40.999Z",
             "module_code": self.module.module_code,
             "parent_entry": None,
             "status": "Draft",
             "entry_type": "Tracking-Form",
-            "content_type": None,
-            "object_id": None,
+            "content_object": None,
             "revert_object_id": "0",
             "changes_by": self.admin,
             "approved_by": None
         })
-        self.parent_entry.save()
 
-        self.entry = TimelineEntry(**{
+        self.entry = self.model.objects.create(**{
             "title": "Module Teaching",
             "changes": "* teaching online: 8 -> 45\n",
-            "created": "2018-04-11T16:58:41.019Z",
-            "last_modified": "2018-04-11T16:58:41.019Z",
             "module_code": self.module.module_code,
             "parent_entry": self.parent_entry,
             "status": "Draft",
             "entry_type": "Tracking-Form",
+            "object_id": self.current.pk,
             "content_object": self.current,
             "revert_object_id": self.prev.pk,
-            "changes_by": None,
-            "approved_by": None
+            "changes_by": None
         })
-        self.entry.save()
 
-    def test_valid_revert_changes(self):
+    def test_get_next_version_number(self):
         """
-        Test that the changes are reverted for tracking form data
+        Test function returns the version number
+        based on the parent id
         """
-        # test the current staged changes
-        master = ModuleTeaching.objects.filter(version_number=1).first()
-        self.assertTrue(master.staging_flag)
-        self.assertFalse(master.archive_flag)
-        self.assertFalse(master.current_flag)
-        self.assertEquals(master.copy_number, 3)
-
-        result = revert_changes(self.parent_entry)
-        self.assertTrue(result)
-
-        # check timeline has been removed
-        with self.assertRaises(TimelineEntry.DoesNotExist):
-            TimelineEntry.objects.get(pk=self.parent_entry.pk)
-
-        # check that it has been reverted
-        master = ModuleTeaching.objects.filter(version_number=1).first()
-        self.assertTrue(master.current_flag)
-        self.assertFalse(master.archive_flag)
-        self.assertFalse(master.staging_flag)
-        self.assertEquals(master.copy_number, 2)
-
-    def test_no_children_master(self):
-        """
-        Test when there are no child for parent entry
-        """
-        result = revert_changes(self.entry)
-        self.assertFalse(result)
-
-    def test_invalid_master_instance(self):
-        """
-        Test when the parent entry is not a timeline entry type
-        """
-        parents = [None, ModuleTeaching, self.user]
-
-        for parent in parents:
-            with self.assertRaises(ValueError):
-                revert_changes(parent)
+        result = self.function(self.parent_entry.pk)
+        self.assertEquals(result, 2)
