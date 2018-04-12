@@ -31,25 +31,48 @@ class TestDiscussionsDeleteView(BaseTimelineViewTestCase):
             parent=self.discussion
         )
 
+        self.url = reverse('delete_comment', kwargs={
+            'module_pk': self.module.module_code,
+            'entry_pk': self.basic_entry.pk,
+            'pk': self.discussion.pk
+        })
+
     def test_get_delete_view(self):
         """
         Test the the confirm message can be accessed when get
         method is requested from view
         """
-        url = reverse('delete_comment', kwargs={
-            'module_pk': self.module.module_code,
-            'entry_pk': self.basic_entry.pk,
-            'pk': self.discussion.pk
-        })
-
-        self.run_get_view(url)
+        self.run_get_view(self.url)
 
     def test_post_delete_view(self):
-        url = reverse('delete_comment', kwargs={
-            'module_pk': self.module.module_code,
-            'entry_pk': self.basic_entry.pk,
-            'pk': self.discussion.pk
-        })
+        """
+        Test case for post method to delete discussions
+        """
+        # post the items we want to delete
+        self.run_valid_post_view(self.url, {})
 
-        response = self.run_valid_post_view(url, {})
-        
+        # check that the discussions are deleted
+        with self.assertRaises(Discussion.DoesNotExist):
+            Discussion.objects.get(pk=self.discussion.pk)
+
+        with self.assertRaises(Discussion.DoesNotExist):
+            Discussion.objects.get(pk=self.reply_discussion.pk)
+
+    def test_post_delete_view_ajax(self):
+        """
+        Test case for post method with ajax request
+        to delete discussions
+        """
+        # post the items we want to delete
+        response = self.run_valid_ajax(self.url, {})
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {"success": True}
+        )
+
+        # check that the discussions are deleted
+        with self.assertRaises(Discussion.DoesNotExist):
+            Discussion.objects.get(pk=self.discussion.pk)
+
+        with self.assertRaises(Discussion.DoesNotExist):
+            Discussion.objects.get(pk=self.reply_discussion.pk)
