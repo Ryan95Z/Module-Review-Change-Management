@@ -24,23 +24,18 @@ class TestNotificationFactory(LoggedInTestCase, ModuleTestCase):
         """
         Test the registering of a new object
         """
-        # clear out the factroy for test
-        self.factory.factories = {}
-
         self.factory.register(self.test_notice, self.alis)
-        self.assertEqual(len(self.factory.factories), 1)
+        self.assertEqual(len(self.factory.factories), 7)
 
         # check that it is registered
         instances = self.factory.assigned_instances()
-
-        self.assertEqual(instances, [self.alis])
-        self.assertEqual(len(instances), 1)
+        self.assertTrue(self.alis in instances)
+        self.assertEqual(len(instances), 7)
 
     def test_get_notification_object(self):
         """
         Test the factory to get the object
         """
-        self.factory.factories = {}
         self.factory.register(self.test_notice, self.alis)
         obj = self.factory.get(self.alis)
 
@@ -51,7 +46,6 @@ class TestNotificationFactory(LoggedInTestCase, ModuleTestCase):
         """
         Test the factory in making a new notification to the database
         """
-        self.factory.factories = {}
         self.factory.register(self.test_notice, self.alis)
 
         # make the notification
