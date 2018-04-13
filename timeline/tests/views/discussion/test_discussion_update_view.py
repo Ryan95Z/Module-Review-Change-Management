@@ -4,6 +4,9 @@ from timeline.tests.views.base_timeline_view_test_case import BaseTimelineViewTe
 
 
 class TestDiscussionUpdateView(BaseTimelineViewTestCase):
+    """
+    Test case for DiscussionUpdateView
+    """
     def setUp(self):
         super(TestDiscussionUpdateView, self).setUp()
         self.basic_entry = TimelineEntry.objects.create(
