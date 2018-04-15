@@ -8,13 +8,15 @@ from forms.forms import ModuleChangeSummaryForm, ModuleTeachingHoursForm, Module
 from recommenderSystem.forms import ModuleSoftwareSearchForm
 from forms.utils.tracking_form import *
 
+from django.db.models import Q
+
 # software search form view
 class searchBar(View):
     def get(self, request, *args, **kwargs):
         # Get the search term
         search_term = request.GET.get('search_term')
         #  __contains gets translated by Django into a SQL LIKE statement
-        items = ModuleSoftware.objects.filter(software_name__icontains=search_term)
+        items = ModuleSoftware.objects.filter(Q(software_name__icontains=search_term) | Q(software_packages__icontains=search_term)| Q(module__module_name__icontains=search_term) | Q(module__module_code__icontains=search_term))
         # use json module to return a JSON object to the frontend of each row matching the search term
         return HttpResponse(json.dumps({ # return any module_software where the software name containes the search term
         # create an object that we can send to the frontend
