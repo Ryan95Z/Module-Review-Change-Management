@@ -109,7 +109,7 @@ class TimelineUpdateStatus(TimelinePostViews):
 
         if entry.status == 'Draft':
             entry.status = 'Staged'
-        elif entry.status == 'Staged':
+        elif entry.status == 'Staged':  # pragma: no cover
             entry.status = 'Confirmed'
 
             # update the tracking form data
