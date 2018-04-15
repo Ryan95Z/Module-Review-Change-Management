@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.http import Http404
 from django.views.generic import View
 from django.views.generic.list import ListView
 from django.shortcuts import redirect, get_object_or_404, render
@@ -12,18 +13,27 @@ from forms.utils.tracking_form import StagedTrackingFormWrapper
 
 
 class TrackingFormChanges(View):
+    """
+    View to access all the changes from a summary timeline entry
+    """
     template_name = "timeline/timeline_tracking_changes.html"
 
     def get(self, request, *args, **kwargs):
         module_code = kwargs.get('module_pk')
         pk = kwargs.get('pk')
 
-        parent = TimelineEntry.objects.get(pk=pk)
+        parent = get_object_or_404(TimelineEntry, pk=pk, parent_entry=None)
 
+        # get the child entries
         entires = TimelineEntry.objects.filter(
             module_code=module_code,
             parent_entry_id=pk
         )
+
+        if entires.count() < 1:
+            raise Http404(
+                "Invalid entry that does not have any related entries."
+            )
 
         context = {
             'module_code': module_code,

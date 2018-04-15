@@ -18,8 +18,10 @@ class TimelineViewTestCase(BaseViewTestCase, ModuleTestCase):
         session['username'] = self.admin.username
         session.save()
 
+        self.model = TimelineEntry
+
         # create an example entry for the timeline
-        self.entry = TimelineEntry.objects.create(
+        self.entry = self.model.objects.create(
             title="Test Changes",
             changes="Test changes to report",
             status="Draft",
@@ -27,7 +29,7 @@ class TimelineViewTestCase(BaseViewTestCase, ModuleTestCase):
             module_code=self.module.module_code,
             object_id=self.module.module_code,
             content_object=self.module,
-            approved_by=self.user
+            changes_by=self.user
         )
 
     def run_get_view(self, url):
@@ -39,7 +41,7 @@ class TimelineViewTestCase(BaseViewTestCase, ModuleTestCase):
             username=self.admin.username,
             password=self.admin_password
         )
-        response = self.client.get(self.url)
+        response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         return response
 
