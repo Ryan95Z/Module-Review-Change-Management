@@ -1,4 +1,5 @@
 function getLastInputRow() {
+  //select rows by id
   var rows = $("#software_form-dynamic_form .dynamic-row");
   if (rows.length > 0) { //check if rows has length of more than 0
     var last = $(rows[rows.length - 1]);
@@ -18,13 +19,16 @@ function getLastInputRow() {
     }
   }
 }
+  // ensure that the function is called once all the DOM elements of the page are ready
   $(function() {
+    //e = event oject which will be passed to handler
     $("#software-search-button").click(function (e) {
       /*
         Catch the search click, send request to backend via AJAX
       */
-      e.preventDefault()
-      var search_term = $("#id_software_name").val();
+      e.preventDefault() //prevent from submitting a form
+      var search_term = $("#id_software_name").val(); //create a variable and store value of software name in it
+      //set the HTML content of each matched element
       $("#search-results").html(
         "<br> <table class='table'>" + "<thead class='thead-light'>" + "<tr>" +
         "<th scope='col' style='font-weight: bold; text-align: left;'>Software</th>" +
@@ -37,10 +41,12 @@ function getLastInputRow() {
       // this is the request to the backend
       $.get('/module_leader/software-search/?search_term=' + search_term, function (response) {
         /* for each result, add a row */
-        var items = JSON.parse(response);
+        var items = JSON.parse(response); //parse data to javascript object and store it in 'items'
+        // show alert if no results are found
         if (items.results.length === 0) {
           $("#search-results").html("<div class='alert alert-danger'>No results founds</div>");
         }
+        //executes the function once for each array element.
         items.results.forEach(function (item) {
           var row = $("<table class='table table-hover table-bordered'  style='border-left: 6px solid black;'>" +
           "<tbody>" + "<tr>" +
