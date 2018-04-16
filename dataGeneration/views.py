@@ -73,7 +73,7 @@ class labSheetDownload(View):
             # Create an HTTPResponse with attachment
             response = HttpResponse(myfile, content_type='text/csv')
             # Set the reponse headers (this triggers the download on client side)
-            response['Content-Disposition'] = 'attachment; filename=LabSheet.csv'
+            response['Content-Disposition'] = 'attachment; filename=LabOrganisationSheet.csv'
             return response
 
 
@@ -92,6 +92,7 @@ class labSheetView(View):
         _modules = []
 
         for module in modules:
+            #error handling, so If an error is encountered, a try block code execution is stopped and transferred down to the except block.
             try:
                 software = software_list.get(module=module.module_code)
                 teaching = indicative.get(module=module.module_code)
