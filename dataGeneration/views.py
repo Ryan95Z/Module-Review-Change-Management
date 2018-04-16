@@ -8,10 +8,6 @@ import random
 import csv
 #Create your views here.
 
-# def index(request):
-#     software_list = Module.objects.all()
-#     date_dict = {"software_records":software_list}
-#     return render(request,'lab_sheet.html',date_dict)
 
 
 class labSheetDownload(View):

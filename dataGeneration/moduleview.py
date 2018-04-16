@@ -3,7 +3,6 @@ from forms.models import ModuleAssessment,ModuleSoftware,ModuleSupport, ModuleTe
 from core.models import *
 from django.views import View
 from django.http import HttpResponse
-# from forms.utils.module_description import ModuleDescriptionWrapper, CurrentModuleDescriptionWrapper
 import random
 import csv
 from collections import defaultdict
@@ -185,7 +184,7 @@ class ModuleSheetView(View):
         table_without_fields['modules'] = temp_table
 
         multiple_tables.append(table_without_fields)
-        
+
         return render(request,'module_sheet.html', {'multiple_tables': multiple_tables})
 
     '''
