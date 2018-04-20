@@ -91,6 +91,8 @@ class LeaderModuleTrackingForm(View):
         reassessment_form = ModuleReassessmentForm(request.POST, instance=ModuleReassessment.objects.filter(module=module, current_flag=True).first())
         assessment_forms = self.assessment_formset(request.POST, prefix="assessment_form") # Doesn't need instance because there is an id associated with each form
         software_forms = self.software_formset(request.POST, prefix="software_form")
+        
+        softwareSearch_form = ModuleSoftwareSearchForm(instance=ModuleSoftware.objects.filter(module=module, current_flag=True).first())
 
         # Run all of the validation
         valid = [

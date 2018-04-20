@@ -21,6 +21,18 @@ class ModuleChangeSummaryForm(forms.ModelForm):
             'changes_rationale': Textarea(attrs={'rows':'2', 'class':'form-control form-control-sm'})
         }
 
+    def clean(self):
+        data = super().clean()
+        changes_to_outcomes = data.get('changes_to_outcomes')
+        changes_to_teaching = data.get('changes_to_teaching')
+        changes_to_assessments = data.get('changes_to_assessments')
+        changes_other = data.get('changes_other')
+
+        if any([changes_to_outcomes, changes_to_teaching, changes_to_assessments, changes_other]):
+            self.add_error('changes_rationale', 'Must be completed if any changes are made')
+
+        return data
+
 class ModuleTeachingHoursForm(forms.ModelForm):
     """
     Form which handles teaching hours
