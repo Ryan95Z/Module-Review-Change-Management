@@ -14,11 +14,14 @@ class ModuleDescriptionManager(models.Manager):
         Create a new ModuleDescription and assign it to a given
         module and form version
         """
-        return self.create(
-            module_id=module.pk, 
+        new_desc = ModuleDescription(
+            module_id=module.pk,
             form_version=form_version,
             creation_date=timezone.now(),
-            current_flag=True)
+            current_flag=True
+        )
+        new_desc.save(force_insert=True)
+        return new_desc
 
     def get_most_recent(self, module):
         """
