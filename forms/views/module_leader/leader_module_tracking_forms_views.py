@@ -43,6 +43,7 @@ class LeaderModuleTrackingForm(View):
         reassessment_form = ModuleReassessmentForm(instance=ModuleReassessment.objects.filter(module=module, current_flag=True).first())
         assessment_forms = self.assessment_formset(prefix='assessment_form', queryset=ModuleAssessment.objects.filter(module=module, current_flag=True))
         software_forms = self.software_formset(prefix='software_form', queryset=ModuleSoftware.objects.filter(module=module, current_flag=True))
+
         softwareSearch_form = ModuleSoftwareSearchForm(instance=ModuleSoftware.objects.filter(module=module, current_flag=True).first())
 
         # Get a list of all the unbound forms
@@ -53,11 +54,10 @@ class LeaderModuleTrackingForm(View):
             assessment = assessment_forms,
             reassessment = reassessment_form,
             software = software_forms,
-            softwareSearch = softwareSearch_form
         )
 
         # If absolutely no forms are abound, we assume that one doesn't exist, and set the form_exists flag to False
-        if len(unbound_forms) >= 7:
+        if len(unbound_forms) >= 6:
             form_exists = False
 
         # Setting the context
@@ -91,7 +91,6 @@ class LeaderModuleTrackingForm(View):
         reassessment_form = ModuleReassessmentForm(request.POST, instance=ModuleReassessment.objects.filter(module=module, current_flag=True).first())
         assessment_forms = self.assessment_formset(request.POST, prefix="assessment_form") # Doesn't need instance because there is an id associated with each form
         software_forms = self.software_formset(request.POST, prefix="software_form")
-        softwareSearch_form = ModuleSoftwareSearchForm(request.POST, instance=ModuleSoftware.objects.filter(module=module, current_flag=True).first())
 
         # Run all of the validation
         valid = [
@@ -101,7 +100,6 @@ class LeaderModuleTrackingForm(View):
             assessment_forms.is_valid(),
             reassessment_form.is_valid(),
             software_forms.is_valid(),
-            softwareSearch_form.is_valid()
         ]
 
         # If all forms are valid, save to the database
@@ -248,8 +246,7 @@ class LeaderModuleTrackingFormArchive(View):
             support = support_form,
             assessment = assessment_forms,
             reassessment = reassessment_form,
-            software = software_forms,
-            softwareSearch = softwareSearch_form
+            software = software_forms
         )
 
         # If absolutely no forms are abound, we assume that one doesn't exist, and set the form_exists flag to False
