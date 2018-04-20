@@ -56,5 +56,5 @@ class CurrentModuleDescriptionWrapper(AbstractModuleDescriptionWrapper):
     The most recent Module Description for a given module
     """
     def __init__(self, module):
-        current_module_description = ModuleDescription.objects.get_most_recent(module)
+        current_module_description = ModuleDescription.objects.get(module_id=module, current_flag=True)
         super(CurrentModuleDescriptionWrapper, self).__init__(module, current_module_description)
