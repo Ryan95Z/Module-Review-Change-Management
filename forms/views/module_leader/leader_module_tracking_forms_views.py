@@ -194,7 +194,7 @@ class LeaderModuleTrackingForm(View):
                 software_objects
             )
 
-            return redirect('view_module_tracking_form', pk=module_pk)
+            return redirect('module_timeline', module_pk=module_pk)
         else:
             error_context = {
                 'edit_form': True,
@@ -231,13 +231,12 @@ class LeaderModuleTrackingFormArchive(View):
         edit_form = False
 
         # Gathering existing data and creating the forms. If no value is found for the model filter, None is returned to the instance
-        change_summary_form = ModuleChangeSummaryForm(instance=ModuleChangeSummary.objects.filter(module=module, copy_number=version).first())
-        teaching_hours_form = ModuleTeachingHoursForm(instance=ModuleTeaching.objects.filter(module=module, copy_number=version).first())
-        support_form = ModuleSupportForm(instance=ModuleSupport.objects.filter(module=module, copy_number=version).first())
-        reassessment_form = ModuleReassessmentForm(instance=ModuleReassessment.objects.filter(module=module, copy_number=version).first())
-        assessment_forms = self.assessment_formset(prefix='assessment_form', queryset=ModuleAssessment.objects.filter(module=module, copy_number=version))
-        software_forms = self.software_formset(prefix='software_form', queryset=ModuleSoftware.objects.filter(module=module, copy_number=version))
-        softwareSearch_form = ModuleSoftwareSearchForm(instance=ModuleSoftware.objects.filter(module=module, copy_number=version).first())
+        change_summary_form = ModuleChangeSummaryForm(instance=ModuleChangeSummary.objects.filter(module=module, version_number=version).first())
+        teaching_hours_form = ModuleTeachingHoursForm(instance=ModuleTeaching.objects.filter(module=module, version_number=version).first())
+        support_form = ModuleSupportForm(instance=ModuleSupport.objects.filter(module=module, version_number=version).first())
+        reassessment_form = ModuleReassessmentForm(instance=ModuleReassessment.objects.filter(module=module, version_number=version).first())
+        assessment_forms = self.assessment_formset(prefix='assessment_form', queryset=ModuleAssessment.objects.filter(module=module, version_number=version))
+        software_forms = self.software_formset(prefix='software_form', queryset=ModuleSoftware.objects.filter(module=module, version_number=version))
 
         # Get a list of all the unbound forms
         unbound_forms = get_unbound_forms(
@@ -265,7 +264,6 @@ class LeaderModuleTrackingFormArchive(View):
             'support_form': support_form,
             'assessment_forms': assessment_forms,
             'reassessment_form': reassessment_form,
-            'software_forms': software_forms,
-            'softwareSearch_form': softwareSearch_form
+            'software_forms': software_forms
         }
         return render(request, 'module_tracking_form.html', context)
