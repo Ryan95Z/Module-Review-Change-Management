@@ -55,7 +55,8 @@
 										</form>
 										{% endif %}
 
-										{% if entry.status == 'Staged' %}
+										
+										{% if entry.status != 'Confirmed' %}
 										<form action="{% url 'revert_entry' module_code entry.pk %}" method="POST" style="display: inline;">
 											{% csrf_token %}
 											<button class="btn btn-sm btn-danger">Cancel</button>

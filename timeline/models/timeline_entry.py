@@ -78,16 +78,25 @@ class TimelineEntry(models.Model):
         return "{}@{}".format(self.title, self.created)
 
     def requester_username(self):
+        """
+        Method to get the username of user who requested changes
+        """
         if self.changes_by is None:
             return None
         return self.changes_by.username
 
     def requester_name(self):
+        """
+        Method to get the user's name who requested changes
+        """
         if self.changes_by is None:
             return None
         return self.changes_by.get_full_name()
 
     def requester_id(self):
+        """
+        Method to get ID of user who requested changes
+        """
         if self.changes_by is None:
             return None
         return self.changes_by.pk
@@ -109,9 +118,30 @@ class TimelineEntry(models.Model):
         return self.approved_by.get_full_name()
 
     def approver_id(self):
+        """
+        Method to get the ID of the approver
+        """
         if self.approved_by is None:
             return None
         return self.approved_by.pk
+
+    def objct_class_in_entry(self):
+        """
+        Method to get the class object stored in timeline
+        """
+        return self.content_object.__class__
+
+    def get_revert_object(self):
+        """
+        Method to get the object from the previous version
+        """
+        cls = self.objct_class_in_entry()
+        obj = None
+        try:
+            obj = cls.objects.get(pk=self.revert_object_id)
+        except cls.DoesNotExist:
+            pass
+        return obj
 
     class Meta:
         ordering = ['-created']

@@ -13,6 +13,10 @@ def tracking_to_timeline(module_code, changes_by, *args):
 
 
 def get_form_version_number(parent_id):
+    """
+    Helper function that gets the version number of the form
+    that it is archived at this entry.
+    """
     entry = TimelineEntry.objects.filter(parent_entry_id=parent_id).first()
     revert = entry.revert_object_id
     model = entry.content_object.__class__
@@ -121,10 +125,10 @@ class ParentEntry(object):
         Private class to generate the timeline child entries.
         """
         current_version = self.args[0].model.copy_number
-        for model in self.args:
-            if model.type_of_entry() == UPDATE:
-                base = model.get_original_data()
-                cls = model.model_class_object()
+        for entry in self.args:
+            if entry.type_of_entry() == UPDATE:
+                base = entry.get_original_data()
+                cls = entry.model_class_object()
 
                 # update and remove data that is not important
                 # to the generation of the models.
@@ -132,22 +136,22 @@ class ParentEntry(object):
                 base['current_flag'] = False
                 base['archive_flag'] = True
                 base['version_number'] = current_version
-                base['module_id'] = model.get_module_code()
+                base['module_id'] = entry.get_module_code()
 
                 # create a copy of the model
                 copy = cls.objects.create(**base)
 
                 # create the child timeline entry
-                model.create_entry(
+                entry.create_entry(
                     parent=parent,
                     entry_type='Tracking-Form',
                     revert=copy.pk
                 )
             else:
                 # create a child timeline entry
-                model.create_entry(
+                entry.create_entry(
                     parent=parent,
                     entry_type='Tracking-Form'
                 )
-            model.model.copy_number = current_version
-            model.model.save()
+            entry.model.copy_number = current_version
+            entry.model.save()
