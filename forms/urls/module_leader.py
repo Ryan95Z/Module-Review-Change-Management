@@ -16,6 +16,8 @@ urlpatterns = [
         LeaderModuleDescriptionView.as_view()), name='view_module_description'),
     url(r'^modules/(?P<pk>[A-Za-z0-9]+)/description/update/$', login_required(
         LeaderModuleDescriptionView.as_view()), kwargs={'form_type': 'new'}, name='update_module_description'),
+    url(r'^modules/(?P<pk>[A-Za-z0-9]+)/description/archive/(?P<id>[0-9]+)$', login_required(
+        LeaderModuleDescriptionView.as_view()), name='view_archive_module_description'),
 
     # urls for module tracking forms
     url(r'^modules/(?P<pk>[A-Za-z0-9]+)/tracking-form/view/$', login_required(
@@ -24,5 +26,5 @@ urlpatterns = [
         LeaderModuleTrackingForm.as_view()), kwargs={'form_type': 'new'}, name='new_module_tracking_form'),
     url(r'^modules/(?P<pk>[A-Za-z0-9]+)/tracking-form/archive/(?P<id>[0-9]+)$', login_required(
         LeaderModuleTrackingFormArchive.as_view()), name='view_archive_tracking_form')
-    
+
 ]

@@ -6,6 +6,7 @@ from core.models import Module
 from forms.forms import ModuleDetailForm, ModuleDescriptionForm
 from forms.models import ModuleDescription, ModuleDescriptionEntry, ModuleDescriptionFormVersion, FormFieldEntity
 from forms.utils.module_description import *
+from timeline.utils.timeline.helpers import publish_changes
 
 class LeaderModuleDescriptionView(View):
     """
@@ -43,7 +44,7 @@ class LeaderModuleDescriptionView(View):
         try:
             current_description = CurrentModuleDescriptionWrapper(module)
             version_used = current_description.form_master
-        except ObjectDoesNotExist:
+        except:
             form_exists = False
 
         # We need to check if the existing data was created using the
@@ -109,6 +110,8 @@ class LeaderModuleDescriptionView(View):
                 # We only want the field id, so we strip 'field_entity_'
                 field_entity = FormFieldEntity.objects.get(pk=field.strip('field_entity_'))
                 ModuleDescriptionEntry.objects.create_new_entry(md, field_entity, value)
+
+            publish_changes(md, request.user, 'Module_Description')
             return redirect('view_module_description', pk=module.pk)
 
         # If the form isn't valid, we rerender the page with the errors
@@ -122,3 +125,43 @@ class LeaderModuleDescriptionView(View):
                 'new_form_version': False
             }
             return render(request, 'module_description_view.html', context)
+
+class ArchivedModuleDescriptionView(View):
+    def get(self, request, **kwargs):
+
+        # Assign user chosen factors to variables.
+        module = Module.objects.get(pk=self.kwargs.get('pk'))
+        version = kwargs.get('id')
+
+        edit_form = False
+        form_version_exists = True
+        new_form_version = False
+        form_exists = True
+
+        # Populate the ModuleDetails form
+        details_form = ModuleDetailForm(instance=module)
+        
+        # Retrieve the most recent description for this module, and
+        # the form version it used. Convert it to form format.
+        try:
+            description = ModuleDescriptionWrapper(version)
+            version_used = description.form_master
+        except:
+            form_exists = False
+
+        if form_exists:
+            module_description_form = current_description.get_form()
+        else:
+            module_description_form = ModuleDescriptionForm()
+
+        # Set the context with the form, and the user chosen stuff
+        context = {
+            'edit_form': edit_form,
+            'form_version_exists': form_version_exists,
+            'form_exists': form_exists,
+            'module': module,
+            'details_form': details_form,
+            'form': module_description_form,
+            'new_form_version': new_form_version
+        }
+        return render(request, 'module_description_view.html', context)
