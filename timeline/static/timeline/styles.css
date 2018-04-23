@@ -376,8 +376,7 @@ li.list-group-item:focus {
 	padding: 10px;
 	border-radius: 5px;
 	position: relative;
-	overflow-x: auto;
-	overflow-y: scroll;
+	overflow-y: auto;
 }
 
 .no-notifications{
