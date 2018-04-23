@@ -13,7 +13,6 @@ from timeline.utils.timeline.tracking_form import get_form_version_number
 from forms.utils.tracking_form import StagedTrackingFormWrapper
 
 
-
 class TrackingFormChanges(View):
     """
     View to access all the changes from a summary timeline entry

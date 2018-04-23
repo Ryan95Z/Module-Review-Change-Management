@@ -315,8 +315,9 @@ class UpdateEntry(BaseEntry):
             string      The summary of changes.
         """
         n_changes = len(self.get_differences())
-        return "There are {} changes to {}".format(
-            n_changes, self.model.title()
+        change_str = "changes" if n_changes != 1 else 'change'
+        return "There are {} {} to {}".format(
+            n_changes, change_str, self.model.title()
         )
 
 
