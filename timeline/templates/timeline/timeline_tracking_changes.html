@@ -15,7 +15,7 @@
 		</div>
 	</div>
 
-	<h1>
+	<h1 style="margin-top: 15px;">
 		Changes to {{ module_code }} Tracking Form
 	</h1>
 	<hr>
@@ -31,7 +31,7 @@
 			</p>
 			<p class="card-text">
 				<strong>Requested by</strong>: 
-				<a href="{% url 'user_profile' parent.requester_id %}">
+				<a data-toggle="tooltip" data-placement="left" title="See Profile" href="{% url 'user_profile' parent.requester_id %}">
 					{{ parent.requester_name }}
 				</a>
 			</p>
@@ -41,7 +41,7 @@
 				{% if parent.status == 'Draft' %}
 					Not Approved
 				{% else %}
-					<a href="{% url 'user_profile' parent.approver_id %}">
+					<a data-toggle="tooltip" data-placement="left" title="See Profile" href="{% url 'user_profile' parent.approver_id %}">
 						{{ parent.approver_name }}
 					</a>
 				{% endif %}
@@ -50,9 +50,7 @@
 		</div>
 	</div>
 	<br>
-
 	<hr>
-
 
 	{% for e in entries %}
 

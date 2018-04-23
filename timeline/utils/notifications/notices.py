@@ -15,6 +15,12 @@ class BaseNotice(ABC):
 
             link_name           Name of the django url
         """
+        if len(content_template) < 1:
+            raise ValueError("content_template cannot be empty")
+
+        if len(link_name) < 1:
+            raise ValueError("link_name cannot be empty")
+
         # public instance variables
         self.content_template = content_template
         self.link_name = link_name
@@ -113,8 +119,14 @@ class DiscussionNotice(BaseNotice):
             discussion      Discussion model
             user            User object
         """
-        discussion = kwargs['discussion']
-        user = kwargs['user']
+        discussion = kwargs.get('discussion', None)
+        user = kwargs.get('user', None)
+
+        if discussion is None:
+            raise ValueError("discussion object must not be None")
+
+        if user is None:
+            raise ValueError("user object must not be None")
 
         # get the timeline entry assocaited with posted comment
         entry = discussion.entry
@@ -165,9 +177,18 @@ class ReplyNotice(BaseNotice):
             user            User object
             parent          Parent discussion model
         """
-        discussion = kwargs['discussion']
-        user = kwargs['user']
-        parent = kwargs['parent']
+        discussion = kwargs.get('discussion', None)
+        user = kwargs.get('user', None)
+        parent = kwargs.get('parent', None)
+
+        if discussion is None:
+            raise ValueError("discussion keyword should not be None")
+
+        if user is None:
+            raise ValueError("user keyword should not be None")
+
+        if parent is None:
+            raise ValueError("parent keyword should not be None")
 
         # get the author of the post that recieved
         # the reply. This will be the user that recieves the notification.
@@ -213,7 +234,11 @@ class TLEntryNotice(BaseNotice):
         kwargs expected:
             entry      Timeline entry that has been added
         """
-        entry = kwargs['entry']
+        entry = kwargs.get('entry', None)
+
+        if entry is None:
+            raise ValueError("entry keyword should not be None")
+
         module_code = entry.module_code
         content = self.content_template.format(module_code)
 
