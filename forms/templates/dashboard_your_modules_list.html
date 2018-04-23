@@ -5,10 +5,10 @@
     <ul class="list-group list-group-flush">
     {% if my_modules%}
         {% for module in my_modules %}
-            <li class="list-group-item" style="height: 35px; padding: 5px 15px;">
-                <a href="{% url 'view_module_description' pk=module.module_code %}">
-                    {{ module.pk }}: {{ module.module_name }}
-                </a>
+            <li class="list-group-item">
+                {{ module.pk }}: {{ module.module_name }} <br>
+                <a href="{% url 'module_timeline' module_pk=module.module_code %}">See Timeline</a> /
+                <a href="{% url 'view_module_description' pk=module.module_code %}">Update</a>
             </li>
         {% endfor %}
     {% else %}
