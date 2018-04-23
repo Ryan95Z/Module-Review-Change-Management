@@ -1,4 +1,4 @@
-from timeline.utils.timeline.entries import InitEntry, UpdateEntry
+from timeline.utils.timeline.entries import InitEntry, UpdateEntry, ModuleDescriptionEntry
 
 
 class EntryFactory(object):
@@ -7,7 +7,8 @@ class EntryFactory(object):
     """
     factories = {
         'Init': InitEntry,
-        'Update': UpdateEntry
+        'Update': UpdateEntry,
+        'Module_Description': ModuleDescriptionEntry
     }
 
     def assigned_instances():

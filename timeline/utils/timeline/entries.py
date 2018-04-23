@@ -6,6 +6,7 @@ from timeline.models.integrate.entry import TLEntry
 
 INIT = "init"
 UPDATE = "update"
+MODULE_DESCRIPTION = "module_description"
 
 
 MODEL_ID_REGEX = '(^[A-Za-z]+\_id$)|(^id$)'
@@ -317,3 +318,23 @@ class UpdateEntry(BaseEntry):
         return "There are {} changes to {}".format(
             n_changes, self.model.title()
         )
+
+
+class ModuleDescriptionEntry(BaseEntry):
+    """
+    Custom timeline entry for the Module Descriptions
+    """
+    def __init__(self, model):
+        super(ModuleDescriptionEntry, self).__init__(model, MODULE_DESCRIPTION)
+
+    def content(self):
+        """
+        Content for the timeline entry
+        """
+        return "The module description has been updated."
+
+    def have_changes(self):
+        return True
+
+    def sum_changes(self):
+        return None
