@@ -3,6 +3,7 @@ from django.utils import timezone
 
 from core.models import Module
 from forms.models.module_description import ModuleDescriptionFormVersion
+from timeline.models.integrate.entry import TLEntry
 
 class ModuleDescriptionManager(models.Manager):
     """
@@ -13,23 +14,36 @@ class ModuleDescriptionManager(models.Manager):
         Create a new ModuleDescription and assign it to a given
         module and form version
         """
-        return self.create(
-            module=module, 
+        return ModuleDescription.objects.create(
+            module_id=module.pk,
             form_version=form_version,
-            creation_date=timezone.now())
+            current_flag=True
+        )
 
     def get_most_recent(self, module):
         """
         Return the most recent ModuleDescription for a given module
         """
-        return ModuleDescription.objects.filter(module=module).latest('creation_date')
+        return ModuleDescription.objects.filter(module_id=module).latest('creation_date')
 
-class ModuleDescription(models.Model):
+class ModuleDescription(TLEntry):
     """
     Represents an instance of a module description 
     """
-    module = models.ForeignKey(Module, on_delete=models.CASCADE)
     form_version = models.ForeignKey(ModuleDescriptionFormVersion, on_delete=models.PROTECT)
-    creation_date = models.DateTimeField()
+
+    archive_flag = models.BooleanField(default=False)
+    staging_flag = models.BooleanField(default=False)
+    current_flag = models.BooleanField(default=False)
 
     objects = ModuleDescriptionManager()
+
+    def __str__(self):
+        description_phase = "?"
+        if(self.archive_flag): description_phase = "Archived"
+        if(self.current_flag): description_phase = "Current"
+        if(self.staging_flag): description_phase = "Staged"
+        return "{} Module Description master for {}".format(description_phase, self.module_id)
+
+    def title(self):
+        return "Module Description"

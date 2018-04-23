@@ -23,7 +23,7 @@ class TestEntryFactroy(BasicUserTestCase, ModuleTestCase):
         self.assertEquals(factories["Update"], UpdateEntry)
 
         instances = self.factory.assigned_instances()
-        self.assertEquals(len(instances), 2)
+        self.assertEquals(len(instances), 3)
 
     def test_valid_factory_get(self):
         """

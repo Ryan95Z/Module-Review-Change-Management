@@ -15,17 +15,21 @@
 <!-- Little placeholder navigation to get around -->
 <div class="row">
 <ul class="nav nav-pills">
-	<li class="nav-item dropdown">
-		<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Module Description</a>
-		<div class="dropdown-menu">
-			<a class="dropdown-item active" href="#">Module Description</a>
-			<a class="dropdown-item" href="{% url 'view_module_tracking_form' module.module_code %}">Tracking Form</a>
-		</div>
-	</li>
-	{% if not edit_form %}
-	<li class="nav-item"><a class="nav-link" href="{% url 'update_module_description' module.module_code %}" >Update Module Description</a></li>
+	{% if not archived %}
+		<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Module Description</a>
+			<div class="dropdown-menu">
+				<a class="dropdown-item active" href="#">Module Description</a>
+				<a class="dropdown-item" href="{% url 'view_module_tracking_form' module.module_code %}">Tracking Form</a>
+			</div>
+		</li>
+		{% if not edit_form %}
+		<li class="nav-item"><a class="nav-link" href="{% url 'update_module_description' module.module_code %}" >Update Module Description</a></li>
+		{% else %}
+		<li class="nav-item"><a class="nav-link" href="{% url 'view_module_description' module.module_code %}">Back</a></li>
+		{% endif %}
 	{% else %}
-	<li class="nav-item"><a class="nav-link" href="{% url 'view_module_description' module.module_code %}">Back</a></li>
+	<li class="nav-item"><a class="nav-link" href="{% url 'module_timeline' module.module_code %}">Back to timeline</a></li>
 	{% endif %}
 </ul>
 </div>
@@ -48,50 +52,48 @@
 
 <!-- Modules Details -->
 <div class="card">
-<div class="card-header" data-toggle="collapse" data-target="#det-collapse" id="det-heading" aria-expanded="true" aria-controls="det-collapse" style="cursor:pointer">
+<div class="card-header">
 	<h6 class="mb-0">
 		Module Details
 	</h6>
 </div>
-<div id="det-collapse" class="collapse show" aria-labelledby="det-heading">
-	<div class="card-body">
-		<div class="form-row">
-			<div class="form-group col-md-2">
-				<label>Module Code</label>
-				{{details_form.module_code_dummy|add_css_class:"form-control form-control-sm"}}
-			</div>
-			<div class="form-group col-md-10">
-				<label for="{{ details_form.module_name.id_for_label }}">{{details_form.module_name.label}}</label>
-				{{details_form.module_name|add_css_class:"form-control form-control-sm"}}
-				{{details_form.module_name.errors}}
-			</div>
+<div class="card-body">
+	<div class="form-row">
+		<div class="form-group col-md-2">
+			<label>Module Code</label>
+			{{details_form.module_code_dummy|add_css_class:"form-control form-control-sm"}}
 		</div>
-		<div class="form-row">
-			<div class="form-group col-md-1">
-				<label for="{{ details_form.module_credits.id_for_label }}">{{details_form.module_credits.label}}</label>
-				{{details_form.module_credits|add_css_class:"form-control form-control-sm"}}
-				{{details_form.module_credits.errors}}
-			</div>
-			<div class="form-group col-md-1">
-				<label for="{{ details_form.module_level.id_for_label }}">{{details_form.module_level.label}}</label>
-				{{details_form.module_level|add_css_class:"form-control form-control-sm"}}
-				{{details_form.module_level.errors}}
-			</div>
-			<div class="form-group col-md-3">
-				<label for="{{ details_form.semester.id_for_label }}">{{details_form.semester.label}}</label>
-				{{details_form.semester|add_css_class:"form-control form-control-sm"}}
-				{{details_form.semester.errors}}
-			</div>
-			<div class="form-group col-md-3">
-				<label for="{{ details_form.delivery_language.id_for_label }}">{{details_form.delivery_language.label}}</label>
-				{{details_form.delivery_language|add_css_class:"form-control form-control-sm"}}
-				{{details_form.delivery_language.errors}}
-			</div>
-			<div class="form-group col-md-4">
-				<label for="{{ details_form.module_leader.id_for_label }}">{{details_form.module_leader.label}}</label>
-				{{details_form.module_leader|add_css_class:"form-control form-control-sm"}}
-				{{details_form.module_leader.errors}}
-			</div>
+		<div class="form-group col-md-10">
+			<label for="{{ details_form.module_name.id_for_label }}">{{details_form.module_name.label}}</label>
+			{{details_form.module_name|add_css_class:"form-control form-control-sm"}}
+			{{details_form.module_name.errors}}
+		</div>
+	</div>
+	<div class="form-row">
+		<div class="form-group col-md-1">
+			<label for="{{ details_form.module_credits.id_for_label }}">{{details_form.module_credits.label}}</label>
+			{{details_form.module_credits|add_css_class:"form-control form-control-sm"}}
+			{{details_form.module_credits.errors}}
+		</div>
+		<div class="form-group col-md-1">
+			<label for="{{ details_form.module_level.id_for_label }}">{{details_form.module_level.label}}</label>
+			{{details_form.module_level|add_css_class:"form-control form-control-sm"}}
+			{{details_form.module_level.errors}}
+		</div>
+		<div class="form-group col-md-3">
+			<label for="{{ details_form.semester.id_for_label }}">{{details_form.semester.label}}</label>
+			{{details_form.semester|add_css_class:"form-control form-control-sm"}}
+			{{details_form.semester.errors}}
+		</div>
+		<div class="form-group col-md-3">
+			<label for="{{ details_form.delivery_language.id_for_label }}">{{details_form.delivery_language.label}}</label>
+			{{details_form.delivery_language|add_css_class:"form-control form-control-sm"}}
+			{{details_form.delivery_language.errors}}
+		</div>
+		<div class="form-group col-md-4">
+			<label for="{{ details_form.module_leader.id_for_label }}">{{details_form.module_leader.label}}</label>
+			{{details_form.module_leader|add_css_class:"form-control form-control-sm"}}
+			{{details_form.module_leader.errors}}
 		</div>
 	</div>
 </div>
@@ -99,7 +101,7 @@
 
 <!-- Description form -->
 <div class="card">
-<div class="card-header" data-toggle="collapse" data-target="#desc-collapse" id="desc-heading" aria-expanded="true" aria-controls="desc-collapse" style="cursor:pointer">
+<div class="card-header">
 	<h6 class="mb-0">
 		Module Description
 		{% if new_form_version == True %}
@@ -108,35 +110,33 @@
 		{% endif %}
 	</h6>
 </div>
-<div id="desc-collapse" class="collapse show" aria-labelledby="desc-heading">
-	<div class="card-body">
-		{% for field in form.visible_fields %}
-		<div class="form-row">
-			{% if field|widget_type == 'RadioSelect' %} 
-			<div class="form-group col-md-12">
-				<!-- We render the elements manually if it isn't a textual input/select -->
-				<!-- The radio boxes are contained within their own row to avoid inline problems -->
-				<label for="{{field.id_for_label}}">{{field.label}}</label>
-				<div class="form-group my-0">
-					{% for radio in field %}
-					<div class="form-check form-check-inline my-0">
-					<label for="{{ radio.id_for_label }}" class="form-check-label px-0">
-						{{ radio.tag }} {{ radio.choice_label }}
-					</label>
-					</div>
-					{% endfor %}
+<div class="card-body">
+	{% for field in form.visible_fields %}
+	<div class="form-row">
+		{% if field|widget_type == 'RadioSelect' %} 
+		<div class="form-group col-md-12">
+			<!-- We render the elements manually if it isn't a textual input/select -->
+			<!-- The radio boxes are contained within their own row to avoid inline problems -->
+			<label for="{{field.id_for_label}}">{{field.label}}</label>
+			<div class="form-group my-0">
+				{% for radio in field %}
+				<div class="form-check form-check-inline my-0">
+				<label for="{{ radio.id_for_label }}" class="form-check-label px-0">
+					{{ radio.tag }} {{ radio.choice_label }}
+				</label>
 				</div>
+				{% endfor %}
 			</div>
-			{% else %}
-			<div class="form-group col-md-12">
-				<label for="{{field.id_for_label}}">{{field.label}}</label>
-				{{ field }}
-			</div>
-			{% endif %}
 		</div>
-		<hr class="my-2">
-		{% endfor %}
+		{% else %}
+		<div class="form-group col-md-12">
+			<label for="{{field.id_for_label}}">{{field.label}}</label>
+			{{ field }}
+		</div>
+		{% endif %}
 	</div>
+	<hr class="my-2">
+	{% endfor %}
 </div>
 </div>
 {% if edit_form %}
