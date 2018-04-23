@@ -11,7 +11,8 @@ ENTRY_STATUS = (
 
 ENTRY_TYPE = (
     ('Generic', 'Generic'),
-    ('Tracking-Form', 'Tracking-Form')
+    ('Tracking-Form', 'Tracking-Form'),
+    ('Module-Description', 'Module-Description')
 )
 
 
