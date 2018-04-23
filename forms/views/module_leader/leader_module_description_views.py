@@ -111,7 +111,7 @@ class LeaderModuleDescriptionView(View):
                 field_entity = FormFieldEntity.objects.get(pk=field.strip('field_entity_'))
                 ModuleDescriptionEntry.objects.create_new_entry(md, field_entity, value)
 
-            publish_changes(md, request.user, 'Module_Description')
+            publish_changes(md, request.user, 'Module_Description', 'Module-Description')
             return redirect('view_module_description', pk=module.pk)
 
         # If the form isn't valid, we rerender the page with the errors
