@@ -358,10 +358,6 @@
 ===========================================
 */
 
-#notification-card {
-	width: 480px;
-}
-
 li.list-group-item:hover,
 li.list-group-item:active,
 li.list-group-item:focus {
@@ -443,7 +439,6 @@ li.list-group-item:focus {
 		background-color: #cccccc;
 		padding: 10px;
 		height: 300px;
-		overflow-y: scroll;
 	}
 
 .notification-display-snipper li {
