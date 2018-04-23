@@ -14,14 +14,11 @@ class ModuleDescriptionManager(models.Manager):
         Create a new ModuleDescription and assign it to a given
         module and form version
         """
-        new_desc = ModuleDescription(
+        return ModuleDescription.objects.create(
             module_id=module.pk,
             form_version=form_version,
-            creation_date=timezone.now(),
             current_flag=True
         )
-        new_desc.save(force_insert=True)
-        return new_desc
 
     def get_most_recent(self, module):
         """
@@ -34,7 +31,6 @@ class ModuleDescription(TLEntry):
     Represents an instance of a module description 
     """
     form_version = models.ForeignKey(ModuleDescriptionFormVersion, on_delete=models.PROTECT)
-    creation_date = models.DateTimeField()
 
     archive_flag = models.BooleanField(default=False)
     staging_flag = models.BooleanField(default=False)

@@ -6,6 +6,7 @@ from core.models import Module
 from forms.forms import ModuleDetailForm, ModuleDescriptionForm
 from forms.models import ModuleDescription, ModuleDescriptionEntry, ModuleDescriptionFormVersion, FormFieldEntity
 from forms.utils.module_description import *
+from timeline.utils.timeline.helpers import publish_changes
 
 class LeaderModuleDescriptionView(View):
     """
@@ -43,7 +44,7 @@ class LeaderModuleDescriptionView(View):
         try:
             current_description = CurrentModuleDescriptionWrapper(module)
             version_used = current_description.form_master
-        except ObjectDoesNotExist:
+        except:
             form_exists = False
 
         # We need to check if the existing data was created using the
@@ -109,6 +110,8 @@ class LeaderModuleDescriptionView(View):
                 # We only want the field id, so we strip 'field_entity_'
                 field_entity = FormFieldEntity.objects.get(pk=field.strip('field_entity_'))
                 ModuleDescriptionEntry.objects.create_new_entry(md, field_entity, value)
+
+            publish_changes(ModuleDescription, request.user, 'Module_Description')
             return redirect('view_module_description', pk=module.pk)
 
         # If the form isn't valid, we rerender the page with the errors
