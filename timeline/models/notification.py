@@ -82,6 +82,9 @@ class NotificationManager(models.Manager):
             raise ValueError(
                 "user should not be None. This username does not exist")
 
+        # remove any old notifications
+        self.get_unneeded_notifications(user.username).delete()
+
         notifications = self.model.objects.filter(
             recipient=user.pk,
             seen=True
