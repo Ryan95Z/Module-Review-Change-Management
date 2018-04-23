@@ -72,7 +72,8 @@ class LeaderModuleDescriptionView(View):
             'module': module,
             'details_form': details_form,
             'form': module_description_form,
-            'new_form_version': new_form_version
+            'new_form_version': new_form_version,
+            'archived': False
         }
         return render(request, 'module_description_view.html', context)
     
@@ -122,7 +123,8 @@ class LeaderModuleDescriptionView(View):
                 'module': module,
                 'details_form': module_details_form,
                 'form': module_description_form,
-                'new_form_version': False
+                'new_form_version': False,
+                'archived': False
             }
             return render(request, 'module_description_view.html', context)
 
@@ -144,13 +146,13 @@ class ArchivedModuleDescriptionView(View):
         # Retrieve the most recent description for this module, and
         # the form version it used. Convert it to form format.
         try:
-            description = ModuleDescriptionWrapper(version)
+            description = ArchivedModuleDescriptionWrapper(version)
             version_used = description.form_master
         except:
             form_exists = False
 
         if form_exists:
-            module_description_form = current_description.get_form()
+            module_description_form = description.get_form()
         else:
             module_description_form = ModuleDescriptionForm()
 
@@ -162,6 +164,7 @@ class ArchivedModuleDescriptionView(View):
             'module': module,
             'details_form': details_form,
             'form': module_description_form,
-            'new_form_version': new_form_version
+            'new_form_version': new_form_version,
+            'archived': True
         }
         return render(request, 'module_description_view.html', context)
