@@ -17,7 +17,6 @@ class ModuleDescriptionManager(models.Manager):
         return ModuleDescription.objects.create(
             module_id=module.pk,
             form_version=form_version,
-            current_flag=True
         )
 
     def get_most_recent(self, module):
@@ -31,10 +30,6 @@ class ModuleDescription(TLEntry):
     Represents an instance of a module description 
     """
     form_version = models.ForeignKey(ModuleDescriptionFormVersion, on_delete=models.PROTECT)
-
-    archive_flag = models.BooleanField(default=False)
-    staging_flag = models.BooleanField(default=False)
-    current_flag = models.BooleanField(default=False)
 
     objects = ModuleDescriptionManager()
 

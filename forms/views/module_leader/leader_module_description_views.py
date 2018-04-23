@@ -113,7 +113,7 @@ class LeaderModuleDescriptionView(View):
                 ModuleDescriptionEntry.objects.create_new_entry(md, field_entity, value)
 
             publish_changes(md, request.user, 'Module_Description', 'Module-Description')
-            return redirect('view_module_description', pk=module.pk)
+            return redirect('module_timeline', module_pk=module.pk)
 
         # If the form isn't valid, we rerender the page with the errors
         else:
