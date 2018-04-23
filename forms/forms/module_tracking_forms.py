@@ -29,7 +29,9 @@ class ModuleChangeSummaryForm(forms.ModelForm):
         changes_other = data.get('changes_other')
 
         if any([changes_to_outcomes, changes_to_teaching, changes_to_assessments, changes_other]):
-            self.add_error('changes_rationale', 'Must be completed if any changes are made')
+            rationale = data.get('changes_rationale')
+            if rationale == '':
+                self.add_error('changes_rationale', 'Must be completed if any changes are made')
 
         return data
 
