@@ -48,7 +48,7 @@ class ModuleDescriptionWrapper(AbstractModuleDescriptionWrapper):
     The module description with the given id
     """
     def __init__(self, module_description):
-        module = module_description.module
+        module = module_description.module_id
         super(ModuleDescriptionWrapper, self).__init__(module, module_description)
 
 class CurrentModuleDescriptionWrapper(AbstractModuleDescriptionWrapper):
@@ -58,3 +58,9 @@ class CurrentModuleDescriptionWrapper(AbstractModuleDescriptionWrapper):
     def __init__(self, module):
         current_module_description = ModuleDescription.objects.get(module_id=module, current_flag=True)
         super(CurrentModuleDescriptionWrapper, self).__init__(module, current_module_description)
+
+class ArchivedModuleDescriptionWrapper(AbstractModuleDescriptionWrapper):
+    def __init__(self, module_description_pk):
+        module_description = ModuleDescription.objects.get(pk=module_description_pk)
+        module = module_description.module_id
+        super(ArchivedModuleDescriptionWrapper, self).__init__(module, module_description)
