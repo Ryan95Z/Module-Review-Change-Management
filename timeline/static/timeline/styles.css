@@ -376,8 +376,8 @@ li.list-group-item:focus {
 	padding: 10px;
 	border-radius: 5px;
 	position: relative;
-	overflow-y: auto;
-	overflow-x: visible;
+	overflow-x: auto;
+	overflow-y: scroll;
 }
 
 .no-notifications{
@@ -439,6 +439,7 @@ li.list-group-item:focus {
 		background-color: #cccccc;
 		padding: 10px;
 		height: 300px;
+		overflow-y: scroll;
 	}
 
 .notification-display-snipper li {
