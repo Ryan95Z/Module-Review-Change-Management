@@ -8,8 +8,10 @@ from core.models import Module
 from timeline.models import TimelineEntry
 from timeline.utils.notifications.helpers import push_notification
 from timeline.utils.timeline.changes import revert_changes
+from timeline.utils.timeline.tracking_form import get_form_version_number
 
 from forms.utils.tracking_form import StagedTrackingFormWrapper
+
 
 
 class TrackingFormChanges(View):
@@ -38,7 +40,8 @@ class TrackingFormChanges(View):
         context = {
             'module_code': module_code,
             'parent': parent,
-            'entries': entires
+            'entries': entires,
+            'version_no': get_form_version_number(pk)
         }
         return render(request, self.template_name, context)
 

@@ -45,8 +45,13 @@
 						{{ parent.approver_name }}
 					</a>
 				{% endif %}
-				
 			</p>
+
+			<hr>
+			{% if version_no != 1%}
+				<a href="{%  url 'view_archive_tracking_form' module_code version_no %}" class="btn btn-success btn-sm">See form before changes</a>
+			{% endif %}
+			<a href="{%  url 'view_archive_tracking_form' module_code 1 %}" class="btn btn-success btn-sm">See current form</a>
 		</div>
 	</div>
 	<br>

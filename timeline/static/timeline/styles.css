@@ -358,6 +358,10 @@
 ===========================================
 */
 
+#notification-card {
+	width: 480px;
+}
+
 li.list-group-item:hover,
 li.list-group-item:active,
 li.list-group-item:focus {
@@ -377,6 +381,7 @@ li.list-group-item:focus {
 	border-radius: 5px;
 	position: relative;
 	overflow-y: auto;
+	overflow-x: visible;
 }
 
 .no-notifications{
