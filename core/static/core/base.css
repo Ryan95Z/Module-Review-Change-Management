@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
 html, body{
-	background-color: #d9e0e7;
+	background-color: #e0e0e0;
 	height: 100%;
 }
 
@@ -51,12 +53,16 @@ h1 > .h-sub-action{
 /* login styles */
 
 #login-form{
+	border-radius: 10px;
 	box-shadow: 0px 0px 23px 4px #666666;
-	background-color: #fff;
-	padding: 25px 20px;
+	background-color: #4d4d4d;
+	color: white;
+	padding: 45px 25px;
 	margin: 0 auto;
 	position: relative;
 	width: 100%;
+	font-family: 'Nunito', sans-serif;
+	max-width: 360px;
 }
 
 #login-form button{
@@ -97,13 +103,13 @@ h1 > .h-sub-action{
   border-bottom: 1px solid #333333;
 }
 
-#sidebar-col .sidebar-inner ul li a:hover, 
+#sidebar-col .sidebar-inner ul li a:hover,
 #sidebar-col .dropdown:hover{
   background-color: #333333;
 }
 
 #sidebar-col .sidebar-drop-down ul{
-	background-color: #000;
+	background-color: #afafaf;
 	display: none;
 }
 
@@ -146,4 +152,9 @@ h1 > .h-sub-action{
 	margin: 0 auto;
 	top: 25%;
 	font-size: 6em;
+}
+
+.card-header {
+	background-color: #4d4d4d;
+	color: white;
 }
