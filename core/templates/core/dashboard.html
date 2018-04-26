@@ -8,7 +8,7 @@
         {% include  'dashboard_your_modules_list.html' with my_modules=my_modules %}
     {% endif %}
     {% include  'dashboard_all_modules_list.html' with my_modules=my_modules %}
-
+    {% include 'dashboard_admin_tools.html' %}
     {% include  'timeline/cards/dashboard_notification_card.html' with notifications=my_notifications %}
     </div>
 {% endblock %}

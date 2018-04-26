@@ -1,0 +1,41 @@
+{% extends 'core/main.html' %}
+{% load static %}
+
+
+{% block title %}
+	Module Summary Sheet
+{% endblock %}
+
+{% block styles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'dataGeneration/sheets.css' %}">
+{% endblock %}
+
+{% block main %}
+<h2>Module Summary Sheet</h2>
+<form action="{% url 'ModuleSheetDownload' %}" >
+	<input type="submit" value="Download as CSV" class="btn btn-primary btn-md" />
+</form>
+<div class="container">
+	{% for table in multiple_tables %}
+<div class="table table-hover table-responsive">
+    {% if table.modules %}
+  <table>
+		{% for header in table.headers %}
+			<th>{{header}}</th>
+		{% endfor %}
+    {% for module in table.modules %}
+		<tr class="tabledata">
+			{% for entry in module %}
+				<td>{{entry}}</td>
+			{% endfor %}
+		</tr>
+		{% endfor %}
+
+  </table>
+	  {% else %}
+	<p> </p>
+	  {% endif %}
+</div>
+{% endfor %}
+</div>
+{% endblock %}
