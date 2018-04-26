@@ -1,6 +1,6 @@
 <ul>
 	<li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-	
+
 	{% if user.is_admin %}
 	<li class="dropdown" id="users">Users <i class="fa fa-caret-down fa-1" aria-hidden="true"></i></li>
 	<li class="sidebar-drop-down">
@@ -15,6 +15,13 @@
 	<li class="sidebar-drop-down">
 		<ul aria-labelledby="forms">
 			<li><a href="{% url 'module_description_form_structure' %}">Module Description</a></li>
+		</ul>
+	</li>
+	<li class="dropdown" id="data">Datasets <i class="fa fa-caret-down fa-1" aria-hidden="true"></i></li>
+	<li class="sidebar-drop-down">
+		<ul aria-labelledby="data">
+			<li><a href="{% url 'labSheetView' %}">Lab Organisation Sheet</a></li>
+			<li><a href="{% url 'ModuleSheetView' %}">Module Summary Sheet</a></li>
 		</ul>
 	</li>
 	{% endif %}

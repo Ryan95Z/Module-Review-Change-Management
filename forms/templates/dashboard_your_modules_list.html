@@ -2,7 +2,7 @@
     <div class="card-header">
         Your Module(s)
     </div>
-    <ul class="list-group list-group-flush">
+    <ul class="list-group list-group-flush" style="height: auto; overflow-y: scroll;">
     {% if my_modules%}
         {% for module in my_modules %}
             <li class="list-group-item">
@@ -15,4 +15,7 @@
         <li class="list-group-item">You aren't assigned to any modules</li>
     {% endif %}
     </ul>
+    <div class="card-footer text-center" style="height: 35px; padding: 5px 15px;">
+        <a href="{% url 'module_leader_modules' %}">See All</a>
+    </div>
 </div>
