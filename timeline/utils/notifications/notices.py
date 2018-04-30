@@ -340,6 +340,9 @@ class TLCancelledNotice(TLChangeNotice):
 
 
 class MentionNotice(BaseNotice):
+    """
+    Notification when a user has been mentioned in a post
+    """
     def __init__(self):
         content_template = "{} mentioned you in a post for {}"
         super(MentionNotice, self).__init__(
@@ -348,6 +351,14 @@ class MentionNotice(BaseNotice):
         )
 
     def create(self, **kwargs):
+        """
+        Creates MentionNotice
+
+        kwargs expected:
+            author       User object
+            entry        Timeline entry that has been added
+            mention      User object of user mentioned
+        """
         author = kwargs['author']
         entry = kwargs['entry']
         mention_user = kwargs['mention']
@@ -363,19 +374,29 @@ class MentionNotice(BaseNotice):
 
 
 class ModuleLeaderNotice(BaseNotice):
+    """
+    Notification when a user has been made the module leader
+    """
     def __init__(self):
         content_template = "You have been made the module leader of {}"
         super(ModuleLeaderNotice, self).__init__(
             content_template=content_template,
-            link_name='/'  # need to think of a better url for this.
+            link_name='module_timeline'
         )
 
     def create(self, **kwargs):
+        """
+        Creates ModuleLeaderNotice
+
+        kwargs expected:
+            module_code       string of module code
+            module_leader     User object
+        """
         module_code = kwargs['module_code']
         module_leader = kwargs['module_leader']
 
         content = self.content_template.format(module_code)
 
-        url = '/'
+        url = self.get_url({'module_pk': module_code})
 
         self._create_notification(content, module_leader, url)
