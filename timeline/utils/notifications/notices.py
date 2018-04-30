@@ -328,6 +328,17 @@ class TLConfirmedNotice(TLChangeNotice):
         )
 
 
+class TLCancelledNotice(TLChangeNotice):
+    """
+    Notification when the entry has had its changes cancelled.
+    """
+    def __init__(self):
+        content_template = "{} has declined the changes to {}"
+        super(TLCancelledNotice, self).__init__(
+            content_template=content_template,
+        )
+
+
 class MentionNotice(BaseNotice):
     def __init__(self):
         content_template = "{} mentioned you in a post for {}"
