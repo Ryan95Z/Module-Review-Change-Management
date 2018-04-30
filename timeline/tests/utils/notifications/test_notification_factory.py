@@ -25,12 +25,12 @@ class TestNotificationFactory(LoggedInTestCase, ModuleTestCase):
         Test the registering of a new object
         """
         self.factory.register(self.test_notice, self.alis)
-        self.assertEqual(len(self.factory.factories), 7)
+        self.assertEqual(len(self.factory.factories), 8)
 
         # check that it is registered
         instances = self.factory.assigned_instances()
         self.assertTrue(self.alis in instances)
-        self.assertEqual(len(instances), 7)
+        self.assertEqual(len(instances), 8)
 
     def test_get_notification_object(self):
         """

@@ -58,9 +58,11 @@ class AdminModuleCreateView(AdminTestMixin, CreateView):
         obj = self.object
         publish_changes(obj, self.request.user)
         watcher = WatcherWrapper(obj.module_leader)
+
         # add the module created to thier list
         watcher.add_module(obj)
 
+        # push notification to module leader
         push_notification(
             'module_leader',
             module_code=obj.module_code,
@@ -82,8 +84,28 @@ class AdminModuleUpdateView(AdminTestMixin, UpdateView):
         return context
 
     def post(self, request, *args, **kwargs):
+        original_module_leader = self.get_object().module_leader
         response = super(
             AdminModuleUpdateView, self).post(request, *args, **kwargs)
+
+        # check to see that the module leader may have changed.
+        current_module_leader = self.object.module_leader
+        if current_module_leader != original_module_leader:
+            # create watcher objects for module leaders
+            original_ml_watcher = WatcherWrapper(original_module_leader)
+            current_ml_watcher = WatcherWrapper(current_module_leader)
+
+            # update module status by removing or adding module
+            original_ml_watcher.remove_module(self.object)
+            current_ml_watcher.add_module(self.object)
+
+            # push the notification to the new module leader
+            push_notification(
+                'module_leader',
+                module_code=self.object.module_code,
+                module_leader=current_module_leader
+            )
+        # publish changes to timeline
         publish_changes(self.object, request.user)
         return response
 

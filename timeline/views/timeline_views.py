@@ -143,6 +143,7 @@ class TimelineRevertStage(TimelinePostViews):
         if entry.status == 'Draft':
             # remove the changes as it is no longer needed
             revert_changes(entry)
+            push_notification("cancelled", entry=entry, user=request.user)
         elif entry.status == 'Staged':
             # move the status back to 'Draft'
             entry.status = 'Draft'
