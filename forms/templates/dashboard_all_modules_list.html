@@ -2,12 +2,12 @@
     <div class="card-header">
         All Modules
     </div>
-    <ul class="list-group list-group-flush">
+    <ul class="list-group list-group-flush" style="max-height: 50em; overflow-y: scroll;">
     {% if all_modules%}
         {% for module in all_modules %}
             <li class="list-group-item" style="height: 35px; padding: 5px 15px;">
-                <a href="{% url 'view_module_description' pk=module.module_code %}">
-                    {{ module.module_name }}
+                <a href="{% url 'module_timeline' module_pk=module.module_code %}">
+                    {{ module.pk }}: {{ module.module_name }}
                 </a>
             </li>
         {% endfor %}
@@ -15,4 +15,7 @@
         <li class="list-group-item">There don't seem to be any modules</li>
     {% endif %}
     </ul>
+    <div class="card-footer text-center" style="height: 35px; padding: 5px 15px;">
+        <a href="{% url 'all_modules' %}">See All</a>
+    </div>
 </div>

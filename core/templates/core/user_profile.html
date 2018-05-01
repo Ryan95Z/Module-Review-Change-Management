@@ -6,12 +6,43 @@
 
 {% block main %}
 	
-	<h1>Profile: {{ object.username }}</h1>
+	<h1>{{ object.username }}'s Profile</h1><hr>
 
-	<ul>
-		<li>Username: {{ object.username }}</li>
-		<li>Name: {{ object.get_full_name }}</li>
-		<li>Email: {{ object.email }}</li>
-	</ul>
+	<div class="row">
+		<div class="col-md-2 offset-md-1">
+			<div class="profile-avater">
+				<i class="fa fa-user-o text-center" aria-hidden="true"></i>
+			</div>
+		</div>
+		<div class="col-md-8">
+			<div class="card">
+				<div class="card-header">
+					<i>Details about {{ object.username }}</i>
+				</div>
+				<ul class="list-group list-group-flush">
+					<li class="list-group-item"><strong>Username</strong>: {{ object.username }}</li>
+					<li class="list-group-item"><strong>Name</strong>: {{ object.get_full_name }}</li>
+					<li class="list-group-item"><strong>Email</strong>: {{ object.email }}</li>
+					<li class="list-group-item">
+						<strong>Permissions</strong>:
+						{% if object.is_admin %}
+							<span class="badge badge-pill badge-primary">System Admin</span>
+						{% endif %}
 
+						{% if object.is_year_tutor %}
+							<span class="badge badge-pill badge-primary">Programme Tutor</span>
+						{% endif %}
+
+						{% if object.is_module_leader %}
+							<span class="badge badge-pill badge-primary">Module Leader</span>
+						{% endif %}
+
+						{% if object.is_office_admin %}
+							<span class="badge badge-pill badge-primary">Office Staff</span>
+						{% endif %}
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 {% endblock %}

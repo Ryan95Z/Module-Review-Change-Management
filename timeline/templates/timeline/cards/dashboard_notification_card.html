@@ -7,31 +7,37 @@
 
 <div class="card">
 	<div class="card-header">
-		Your Notifications
+		New Notifications
 	</div>
-	<ul class="list-group notification-display-snipper">
-		{% for n in notifications %}
 
-			<li class="list-group-item">
-				{% if n.seen %}
-					<a href="{{ n.link }}" class="notification-link">
-				{% else %}
-					<a href="{% url 'notification_redirect' n.id %}" class="notification-link">
-				{% endif %}
-					
-					<div class="notification">
-						{% if not n.seen %}
-							<span class="notification-alert-inner"></span>
-						{% endif %}
-						<div class="notification-content">
-							{{ n.content }}
+	{% if notifications.count > 0 %}
+		<ul class="list-group list-group-flush">
+			{% for n in notifications %}
+				<li class="list-group-item">
+					{% if n.seen %}
+						<a href="{{ n.link }}" class="notification-link">
+					{% else %}
+						<a href="{% url 'notification_redirect' n.id %}" class="notification-link">
+					{% endif %}
+						
+						<div class="notification">
+							{% if not n.seen %}
+								<span class="notification-alert-inner"></span>
+							{% endif %}
+							<div class="notification-content">
+								{{ n.content }}
+							</div>
+							<span class="notification-time">{{ n.created|naturaltime}}</span>
 						</div>
-						<span class="notification-time">
-							{{ n.created|naturalday}}
-						</span>
-					</div>
-				</a>
-			</li>
-		{% endfor %}
-	</ul>
+					</a>
+				</li>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<div class="card-body">
+			<p class="card-text text-center">
+				You have no new notifications!
+			</p>
+		</div>
+	{% endif %}
 </div>

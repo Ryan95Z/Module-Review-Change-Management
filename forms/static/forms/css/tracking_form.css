@@ -1,0 +1,53 @@
+/* Making labels smaller to save space */
+label{
+    font-size: .875rem;
+    line-height: 1.5;
+}
+
+/* Less space between each form in the assessment formset */
+#assessment-collapse .form-group {
+    margin-bottom: 0.5rem;
+}
+
+/* Making buttons look like links (for the remove buttons in assessment forms) */
+#assessment_form-dynamic_form .delete-row {
+    background:none!important;
+    border:none; 
+    padding:0!important;
+    
+    font-family:arial,sans-serif; 
+    color:#069;
+    cursor:pointer;
+}
+#assessment_form-dynamic_form .delete-row:hover{
+    text-decoration:underline;
+}
+
+/* Overriding table headers and data to make them appear like regular inputs */
+th {
+    font-weight: normal;
+    font-size: .875rem;
+    line-height: 1.5;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-bottom: .5rem !important;
+    border: 0 !important;
+}
+td {
+    border: 0 !important;
+}
+
+/* Changing default error style */
+.errorlist {
+    list-style-type: none;
+    font-size: 12px;
+    color: red;
+    padding: 0;
+    margin-bottom: -12px;
+}
+
+/* Horizontal rule ignores default container padding */
+hr {
+    margin-left: -20px;
+    margin-right: -20px;
+}

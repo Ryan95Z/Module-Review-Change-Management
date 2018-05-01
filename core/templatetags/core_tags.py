@@ -2,6 +2,19 @@ from django import template
 
 register = template.Library()
 
+@register.filter()
+def addstr(field, value):
+    """
+    Safely concatenates a value to the end of the field
+    """
+    return str(field) + str(value)
+
+@register.filter()
+def get(object, index):
+    """
+    Retrieve an object with the given object using a string
+    """
+    return object[index]
 
 @register.filter()
 def add_css_class(field, css_class: str):
@@ -32,6 +45,13 @@ def form_type(field):
     """
     return field.field.__class__.__name__
 
+@register.filter(is_safe=True)
+def widget_type(field):
+    """
+    Tag to allow for html form widget type to be determined.
+    Returns string of field type.
+    """
+    return field.field.widget.__class__.__name__
 
 @register.filter(is_safe=True)
 def pagination_range(current_page: int, end_page: int):

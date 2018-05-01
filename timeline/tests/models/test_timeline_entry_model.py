@@ -81,7 +81,7 @@ class TestTimelineEntry(BaseTimelineModelTestCase):
         n_entries = len(self.model.objects.filter(module_code=self.module.module_code))
 
         # includes extra entry from creating the test module
-        self.assertEquals(n_entries, 3)
+        self.assertEquals(n_entries, 2)
 
         # check they have the same module
         self.assertEquals(en1.module_code, en2.module_code)

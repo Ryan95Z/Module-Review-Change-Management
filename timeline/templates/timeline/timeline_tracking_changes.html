@@ -1,0 +1,78 @@
+{% extends 'core/main.html' %}
+{% load timeline_tags %}
+
+{% block title %}
+	Changes to {{ module_code }} Tracking Form
+{% endblock %}
+
+{% block main %}
+	<div class="row">
+		<div class="col-md-12">
+			<a href="{% url 'module_timeline' module_code %}">
+            	<i class="fa fa-arrow-left" aria-hidden="true"></i>
+            		Back to Timeline
+        	</a>
+		</div>
+	</div>
+
+	<h1 style="margin-top: 15px;">
+		Changes to {{ module_code }} Tracking Form
+	</h1>
+	<hr>
+
+	<div class="card">
+  		<h5 class="card-header">Details of change</h5>
+		<div class="card-body">
+			<p class="card-text">
+			 	<strong>Date changes were requested</strong>: {{ parent.created }}
+			</p>
+			<p class="card-text">
+				<strong>Status of changes:</strong>  {{ parent.status }}
+			</p>
+			<p class="card-text">
+				<strong>Requested by</strong>: 
+				<a data-toggle="tooltip" data-placement="left" title="See Profile" href="{% url 'user_profile' parent.requester_id %}">
+					{{ parent.requester_name }}
+				</a>
+			</p>
+
+			<p class="card-text">
+				<strong>Approved by:</strong> 
+				{% if parent.status == 'Draft' %}
+					Not Approved
+				{% else %}
+					<a data-toggle="tooltip" data-placement="left" title="See Profile" href="{% url 'user_profile' parent.approver_id %}">
+						{{ parent.approver_name }}
+					</a>
+				{% endif %}
+			</p>
+
+			<hr>
+			{% if version_no != 1%}
+				<a href="{%  url 'view_archive_tracking_form' module_code version_no %}" class="btn btn-success btn-sm">See form before changes</a>
+			{% endif %}
+			<a href="{%  url 'view_archive_tracking_form' module_code 1 %}" class="btn btn-success btn-sm">See current form</a>
+		</div>
+	</div>
+	<br>
+	<hr>
+
+	{% for e in entries %}
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card">
+  					<div class="card-header">
+    					{{ e.title }}
+  					</div>
+		  			<div class="card-body">
+			  			{% autoescape off %}
+							{{ e.changes|covert_markdown }}
+						{% endautoescape %}
+		  			</div>
+				</div>
+			</div>
+		</div>
+		<br>
+	{% endfor %}
+{% endblock %}

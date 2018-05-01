@@ -4,11 +4,14 @@
 
 {% block main %}
     <div class="card-columns">
+    {% include  'timeline/cards/dashboard_notification_card.html' with notifications=my_notifications %}
     {% if user.is_module_leader %}
         {% include  'dashboard_your_modules_list.html' with my_modules=my_modules %}
     {% endif %}
-    {% include  'dashboard_all_modules_list.html' with my_modules=my_modules %}
-
-    {% include  'timeline/cards/dashboard_notification_card.html' with notifications=my_notifications %}
+    {% if user.is_admin %}
+        {% include 'dashboard_admin_tools.html' %}
+    {% endif %}
+    {% include 'dashboard_datasets.html' %}
+    {% include 'dashboard_all_modules_list.html' with my_modules=my_modules %}
     </div>
 {% endblock %}

@@ -1,7 +1,6 @@
 from django.core.urlresolvers import reverse
 from core.tests.views.admin_views.admin_test_case import AdminViewTestCase
 from core.models import Module, ModuleManager
-from timeline.utils.changes import have_changes
 
 
 class TestAdminModuleUpdateView(AdminViewTestCase):
@@ -48,11 +47,8 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
 
     def test_valid_post_update_view(self):
         """
-        Test case for valid post request. Since introducting
-        the timeline, it will freeze the changes, until they have been
-        confirmed for processing.
+        Test case for valid post request to save module data
         """
-        expected_name = 'Software Engineering Project'
         data = {
             'module_name': 'Software Engineering',
             'module_credits': 40,
@@ -69,12 +65,9 @@ class TestAdminModuleUpdateView(AdminViewTestCase):
 
         module = Module.objects.get(module_code='CM3301')
 
-        # check that old title remains
-        self.assertEquals(module.module_name, expected_name)
+        # check that title has changed
+        self.assertEquals(module.module_name, data['module_name'])
         self.assertEquals(module.module_leader, self.user)
-
-        n_changes = have_changes('CM3301', module)
-        self.assertEquals(len(n_changes), 2)
 
     def test_invalid_post_with_some_empty_data(self):
         """

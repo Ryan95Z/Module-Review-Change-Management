@@ -114,7 +114,7 @@ class Module(BaseTimelineNode):
         Override from BaseTimelineNode to define
         title that will be used on timeline.
         """
-        return self.module_code
+        return "Changes to {}".format(self.module_code)
 
     class Meta:
         ordering = ['module_code']

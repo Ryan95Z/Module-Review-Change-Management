@@ -1,0 +1,191 @@
+{% extends 'core/main.html' %}
+{% load core_tags %}
+{% load static %}
+
+{% block title %}
+     MD Form Structure
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'forms/css/md_structure.css' %}">
+{% endblock %}
+
+{% block main %}
+<h2 class="text-center">Module Description Form Structure</h2>
+
+<!-- Renders the structure form with all of the initial data -->
+<form method="post">
+{% csrf_token %}
+
+<!-- Management form required for django formsets -->
+{{ field_formset.management_form }}
+
+<!-- Each set of fields is rendered in a row of a table -->
+<table class="table">
+<thead>
+    <th class="text-center px-0" scope="col">Order</th>
+    <th class="text-center px-0" scope="col">Required</th>
+    <th class="text-center px-0" scope="col">Label</th>
+    <th class="text-center px-0" scope="col">Type
+        <a href="#" data-toggle="modal" data-target="#typeHelpModal" style="color: black">
+            <i class="fa fa-question-circle"></i>
+        </a>
+    </th>
+    <th class="text-center px-0" scope="col">
+        Choices
+        <a href="#" data-toggle="modal" data-target="#choicesHelpModal" style="color: black">
+            <i class="fa fa-question-circle"></i>
+        </a>
+    </th>
+    <th class="text-center px-0" scope="col">
+        Max Length
+        <a href="#" data-toggle="modal" data-target="#maxLengthHelpModal" style="color: black">
+            <i class="fa fa-question-circle"></i>
+        </a>
+    </th>
+    <th class="text-center px-0" scope="col"></th>
+</thead>
+<tbody id="structure_form-dynamic_form">
+    {% for form in field_formset.forms %}
+    <tr class="form_row dynamic-row">
+        <td class="px-1" style="width: 90px">
+            <span class="row-order">{{ forloop.counter }}</span>
+            {% if forloop.counter0 == 0 %}
+            <button type="button" disabled class="btn btn-link p-0 move-up"><i class="fa fa-chevron-up"></i></button>
+            {% else %}
+            <button type="button" name="structure_form" class="btn btn-link p-0 move-up"><i class="fa fa-chevron-up"></i></button>
+            {% endif %}
+            {% if forloop.counter >= field_formset.forms|length %}
+            <button type="button" disabled class="btn btn-link p-0 move-down"><i class="fa fa-chevron-down"></i></button>
+            {% else %}
+            <button type="button" name="structure_form" class="btn btn-link p-0 move-down"><i class="fa fa-chevron-down"></i></button>
+            {% endif %}
+        </td>
+        <td class="text-center px-1" style="width: 50px">{{ form.entity_required}}{{ form.entity_required.errors}}</td>
+        <td class="px-1">{{ form.entity_label|add_css_class:"form-control form-control-sm" }}{{ form.entity_label.errors }}</td>
+        <td class="px-1 type-field" style="width: 140px">{{ form.entity_type|add_css_class:"form-control form-control-sm"}}{{ form.entity_type.errors }}</td>
+        <td class="px-1 choices-field">{{ form.entity_choices|add_css_class:"form-control form-control-sm" }}{{ form.entity_choices.errors }}</td>
+        <td class="px-1" style="width: 80px">{{ form.entity_max_length|add_css_class:"form-control form-control-sm"}}{{ form.entity_max_length.errors }}</td>
+        <td class="text-center px-1" style="width: 50px"><button type="button" name="structure_form" class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
+        <input type="hidden" name="structure_form-{{ forloop.counter0 }}-entity_order" id="{{form.entity_order.id_for_label}}" value="{{ forloop.counter0 }}">
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+
+<!-- Form controls -->
+<div class="col-md-6 mx-auto px-0 text-center">
+    <a class="btn btn-danger btn-sm" role="button" href="{% url 'module_description_form_structure' %}">Cancel</a>
+    <button type="button" name="structure_form" class="btn btn-primary btn-sm add-row">Add Row</button>
+    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+</div>
+
+</form>
+
+<!-- Empty form which is used to generate new rows in the form -->
+<table style="display:none">
+<tbody id="structure_form-empty_form">
+<tr class="form_row dynamic-row">
+    <td class="px-1">
+        <span class="row-order"></span>
+        <button type="button" name="structure_form" class="btn btn-link p-0 move-up"><i class="fa fa-chevron-up"></i></button>
+        <button type="button" name="structure_form" class="btn btn-link p-0 move-down"><i class="fa fa-chevron-down"></i></button>
+    </td>
+    <td class="text-center px-1">{{ field_formset.empty_form.entity_required}}</td>
+    <td class="px-1">{{ field_formset.empty_form.entity_label|add_css_class:"form-control form-control-sm" }}</td>
+    <td class="px-1 type-field">{{ field_formset.empty_form.entity_type|add_css_class:"form-control form-control-sm"}}</td>
+    <td class="px-1 choices-field">{{ field_formset.empty_form.entity_choices|add_css_class:"form-control form-control-sm"}}</td>
+    <td class="px-1">{{ field_formset.empty_form.entity_max_length|add_css_class:"form-control form-control-sm"}}</td>
+    <td class="text-center px-1"><button type="button" name="structure_form" class="btn btn-danger btn-sm delete-row"><i class="fa fa-times fa-2"></i></button></td>
+    <input type="hidden" name="structure_form-__prefix__-entity_order" id="{{field_formset.empty_form.entity_order.id_for_label}}" value="0">
+</tr>
+</tbody>
+</table>
+
+<!-- Type help text modal -->
+<div class="modal fade" id="typeHelpModal" tabindex="-1" role="dialog" aria-labelledby="typeHelpModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="typeHelpModalLabel">Type Selection</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>The type of the field represents what element will be used to render the field
+            in the form. Some require that you enter a set of choices, and some do not.
+        </p>
+        <hr>
+        <h6>Text Input</h6>
+        A text input which is rendered as a sigle line, usually for smaller amounts of text.
+        <hr>
+        <h6>Text Area</h6>
+        A larger text input rendered as several lines which the user can expand. Generally used
+        for larger amounts of text.
+        <hr>
+        <h6>Select Box</h6>
+        A selection box containing the options defined in the choices field. The user can only
+        select one.
+        <hr>
+        <h6>Radio Box</h6>
+        Similar to a selection box, but each option is repsented as a radio button. The user
+        can only select one.
+        <hr>
+        <h6>Check Box</h6>
+        A checkbox which can be checked or unchecked. Usually used for true/false questions
+    </div>
+    </div>
+</div>
+</div>
+
+<!-- Choices help text modal -->
+<div class="modal fade" id="choicesHelpModal" tabindex="-1" role="dialog" aria-labelledby="choicesHelpModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="choicesHelpModalLabel">Choices Field</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>The choices field only applies to 'Select Box' and 'Radio Button' questions, 
+            therefore it is only active when either of these two types are chosen.
+        </p>
+        <p>Choices must be entered in a comma seperated format in order for them to be stored
+            correctly. The form will produce an error if you fail to do this. (not yet)
+        </p>
+        <p>Example: <code>Oranges, Apples, Pears</code></p>
+    </div>
+    </div>
+</div>
+</div>
+
+<!-- Max length help text modal -->
+<div class="modal fade" id="maxLengthHelpModal" tabindex="-1" role="dialog" aria-labelledby="maxLengthHelpModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="maxLengthHelpModalLabel">Max Length Field</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>This field only needs to be changed for free text fields. It denotes how many characters the user
+                can enter into the field.
+            </p>
+            <p>If you choose another type of field, the max length will be disabled and calculated automatically
+                based on the longest of your provided choices.
+            </p>
+        </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'forms/js/dynamic_formsets.js' %}"></script>
+<script type="text/javascript" src="{% static 'forms/js/md_form_editor.js' %}"></script>
+{% endblock %}

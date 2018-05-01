@@ -1,11 +1,48 @@
 from django.urls import reverse
+from django.http import Http404
 from django.views.generic import View
 from django.views.generic.list import ListView
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
+from core.models import Module
 
 from timeline.models import TimelineEntry
-from timeline.utils.changes import process_changes, revert_changes
 from timeline.utils.notifications.helpers import push_notification
+from timeline.utils.timeline.changes import revert_changes
+from timeline.utils.timeline.tracking_form import get_form_version_number
+
+from forms.utils.tracking_form import StagedTrackingFormWrapper
+
+
+class TrackingFormChanges(View):
+    """
+    View to access all the changes from a summary timeline entry
+    """
+    template_name = "timeline/timeline_tracking_changes.html"
+
+    def get(self, request, *args, **kwargs):
+        module_code = kwargs.get('module_pk')
+        pk = kwargs.get('pk')
+
+        parent = get_object_or_404(TimelineEntry, pk=pk, parent_entry=None)
+
+        # get the child entries
+        entires = TimelineEntry.objects.filter(
+            module_code=module_code,
+            parent_entry_id=pk
+        )
+
+        if entires.count() < 1:
+            raise Http404(
+                "Invalid entry that does not have any related entries."
+            )
+
+        context = {
+            'module_code': module_code,
+            'parent': parent,
+            'entries': entires,
+            'version_no': get_form_version_number(pk)
+        }
+        return render(request, self.template_name, context)
 
 
 class TimelineListView(ListView):
@@ -21,7 +58,10 @@ class TimelineListView(ListView):
 
     def get_queryset(self):
         module_id = self.kwargs['module_pk']
-        return self.model.objects.filter(module_code=module_id)
+        return self.model.objects.filter(
+            module_code=module_id,
+            parent_entry=None
+        )
 
     def get_context_data(self, *args, **kwargs):
         context = super(
@@ -71,9 +111,13 @@ class TimelineUpdateStatus(TimelinePostViews):
 
         if entry.status == 'Draft':
             entry.status = 'Staged'
-        elif entry.status == 'Staged':
-            process_changes(entry_pk)
+        elif entry.status == 'Staged':  # pragma: no cover
             entry.status = 'Confirmed'
+
+            # update the tracking form data
+            module = Module.objects.get(module_code=entry.module_code)
+            form = StagedTrackingFormWrapper(module)
+            form.change_to_current()
         else:
             pass
         entry.approved_by = request.user
@@ -97,9 +141,9 @@ class TimelineRevertStage(TimelinePostViews):
 
         entry = get_object_or_404(TimelineEntry, pk=entry_pk)
         if entry.status == 'Draft':
-            # delete entry as no longer needed
-            revert_changes(entry_pk)
-            entry.delete()
+            # remove the changes as it is no longer needed
+            revert_changes(entry)
+            push_notification("cancelled", entry=entry, user=request.user)
         elif entry.status == 'Staged':
             # move the status back to 'Draft'
             entry.status = 'Draft'

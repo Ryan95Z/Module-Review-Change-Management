@@ -2,17 +2,20 @@
     <div class="card-header">
         Your Module(s)
     </div>
-    <ul class="list-group list-group-flush">
+    <ul class="list-group list-group-flush" style="height: auto; overflow-y: scroll;">
     {% if my_modules%}
         {% for module in my_modules %}
-            <li class="list-group-item" style="height: 35px; padding: 5px 15px;">
-                <a href="{% url 'view_module_description' pk=module.module_code %}">
-                    {{ module.module_name }}
-                </a>
+            <li class="list-group-item">
+                {{ module.pk }}: {{ module.module_name }} <br>
+                <a href="{% url 'module_timeline' module_pk=module.module_code %}">See Timeline</a> /
+                <a href="{% url 'view_module_description' pk=module.module_code %}">Update</a>
             </li>
         {% endfor %}
     {% else %}
         <li class="list-group-item">You aren't assigned to any modules</li>
     {% endif %}
     </ul>
+    <div class="card-footer text-center" style="height: 35px; padding: 5px 15px;">
+        <a href="{% url 'module_leader_modules' %}">See All</a>
+    </div>
 </div>

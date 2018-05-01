@@ -53,7 +53,7 @@
 																{{ o.content }}
 															</div>
 															<span class="notification-time">
-																{{ o.created|naturalday}}
+																{{ o.created|naturaltime}}
 															</span>
 														</div>
 													</a>
@@ -87,7 +87,7 @@
 																{{ o.content }}
 															</div>
 															<span class="notification-time">
-																{{ o.created|naturalday}}
+																{{ o.created|naturaltime}}
 															</span>
 														</div>
 													</a>
@@ -111,13 +111,19 @@
 							Modules you are currently watching
 						</div>
 						<div class="card-body">
-							<ul class="list-group">
-								{% for w in watching %}
-									 <li class="list-group-item">
-										{{ w }}
-									 </li>
-								{% endfor %}
-							</ul>
+							{% if watching.count > 0 %}
+								<ul class="list-group">
+									{% for w in watching %}
+										 <li class="list-group-item">
+											{{ w }}
+										 </li>
+									{% endfor %}
+								</ul>
+							{% else %}
+								<p class="card-text">
+									You are currently not watching any modules.
+								</p>
+							{% endif %}
 						</div>
 				</div>
 			</div>

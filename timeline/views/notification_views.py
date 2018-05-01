@@ -1,10 +1,16 @@
-from timeline.models import Notification, Watcher
 from django.views.generic import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
+from core.models import User
+from timeline.models import Notification
+from timeline.utils.notifications.helpers import WatcherWrapper
 
 
 class NotificationHubView(View):
+    """
+    View to allow user to access all of thier notifications
+    in a central hub.
+    """
     model = Notification
     template = "timeline/notification_list.html"
 
@@ -19,7 +25,10 @@ class NotificationHubView(View):
         all_notifications = self.model.objects.get_all_notifications(username)
 
         # get all the modules the user is watching
-        watching = Watcher.objects.get(user=user_id).watching.all()
+        user = User.objects.get(pk=user_id)
+        watcher = WatcherWrapper(user)
+        watching = watcher.modules()
+
         context = {
             'unseen': unseen,
             'all': all_notifications,
@@ -28,12 +37,19 @@ class NotificationHubView(View):
         return render(request, self.template, context)
 
     def __remove_old_notifications(self, username):
+        """
+        Private method to remove old notifications from the user's list
+        """
         notifications = self.model.objects.get_unneeded_notifications(username)
         if(notifications.count() > 0):
             notifications.delete()
 
 
 class NotificationRedirectView(View):
+    """
+    View to redirect users if they have not seen a notification.
+    This view allows the detection of the notification being seen.
+    """
     model = Notification
 
     def get(self, request, *args, **kwargs):
@@ -45,6 +61,10 @@ class NotificationRedirectView(View):
 
 
 class GetNotifications(View):
+    """
+    View that is used in ajax requests to notify that there are
+    notifications for the user to see.
+    """
     model = Notification
 
     def dispatch(self, request, *args, **kwargs):

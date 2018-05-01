@@ -39,29 +39,34 @@
 							</div>
 							<div class="entry-{{ entry.status|lower }}">
 								<div class="timeline-content">
+									<p>The following changes were made by: {{ entry.requester_username }}</p>									
 									{% autoescape off %}
 									{{ entry.changes|covert_markdown }}
 									{% endautoescape %}
 								</div>
 								<div class="timeline-actions">
-									{% if entry.status != 'Confirmed' %}
-									<div class="timeline-approve">
-										<form action="{% url 'approve_entry' module_code entry.id %}" method="POST">
-										{% csrf_token %}
-										{% if entry.status == 'Draft' %}
-											<button type="submit" class="btn btn-sm btn-warning">Approve</button>
-											
-										{% elif entry.status == 'Staged' %}
-											<button type="submit" class="btn btn-sm btn-success">Approve</button>
-										{% endif %}
-										</form>
-									</div>
-									<div class="timeline-cancel">
-										<form action="{% url 'revert_entry' module_code entry.id %}" method="POST">
+									{% if entry.entry_type == "Tracking-Form" %}
+										<a class="btn btn-info btn-sm" href="{% url 'changes' module_code entry.pk %}">See Changes</a>
+
+										{% if entry.status != 'Confirmed' %}
+										<form action="{% url 'approve_entry' module_code entry.pk %}" style="display: inline;" method="POST">
 											{% csrf_token %}
-											<button class="btn btn-danger btn-sm" type="submit">Cancel</button>
+											<button class="btn btn-sm btn-success" type="submit">Confirm</button>
 										</form>
-									</div>
+										{% endif %}
+
+										
+										{% if entry.status != 'Confirmed' %}
+										<form action="{% url 'revert_entry' module_code entry.pk %}" method="POST" style="display: inline;">
+											{% csrf_token %}
+											<button class="btn btn-sm btn-danger">Cancel</button>
+										</form>
+										{% endif %}
+
+									{% endif %}
+
+									{% if entry.entry_type == 'Module-Description' %}
+										<a href="{% url 'view_archive_module_description' module_code entry.object_id %}" class="btn btn-sm btn-info">See Module Description</a>
 									{% endif %}
 
 									<div class="timeline-meta">
@@ -69,7 +74,7 @@
 											{% if entry.approved_by is None %}
 												<span>Approved By: System</span>
 											{% else %}
-												<span>Approved By: {{ entry.approved_by.username }}</span>
+												<span>Approved By: {{ entry.approver_username }}</span>
 											{% endif %}
 											{% else %}
 												<span>Not approved</span>
