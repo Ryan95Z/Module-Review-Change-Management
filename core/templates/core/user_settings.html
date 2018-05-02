@@ -2,8 +2,11 @@
 
 {% block main %}
 	<h3>Settings</h3><hr>
-	<ul>
-		<li><a href="{% url 'user_details' request.session.username %}">Update user details</a></li>
-		<li><a href="{% url 'user_password' request.session.username %}">Change password</a></li>
-	</ul>
+	<form action="{% url 'user_details' request.session.username %}">
+		<input type="submit" value="Update user details" class="btn btn-primary">
+	</form>
+	<br>
+	<form action="{% url 'user_password' request.session.username %}">
+		<input type="submit" value="Change Password" class="btn btn-danger">
+	</form>
 {% endblock %}

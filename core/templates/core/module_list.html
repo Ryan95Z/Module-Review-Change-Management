@@ -23,28 +23,28 @@
    	 				</form>
    	 				{% endif %}
 				</div>
-			</div>	
+			</div>
 
 			{% if object_list|length < 1 %}
 				{% if user.is_module_leader %}
 					<p class="p-msg">You currently do not have any modules assigned.</p>
-				{% else %}	
+				{% else %}
 					<p class="p-msg">There is currently no modules in the system.</p>
 				{% endif %}
 			{% else %}
-				<table class="table table-bordered table-dark">
-					<thead>
+				<table class="table table-bordered table-hover">
+					<thead class="thead-dark">
 						<tr>
 							<th scope="col">Code</th>
 							<th scope="col">Name</th>
 							<th scope="col">Credits</th>
 							<th scope="col">Semester</th>
-							
+
 							{% if not user.is_module_leader %}
 							<th scope="col">Module Leader</th>
 							<th scope="col">Update Module</th>
 							{% endif %}
-							
+
 							<th scope="col">Timeline</th>
 						</tr>
 					</thead>
@@ -55,12 +55,12 @@
 							<td>{{ module.module_name }}</td>
 							<td>{{ module.module_credits }} Credits</td>
 							<td>{{ module.semester }}</td>
-							
+
 							{% if not user.is_module_leader %}
 							<td>{{ module.module_leader_name }}</td>
 							<td><a class="btn btn-primary btn-sm" href="{% url 'update_module' module.module_code %}">Update {{ module.module_code }}</a></td>
 							{% endif %}
-							
+
 							<td><a class="btn btn-info btn-sm" href="{% url 'module_timeline' module.module_code %}">See Timeline</a></td>
 						</tr>
 					{% endfor %}
